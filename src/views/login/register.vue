@@ -184,7 +184,7 @@ var checkPhone = (rule, value, callback) => {
       if (!value) {
         callback(); 
       } else {
-        const reg = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
+        const reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
         const email = reg.test(value);
         if (!email) {
           callback(new Error("邮箱格式如:admin@163.com"));
@@ -345,6 +345,10 @@ export default {
             } else {
               m.isChoose = false;
             }
+          });
+        }else{
+            v.filter((m, j) => {
+             m.isChoose = false;
           });
         }
       });

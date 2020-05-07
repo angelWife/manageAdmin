@@ -49,7 +49,7 @@
       <el-button @click="clear">重置</el-button>
     </div>
     <el-tabs v-model="params.status" type="card" @tab-click="handleClick">
-      <el-tab-pane v-for="item in tabs" :key="item.key" :label="item.val" :name="item.key">
+      <el-tab-pane v-for="(item,ind) in tabs" :key="ind" :label="item.val" :name="item.name">
         <Table :approData="approData" :statusVO="statusVO" :typeVO="typeVO"></Table>
       </el-tab-pane>
       <!-- <el-tab-pane label="待处理" name="wait">
@@ -136,7 +136,10 @@ export default {
     this.$api.dict.workStatus().then(res=>{
       if(res.success){
         self.tabs = res.data
-        this.params.status = res.data[0].key
+        self.tabs.filter(v=>{
+            v.name=v.key+'';
+        })
+        this.params.status = res.data[0].name
         self.initPageList()
       }
     })

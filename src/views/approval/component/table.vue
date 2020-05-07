@@ -43,7 +43,6 @@ export default {
       this.$router.push({
         path: "/approval/memberDetails",
       });
-       debugger
       let _data = { type: "hasOper",number:row.serialNumber,dataType:row.type,taskId :row.taskId,companyId:row.companyId}
       this.$store.commit('setPassVal',_data)
       this.$store.commit('setProcessIde',row.processInstanceId)
@@ -52,7 +51,6 @@ export default {
       this.$router.push({
         path: "/approval/memberDetails",
       });
-      debugger
       let _data = { type: "info",number:row.serialNumber,dataType:row.type,taskId :row.taskId,companyId:row.companyId}
       this.$store.commit('setPassVal',_data)
        this.$store.commit('setProcessIde',row.processInstanceId)

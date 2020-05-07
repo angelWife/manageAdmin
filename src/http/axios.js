@@ -24,11 +24,11 @@ export default function $axios(options) {
         // console.log(store.state.loading)
         // console.log('准备发送请求...')
         // 2. 带上token
-        if (token) {
+        if (token&&token!="undefined") {
           config.headers.token = token
         } else {
           // 重定向到登录页面
-          router.push('/login/index').catch(err => { err }) //  NavigationDuplicated 解决方案：https://www.cnblogs.com/rever/p/11577322.html
+        //   router.push('/login/index').catch(err => { err }) 
         }
         // 3. 根据请求方法，序列化传来的参数，根据后端需求是否序列化
         if (config.method === 'post') {
@@ -72,18 +72,14 @@ export default function $axios(options) {
     instance.interceptors.response.use(
       response => {
         let data;
-      
         // IE9时response.data是undefined，因此需要使用response.request.responseText(Stringify后的字符串)
         if (response.data == undefined) {
           data = JSON.parse(response.request.responseText)
           
-        } else if(response.data  && response.data.code=='200') {
+        } else if(response.data) {
           data = response.data
-
         }else{
-          // data = response.data
-          Message.error( response.data ?  response.data.message : "未知错误请联系管理员");
-
+          Message.error("未知错误请联系管理员");
         }
         if (data.code == "NoLogin") {
           router.push('/login/index').catch(err => { err })
@@ -161,7 +157,7 @@ export default function $axios(options) {
     // 请求处理
     instance(options).then(res => {
       if(!res.success){
-        Message.error(res.message);
+        Message.error(res.message?res.message:'数据错误');
       }
       resolve(res)
       return false

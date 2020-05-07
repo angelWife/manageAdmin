@@ -135,6 +135,18 @@ export default {
       });
     },
     onSubmit() {
+        if(!this.bill.receiver){
+            this.$message.error('请输入收件人')
+            return;
+        }
+        if(!this.bill.mobileNum){
+            this.$message.error('请输入收件人联系方式')
+            return;
+        }
+        if(!this.bill.address){
+            this.$message.error('请输入收件地址')
+            return;
+        }
       apiOperate(
         "member",
         "addBill",

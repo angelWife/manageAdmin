@@ -34,7 +34,7 @@ export async function apiBasicMember(funObj, param) {
         if (res.success) {
             obj =res.data;
         } else {
-            warnMES(res.message);
+            // warnMES(res.message);
         }
     }).catch(err => {
         console.error(err)
@@ -50,7 +50,7 @@ export async function apiDic(funObj, param) {
         if (res.success) {
             arr.push(...res.data)
         } else {
-            warnMES(res.message);
+            // warnMES(res.message);
         }
     }).catch(err => {
         console.error(err)
@@ -70,7 +70,7 @@ export async function apiAct(funObj, param) {
             }
 
         } else {
-            warnMES(res.message);
+            // warnMES(res.message);
         }
     }).catch(err => {
         console.error(err)
@@ -90,7 +90,7 @@ export async function apiShow(apiObj, funObj, param) {
                 obj = res.data
             }
         } else {
-            warnMES(res.message);
+            // warnMES(res.message);
         }
     }).catch(err => {
         console.error(err)
@@ -128,7 +128,7 @@ export function apiChose(funObj, arr) {
             arr.length = 0
             arr.push(...res.data);
         } else {
-            warnMES(res.message);
+            // warnMES(res.message);
         }
     }).catch(err => {
         console.error(err)
@@ -143,7 +143,7 @@ export function apiOperate(apiObj, funObj, param, callback, mes) {
             tipMES(mes);
             if (callback) { callback() };
         } else {
-            warnMES(res.message);
+            // warnMES(res.message);
         }
     }).catch(err => {
         console.error(err)
@@ -198,7 +198,7 @@ export function publicMsg(upObj, id, type, remind, platform, apiFun) {
             if (res.success) {
                 publishMsg(id, "提交成功", apiFun)
             } else {
-                warnMES(res.message);
+                // warnMES(res.message);
             }
         })
         .catch(error => {
@@ -216,7 +216,7 @@ export function publishMsg(id, message, apiFun) {
         if (res.success) {
             successMES(message);
         } else {
-            warnMES(res.message);
+            // warnMES(res.message);
         }
     }).catch(error => {
         console.log(error);
