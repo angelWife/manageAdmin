@@ -1,0 +1,379 @@
+<template>
+  <div class="acriveAdd comModal hasfoot">
+    <el-form
+      class="comFormBox"
+      :model="activityForm"
+      ref="activityForm"
+      label-width="120px"
+      label="left"
+    >
+      <el-row class="m-t-20">
+        <el-col :span="10">
+          <el-form-item label="活动名称：" class="mustFill">
+            <el-input v-model="activityForm.name" placeholder="请输入活动名称" :disabled="check"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item label="活动类型：" class="mustFill">
+            <el-select v-model="activityForm.activityType" placeholder="请选择活动类型" :disabled="check">
+              <el-option
+                v-for="item in typeList"
+                :key="item.id"
+                :value="item.dictKey"
+                :label="item.dictVal"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="10">
+          <el-form-item label="活动开始结束时间：" class="mustFill">
+            <el-date-picker
+              v-model="activityForm.actStart"
+              :disabled="check"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="timestamp"
+            ></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item label="活动报到开始结束时间:" class="mustFill">
+            <el-date-picker
+              v-model="activityForm.liveRep"
+              :disabled="check"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="timestamp"
+            ></el-date-picker>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="10">
+          <el-form-item label="活动报名开始结束时间：" class="mustFill">
+            <el-date-picker
+              v-model="activityForm.actSign"
+              :disabled="check"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="timestamp"
+            ></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item label="活动地点：" class="mustFill">
+            <el-input v-model="activityForm.address" placeholder="请输入活动地点" :disabled="check"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="10">
+          <el-form-item label="活动人数：" class="mustFill">
+            <el-input
+              v-model="activityForm.activityPersonNum"
+              placeholder="请输入活动人数"
+              :disabled="check"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item label="会员单位允许报名人数：" class="mustFill">
+            <el-input
+              v-model="activityForm.organPersonNum"
+              placeholder="请输入会员单位允许报名人数"
+              :disabled="check"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="10">
+          <el-form-item label="入会申请书.doc" class="mustFill">
+            <el-upload
+              class="upload-box float-left"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              multiple
+              :limit="3"
+            >
+              <el-button size="small" icon="el-icon-upload2" :disabled="check">上传文件</el-button>
+            </el-upload>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10"></el-col>
+      </el-row>
+    </el-form>
+    <msgPush title="消息推送：" :bus="bus" :id="id" :check="check" :pushType="1"></msgPush>
+    <div class="footBtnBox text_right" v-if="!check">
+      <el-button type>取消</el-button>
+      <el-button type>保存</el-button>
+      <el-button type="primary" @click="submitForm()">提交</el-button>
+    </div>
+  </div>
+</template>
+<script>
+import {
+  warnMES,
+  successMES,
+  tipMES,
+  pageTen,
+  pubParam,
+  apiSelect,
+  apiMemberStatus,
+  apiPublishStatus,
+  selectType,
+  selectVal,
+  pageChange,
+  queryResp,
+  mapTime,
+  getDateTime
+} from "../../utils/common";
+import { apiAct, backPage, apiChose } from "../../utils/commonApi";
+import { format } from "../../utils/datetime";
+import msgPush from "@/views/common/msgPush";
+import Vue from "vue";
+
+export default {
+  data() {
+    return {
+      bus: new Vue(),
+      addVisible: false,
+      activityForm: {
+        name: "",
+        type: "",
+        actStart: [],
+        liveRep: [],
+        actSign: [],
+        place: "",
+        person: "",
+        number: ""
+      },
+      typeList: [],
+      id: "",
+      typeId: 0,
+      msgParam: {},
+
+      check: false
+    };
+  },
+  created() {
+    apiSelect({ type: 6 }, this.typeList); // 活动类型
+
+    this.bus.$on("msgBox", data => {
+      this.msgParam = data;
+    });
+
+    if (this.$route.query.rowId) {
+      this.id = this.$route.query.rowId;
+      this.check = this.$route.query.check ? true : false;
+      apiAct("viewData", { id: this.id }).then(resolve => {
+        this.activityForm = {
+          name: resolve.name,
+          address: resolve.address,
+          activityType: resolve.activityType,
+          actStart: [resolve.activityDateStart, resolve.activityDateEnd],
+          liveRep: [resolve.checkInDateStart, resolve.checkInDateEnd],
+          actSign: [resolve.enrolDateStart, resolve.enrolDateEnd],
+          organPersonNum: resolve.organPersonNum,
+          activityPersonNum: resolve.activityPersonNum,
+          filePath: resolve.filePath
+        };
+      });
+    }
+  },
+  methods: {
+    submitForm() {
+      this.$confirm(
+        "请注意，活动提交后将需要经过审批流程，审批期间及审批后无法再对活动进行编辑",
+        "",
+        {
+          confirmButtonText: "继续",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      )
+        .then(() => {
+          this.submitAnn();
+        })
+        .catch(() => {
+          tipMES("已取消");
+        });
+    },
+    // 新建 提交
+    submitAnn() {
+      apiAct("newActive", {
+        name: this.activityForm.name,
+        address: this.activityForm.address,
+        activityType: this.activityForm.activityType,
+        activityDateStart: this.activityForm.actStart[0],
+        activityDateEnd: this.activityForm.actStart[1],
+        checkInDateStart: this.activityForm.liveRep[0],
+        checkInDateEnd: this.activityForm.liveRep[1],
+        enrolDateStart: this.activityForm.actSign[0],
+        enrolDateEnd: this.activityForm.actSign[1],
+        organPersonNum: this.activityForm.organPersonNum,
+        activityPersonNum: this.activityForm.activityPersonNum,
+        filePath: "111",
+        id: this.id
+      }).then(resolve => {
+        this.typeId = resolve;
+        this.newGet(resolve);
+      });
+    },
+    // 新建 推送
+    newGet(obj) {
+      this.$api.member
+        .publicMsg({
+          companyIdList: this.msgParam.companyIdList
+            ? this.msgParam.companyIdList
+            : [],
+          flagMessageRemind: this.msgParam.flagMessageRemind
+            ? this.msgParam.flagMessageRemind
+            : 2,
+          flagEmailRemind: this.msgParam.flagEmailRemind
+            ? this.msgParam.flagEmailRemind
+            : 2,
+          groupIdList: this.msgParam.groupIdList
+            ? this.msgParam.groupIdList
+            : [],
+          typeId: obj.id||null,
+          type: 1
+        })
+        .then(res => {
+          if (res.success) {
+            successMES("提交成功");
+          } else {
+            warnMES(res.message);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  },
+  components: {
+    msgPush
+  }
+};
+</script>
+<style lang="less">
+.acriveAdd {
+  .spantext {
+    display: inline-block;
+    margin-right: 150px;
+  }
+  .p-t-b-10 {
+    padding: 10px 0;
+  }
+  .vipBox {
+    width: 400px;
+    height: 200px;
+    border-radius: 5px;
+    padding: 10px 15px;
+    border: 1px solid #e6e6e6;
+    .el-tag {
+      margin-right: 10px;
+    }
+    .el-checkbox {
+      margin: 0 10px;
+      display: block;
+    }
+    button {
+      margin: 5px;
+    }
+  }
+  .chooseBox {
+    margin-bottom: 20px;
+  }
+  .comFormBox {
+    width: calc(100% - 160px);
+    padding: 0 20px 0 40px;
+    .el-form-item {
+      display: flex;
+      -webkit-box-align: center;
+      align-items: center;
+      .el-form-item__label {
+        line-height: 100% !important;
+        text-align: left;
+      }
+      .el-form-item__content {
+        -webkit-box-flex: 1;
+        flex-grow: 1;
+        margin-left: 0 !important;
+        > .el-select {
+          width: 85%;
+          min-width: 200px;
+        }
+        > .el-input {
+          width: 85% !important;
+          min-width: 200px;
+        }
+        > .el-range-editor.el-input__inner {
+          width: 85%;
+        }
+      }
+      .avatar-uploader {
+        .el-upload-list {
+          .el-upload-list__item {
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+          }
+        }
+        .el-upload {
+          border: 1px dashed #d9d9d9;
+          border-radius: 6px;
+          cursor: pointer;
+          position: relative;
+          overflow: hidden;
+          &:hover {
+            border-color: #409eff;
+          }
+          &.el-upload--picture-card {
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+          }
+        }
+        .avatar-uploader-icon {
+          font-size: 28px;
+          color: #8c939d;
+          width: 100px;
+          height: 100px;
+          line-height: 100px;
+          text-align: center;
+        }
+        .avatar {
+          width: 100px;
+          height: 100px;
+          display: block;
+        }
+      }
+      .el-date-editor .el-range-separator {
+        min-width: 20px;
+      }
+    }
+  }
+  .el-row {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .input_style,
+  .el-range-editor.el-input__inner,
+  .el-select {
+    width: calc(100% - 140px);
+  }
+}
+.footBtn {
+  padding: 20px;
+}
+</style>
