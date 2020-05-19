@@ -7,14 +7,20 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "uat": "webpack-dev-server --inline --progress --config build/webpack.uat.conf.js",
+    "staging": "webpack-dev-server --inline --progress --config build/webpack.staging.conf.js",
+    "test": "webpack-dev-server --inline --progress --config build/webpack.test.conf.js",
+    "localh": "webpack-dev-server --inline --progress --config build/webpack.localh.conf.js",
     "start": "npm run dev",
     "build": "node build/build.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "element-ui": "^2.4.6",
+    "es6-promise": "^4.2.8",
     "font-awesome": "^4.7.0",
     "js-cookie": "^2.2.0",
+    "js-file-download": "^0.4.12",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
     "save": "^2.4.0",
@@ -25,6 +31,8 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
@@ -39,7 +47,9 @@
     "css-loader": "^0.28.0",
     "element-theme": "^2.0.1",
     "element-theme-chalk": "^2.4.6",
-    "extract-text-webpack-plugin": "^3.0.0",
+    "eslint": "^7.0.0",
+    "eslint-plugin-vue": "^6.2.2",
+    "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",
     "html-webpack-plugin": "^2.30.1",
@@ -61,9 +71,10 @@
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
-    "webpack": "^3.6.0",
+    "webpack": "^3.12.0",
     "webpack-bundle-analyzer": "^2.9.0",
-    "webpack-dev-server": "^2.9.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^2.11.5",
     "webpack-merge": "^4.1.0"
   },
   "engines": {
@@ -74,5 +85,8 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "main": ".postcssrc.js",
+  "keywords": [],
+  "license": "ISC"
 }

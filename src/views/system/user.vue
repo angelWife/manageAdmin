@@ -6,7 +6,7 @@
         <el-input placeholder="请输入" v-model="searchObj.userNameLike"></el-input>
       </el-col>
       <el-col :span="8">
-        <span>关联权限：</span>
+        <span>关联角色：</span>
         <el-input placeholder="请输入" v-model="searchObj.roleNameLike"></el-input>
       </el-col>
       <el-col :span="8">
@@ -31,6 +31,7 @@
       </el-col>
     </el-row>
     <el-table :data="tableData" style="width: 100%" class="comTable" empty-text="没有符合条件的用户">
+      <el-table-column prop="userId" label="用户id"></el-table-column>
       <el-table-column prop="userName" label="用户"></el-table-column>
       <el-table-column prop="flagSuper" label="是否超级管理员" :formatter="superText"></el-table-column>
       <el-table-column prop="names" label="角色"></el-table-column>
@@ -38,12 +39,13 @@
       <el-table-column prop="mobile" label="手机"></el-table-column>
       <el-table-column prop="email" label="邮箱"></el-table-column>
       <el-table-column prop="status" label="状态" :formatter="statusText"></el-table-column>
-      <el-table-column prop="updateTime" label="更新时间"></el-table-column>
+      <el-table-column prop="updateTime" label="更新时间" :formatter="timeFormat"></el-table-column>
       <el-table-column fixed="right" label="操作" width="250">
         <template slot-scope="scope">
           <el-button type="primary" @click="handleClick(scope.row)" size="small">编辑</el-button>
           <el-button @click="changePwd(scope.row)" type="primary" size="small">重置密码</el-button>
-          <!-- <el-button type size="small">删除</el-button> -->
+          <el-button type size="small" v-if="scope.row.status == 1" @click="changeStatus(scope.row,2)">停用</el-button>
+          <el-button type="primary" size="small" v-else-if="scope.row.status == 2" @click="changeStatus(scope.row,1)">启用</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -55,7 +57,7 @@
         </el-form-item>
         <el-form-item label="角色：">
           <el-checkbox v-model="formData.flagSuper">是否超级管理员</el-checkbox>
-          <br />
+          <br/>
           <el-select v-model="formData.roleIdList" placeholder="请选择" multiple>
             <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
@@ -84,8 +86,13 @@
         </el-form-item>
         <el-form-item label="邮箱：">
           <el-input placeholder="请输入" v-model="formData.email" autocomplete="off"></el-input>
-          <div class="e-tip" style="line-height:1.5;margin-top:5px;">用户创建后系统将自动生成初始密码，并会将账号信息发送到对应用户邮箱，用户可以根据邮件链接进行密码修改</div>
+          <div class="e-tip" style="line-height:1.5;margin-top:5px;">
+            用户创建后系统将自动生成初始密码，并会将账号信息发送到对应用户邮箱，用户可以根据邮件链接进行密码修改
+          </div>
         </el-form-item>
+        <!--<el-form-item label="停用：">
+          <el-checkbox v-model="formData.status">是否停用</el-checkbox>
+        </el-form-item>-->
         <el-form-item label="备注：">
           <el-input placeholder="请输入" v-model="formData.remark" type="textarea" autocomplete="off"></el-input>
         </el-form-item>
@@ -158,209 +165,245 @@
   </div>
 </template>
 <script>
-import { comDepartmentList, comUserList } from "../../utils/common";
-import {isMobile,isEmail} from '../../utils/validate'
-export default {
-  data() {
-    return {
-      userVisible: false,
-      resetVisible: false,
-      editVisible: false,
-      myprop: {
-        value: "id",
-        label: "name",
-        children: "children"
-      },
-      searchObj: {
-        pageIndex: 1,
-        pageSize: 10,
-        roleNameLike: "",
-        status: "",
-        userNameLike: ""
-      },
-      formData: {
-        userName: "",
-        flagSuper: false,
-        roleIdList: [],
-        departmentId: "",
-        mobilePhone: "",
-        email: "",
-        remark: ""
-      },
-      tableData: [],
-      state: "",
-      stateList: [
-        {
-          id: 1,
-          value: 1,
-          label: "启用"
+  import {comDepartmentList, comUserList} from "../../utils/common";
+  import {isMobile, isEmail} from '../../utils/validate'
+  import {formatWithSeperator} from "../../utils/datetime";
+
+  export default {
+    data() {
+      return {
+        userVisible: false,
+        resetVisible: false,
+        editVisible: false,
+        myprop: {
+          value: "id",
+          label: "name",
+          children: "children"
         },
-        {
-          id: 2,
-          value: 2,
-          label: "关闭"
-        }
-      ],
-      departList: [],
-      roleList: [],
-      password: "",
-      pageTotal: 1
-    };
-  },
-  created() {
-    //    this.approData = this.allData;
-    this.initPageList();
-    comDepartmentList(this.departList);
-    comUserList(this.roleList);
-  },
-  methods: {
-    resetSearch() {
-      this.searchObj.roleNameLike = "";
-      this.searchObj.status = null;
-      this.searchObj.userNameLike = "";
-    },
-    initPageList() {
-      let self = this;
-      this.$api.system.getUserList(this.searchObj).then(res => {
-        if (res.success) {
-          let list = res.data.rows;
-          self.pageTotal = res.data.pageTotal;
-          list.filter(v => {
-            let names = "";
-            let ids = [];
-            if (v.roleList && v.roleList.length > 0) {
-              v.roleList.filter((m, j) => {
-                if (j == 0) {
-                  names += m.name;
-                } else {
-                  names += "," + m.name;
-                }
-                ids.push(m.id);
-              });
-            }
-            v.names = names;
-            v.ids = ids;
-          });
-          self.tableData = list;
-        }
-      });
-    },
-    sureBtn() {
-      let self = this;
-      let params = { ...this.formData };
-      params.departmentId = params.departmentId[params.departmentId.length - 1];
-      params.flagSuper = params.flagSuper ? 1 : 2;
-      if(!isMobile(params.mobilePhone)){
-        this.$message.error('请输入正确的手机号码！')
-        return
-      }
-      if(!isEmail(params.email)){
-        this.$message.error('请输入正确的邮箱地址！')
-        return
-      }
-      this.$api.system.userEdit(params).then(res => {
-        if (res.success) {
-          if(params.userId){
-            self.$message.success('修改成功！')
-          }else{
-            self.$message.success('修新增成功！')
+        searchObj: {
+          pageIndex: 1,
+          pageSize: 10,
+          roleNameLike: "",
+          status: "",
+          userNameLike: ""
+        },
+        formData: {
+          userName: "",
+          flagSuper: false,
+          roleIdList: [],
+          departmentId: "",
+          mobilePhone: "",
+          email: "",
+          remark: ""
+        },
+        tableData: [],
+        state: "",
+        stateList: [
+          {
+            id: 1,
+            value: 1,
+            label: "启用"
+          },
+          {
+            id: 2,
+            value: 2,
+            label: "关闭"
           }
-          self.userVisible = false;
-          self.initPageList()
+        ],
+        departList: [],
+        roleList: [],
+        password: "",
+        pageTotal: 1
+      };
+    },
+    created() {
+      //    this.approData = this.allData;
+      this.initPageList();
+      comDepartmentList(this.departList);
+      comUserList(this.roleList);
+    },
+    methods: {
+      resetSearch() {
+        this.searchObj.roleNameLike = "";
+        this.searchObj.status = null;
+        this.searchObj.userNameLike = "";
+      },
+      initPageList() {
+        let self = this;
+        this.$api.system.getUserList(this.searchObj).then(res => {
+          if (res.success) {
+            let list = res.data.rows;
+            self.pageTotal = res.data.pageTotal;
+            list.filter(v => {
+              let names = "";
+              let ids = [];
+              if (v.roleList && v.roleList.length > 0) {
+                v.roleList.filter((m, j) => {
+                  if (j == 0) {
+                    names += m.name;
+                  } else {
+                    names += "," + m.name;
+                  }
+                  ids.push(m.id);
+                });
+              }
+              v.names = names;
+              v.ids = ids;
+            });
+            self.tableData = list;
+          }
+        });
+      },
+      sureBtn() {
+        let self = this;
+        let params = {...this.formData};
+        params.departmentId = params.departmentId[params.departmentId.length - 1];
+        params.flagSuper = params.flagSuper ? 1 : 2;
+        if (!isMobile(params.mobilePhone)) {
+          this.$message.error('请输入正确的手机号码！')
+          return
         }
-      });
-    },
-    handleClick(tab) {
-      if (tab) {
-        this.formData.userName = tab.userName
-        this.formData.roleIdList = tab.ids
-        this.formData.departmentId = [1,tab.departmentId]
-        this.formData.flagSuper = tab.flagSuper==1?true:false;
-        this.formData.mobilePhone = tab.mobile
-        this.formData.email = tab.email
-        this.formData.remark = tab.remark
-        this.formData.userId = tab.userId
-      }else{
-        this.formData.userName = ''
-        this.formData.roleIdList = []
-        this.formData.departmentId = ''
-        this.formData.flagSuper = false;
-        this.formData.mobilePhone = ''
-        this.formData.email = ''
-        this.formData.remark = ''
-        this.formData.userId = ''
-      }
-      this.userVisible = true;
-    },
-    statusText() {
-      if (arguments[2] == 1) {
-        return "启用";
-      } else {
-        return "关闭";
-      }
-    },
-    superText() {
-      if (arguments[2] == 1) {
-        return "是";
-      } else {
-        return "否";
-      }
-    },
-    changePwd(rowData){
-      this.resetVisible = true;
-      this.password = ''
-      this.formData = rowData
-    },
-    sureChangePwd(){
-      if(!this.password){
-        this.$message.error('请输入密码！')
-        return
-      }
-      let params = {
-        userId:this.formData.userId,
-        passwdNew:this.password
-      }
-      this.$api.system.userPwdChange(params).then(res=>{
-        if(res.success){
-          this.$message.success('修改该用户的密码成功！')
-          this.resetVisible = false;
+        if (!isEmail(params.email)) {
+          this.$message.error('请输入正确的邮箱地址！')
+          return
         }
-      })
-    },
-    departChange() {},
-    changePage() {}
-  }
-};
+        this.$api.system.userEdit(params).then(res => {
+          if (res.success) {
+            if (params.userId) {
+              self.$message.success('修改成功！')
+            } else {
+              self.$message.success('修新增成功！')
+            }
+            self.userVisible = false;
+            self.initPageList()
+          }
+        });
+      },
+      handleClick(tab) {
+        if (tab) {
+          this.formData.userName = tab.userName
+          this.formData.roleIdList = tab.ids
+          this.formData.departmentId = [1, tab.departmentId]
+          this.formData.flagSuper = tab.flagSuper == 1 ? true : false;
+          this.formData.mobilePhone = tab.mobile
+          this.formData.email = tab.email
+          this.formData.remark = tab.remark
+          this.formData.userId = tab.userId
+        } else {
+          this.formData.userName = ''
+          this.formData.roleIdList = []
+          this.formData.departmentId = ''
+          this.formData.flagSuper = false;
+          this.formData.mobilePhone = ''
+          this.formData.email = ''
+          this.formData.remark = ''
+          this.formData.userId = ''
+        }
+        this.userVisible = true;
+      },
+      statusText() {
+        if (arguments[2] == 1) {
+          return "启用";
+        } else {
+          return "关闭";
+        }
+      },
+      superText() {
+        if (arguments[2] == 1) {
+          return "是";
+        } else {
+          return "否";
+        }
+      },
+      changePwd(rowData) {
+        this.resetVisible = true;
+        this.password = ''
+        this.formData = rowData
+      },
+      sureChangePwd() {
+        if (!this.password) {
+          this.$message.error('请输入密码！')
+          return
+        }
+        let params = {
+          userId: this.formData.userId,
+          passwdNew: this.password
+        }
+        this.$api.system.userPwdChange(params).then(res => {
+          if (res.success) {
+            this.$message.success('修改该用户的密码成功！')
+            this.resetVisible = false;
+          }
+        })
+      },
+      departChange() {
+      },
+      changePage() {
+      },
+      timeFormat() {
+        return formatWithSeperator(arguments[2], "-", ":");
+      },
+      changeStatus(row,status) {
+        let self = this;
+        this.$confirm('是否停用?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let params = {'userId':row.userId,'status':status};
+          //console.log(params);
+          self.$api.role.changeStatus(params).then(res => {
+            console.log(res);
+            if (res.success) {
+              this.$message({
+                type: 'success',
+                message: '操作成功!'
+              });
+              self.initPageList()
+            }
+          });
+        }).catch(() => {
+        });
+
+      },
+    }
+  };
 </script>
 <style lang="less" scoped>
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-.container {
-  background: #fff;
-  padding: 30px;
-  min-height: 100%;
   .el-row {
-    .el-input,
-    .el-select {
-      width: calc(100% - 180px);
+    margin-bottom: 20px;
+
+    &:last-child {
+      margin-bottom: 0;
     }
   }
-  .e-tip {
-    color: #ccc;
-  }
-  .new-depart {
-    .el-select {
-      width: 100%;
+
+  .container {
+    background: #fff;
+    padding: 30px;
+    min-height: 100%;
+
+    .el-row {
+      .el-input,
+      .el-select {
+        width: calc(100% - 180px);
+      }
+    }
+
+    .e-tip {
+      color: #ccc;
+    }
+
+    .new-depart {
+      .el-select {
+        width: 100%;
+      }
+    }
+
+    .new {
+      .el-input {
+        width: calc(100% - 70px);
+      }
     }
   }
-  .new {
-    .el-input {
-      width: calc(100% - 70px);
-    }
-  }
-}
 </style>

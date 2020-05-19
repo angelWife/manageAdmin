@@ -11,7 +11,7 @@
       <el-row class="m-t-20" style="padding-left: 30px;">
         <el-col :span="20">
           <el-form-item label="邮件内容：">
-            <el-card style="height: 640px;">
+            <el-card style="height: 680px;">
               <quill-editor
                 v-model="form.emailData"
                 :disabled="check"
@@ -47,7 +47,7 @@
       ></msgPush>
     </el-form>
     <div class="footBtnBox text_right">
-      <el-button type>取消</el-button>
+      <el-button type @click="back">取消</el-button>
       <el-button type="primary" @click="submitForm()">提交</el-button>
     </div>
   </div>
@@ -118,14 +118,27 @@ export default {
   },
   methods: {
     submitForm() {
-      apiShow("message", "emailAdd", {
-        ...this.form,
-        ...this.sendParam,
-        id: this.messageId,
-        sendObjectType: this.ObjParam
-      }).then(resolve => {
-        publicMsg(this.msgParam, resolve, 5, false, "mail", "emailPublish");
-      });
+      if(!!this.form.emailData&&!!this.form.emailTitle&&(this.msgParam.companyIdList.length>0||this.msgParam.groupIdList.length>0)){
+        apiShow("message", "emailAdd", {
+          ...this.form,
+          ...this.sendParam,
+          'id': this.messageId,
+          'memberList': this.msgParam.companyIdList.join(","),
+          'memberGroupList': this.msgParam.groupIdList.join(","),
+          'sendObjectType':this.ObjParam
+        }).then(resolve => {
+          publicMsg(this.msgParam, resolve, 5, false, "mail", "emailPublish");
+          this.$router.go(-1);
+        });
+      }else{
+        this.$message({
+          message: '请填写邮件内容，标题和接收人或组！',
+          type: 'warning'
+        });
+      }
+    },
+    back(){
+      this.$router.go(-1);
     }
   },
   components: {

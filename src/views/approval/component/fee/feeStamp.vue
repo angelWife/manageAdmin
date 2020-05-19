@@ -2,7 +2,9 @@
   <div class="check">
     <div class="table_title">{{basicTitle}}</div>
     <div class="formBox">
-      <el-form ref="form" :model="sizeForm" label-width="130px">
+      <el-form ref="form"
+               :model="sizeForm"
+               label-width="130px">
         <!-- <el-row>
           <el-col :span="24">
             <el-form-item label="名目">2019年费缴纳</el-form-item>
@@ -10,23 +12,25 @@
         </el-row>-->
         <el-row>
           <el-col :span="12">
-            <el-form-item label="机构类型">保险资产管理机构</el-form-item>
+            <el-form-item label="机构类型">{{vipCost.institutionTypeVal}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="业务规模(亿元)" class="inputWidth">1500</el-form-item>
+            <el-form-item label="业务规模(亿元)"
+                          class="inputWidth">{{vipCost.businessScale}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="会费周期：">2019-09-12到2019-12-31</el-form-item>
+            <el-form-item label="会费周期：">{{vipCost.dateCycleStart}}到{{vipCost.dateCycleEnd}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="入会会费(元)：">90000.00</el-form-item>
+            <el-form-item label="入会会费(元)：">{{vipCost.dues}}</el-form-item>
           </el-col>
         </el-row>
         <el-form-item label="缴费通知书（未盖章）：">
           <el-image :src="infoSrc"></el-image>
-          <el-button type="primary" class="rebuild">电子盖章</el-button>
+          <el-button type="primary"
+                     class="rebuild">电子盖章</el-button>
         </el-form-item>
         <!-- <el-form-item size="large" style="text-align:right">
           <el-button>驳回缴费初审</el-button>
@@ -38,9 +42,10 @@
 </template>
 <script>
 export default {
-   props: { 
+  props: {
     basicTitle: { type: String, required: true },
-     },
+    vipCost: { vipCost: Object, required: true }
+  },
   data() {
     return {
       infoSrc: "../../../static/certificate.png",

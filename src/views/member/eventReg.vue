@@ -23,6 +23,7 @@
       <el-col :span="8">
         <div>
           <span>活动起止日期：</span>
+
           <el-date-picker
             v-model="query.activityDate"
             type="daterange"
@@ -90,7 +91,7 @@
       </el-table-column>
       <el-table-column prop="activivyEnrolStatusVal" label="活动可报名状态"></el-table-column>
       <el-table-column prop="enrolStatusVal" label="报名状态"></el-table-column>
-      <el-table-column prop="act" label="操作">
+      <el-table-column prop="act" label="操作" min-width="120px">
         <template slot-scope="scope">
           <span v-if="scope.row.activivyEnrolStatus==1 && scope.row.enrolStatus == 4">
             <el-button @click="handleReg(scope.row)" type="primary" size="small">报名</el-button>
@@ -135,9 +136,9 @@ export default {
       query: {
         activityName: "",
         activityType: "",
-        activityDate: "",
+        activityDate: [],
         address: "",
-        enrolDate: "",
+        enrolDate: [],
         enrolStatus: ""
       },
       typeList: [],
@@ -169,11 +170,11 @@ export default {
       const query = {
         activityName: this.query.activityName,
         activityType: this.query.activityType,
-        activityDateFrom: this.query.activityDate[0],
-        activityDateTo: this.query.activityDate[1],
+        activityDateFrom:   this.query.activityDate && this.query.activityDate.length > 0 ? this.query.activityDate[0] : '' ,
+        activityDateTo:this.query.activityDate &&  this.query.activityDate.length > 0 ? this.query.activityDate[1] : '' , 
         address: this.query.address,
-        enrolDateFrom: this.query.enrolDate[0],
-        enrolDateTo: this.query.enrolDate[1],
+        enrolDateFrom:this.query.enrolDate && this.query.enrolDate.length > 0 ? this.query.enrolDate[0] : '' ,
+        enrolDateTo: this.query.enrolDate && this.query.enrolDate.length > 0 ? this.query.enrolDate[1] : '' ,
         enrolStatus: this.query.enrolStatus
       };
       apiShow("member", "activityTable", { ...param, ...query }).then(
@@ -188,9 +189,9 @@ export default {
       this.query = {
         activityName: "",
         activityType: "",
-        activityDate: "",
+        activityDate: [],
         address: "",
-        enrolDate: "",
+        enrolDate: [],
         enrolStatus: ""
       };
     },

@@ -13,6 +13,7 @@ import * as active from './moudules/active'
 import * as message from './moudules/message'
 import * as system from './moudules/system'
 import * as manage from './moudules/manage'
+import * as common from './moudules/common'
 
 // 默认全部导出
 export default {
@@ -27,5 +28,6 @@ export default {
     active,
     message,
     system,
-    manage
+    manage,
+    common
 }

@@ -10,57 +10,57 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="名称：">深圳市亲几餐饮有限公司</el-form-item>
+            <el-form-item label="名称：">{{memberCompanyVo.companyName}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="活统一社会信用代码：">914403006820323321</el-form-item>
+            <el-form-item label="统一社会信用代码：">{{memberCompanyVo.creditId}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="机构类型：">保险公司</el-form-item>
+            <el-form-item label="机构类型：">{{memberCompanyVo.institutionTypeVal}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="英文名称：">SZQQJCYYXGS</el-form-item>
+            <el-form-item label="英文名称：">{{memberCompanyVo.companyNameEng}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="公司类型：">有限责任公司</el-form-item>
+            <el-form-item label="公司类型：">{{memberCompanyVo.companyTypeVal}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="成立日期：">2015-10-02</el-form-item>
+            <el-form-item label="成立日期：">{{memberCompanyVo.dateBuild}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="是否上市：">是</el-form-item>
+            <el-form-item label="是否上市：">{{memberCompanyVo.flagListedVal}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="上市地：">香港</el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="注册地址：">-</el-form-item>
+            <el-form-item label="上市地：">{{memberCompanyVo.listAddress?memberCompanyVo.listAddress:'--'}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="办公地址：">-</el-form-item>
+            <el-form-item label="注册地址：">{{memberCompanyVo.registeredAddres?memberCompanyVo.registeredAddres:'--'}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="公司网址：">-</el-form-item>
+            <el-form-item label="办公地址：">{{memberCompanyVo.workAddress?memberCompanyVo.workAddress:'--'}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="公司网址：">{{memberCompanyVo.companyWeb?memberCompanyVo.companyWeb:'--'}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="法人代表：">-</el-form-item>
+            <el-form-item label="法人代表：">{{memberCompanyVo.legalRepresentative}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="注册资本(万元)：">香港</el-form-item>
+            <el-form-item label="注册资本(万元)：">{{memberCompanyVo.registeredCapital}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -76,6 +76,7 @@
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
 export default {
   props: { lay: { type: String, required: false, default: "" } },
   data() {
@@ -83,6 +84,7 @@ export default {
       checked: true,
       checkList: ["邮件提醒", "短信提醒"],
       input: "",
+      memberCompanyVo:{},
       sizeForm: {
         name: "",
         region: "",
@@ -94,6 +96,17 @@ export default {
         fee: ""
       }
     };
+  },
+  created() {
+     //公司信息
+     let companyId = this.$store.state.manage.passVal.companyId;
+     let self = this
+      this.$api.member.basicComp({ companyId }).then(res => {
+        if (res.success) {
+          self.memberCompanyVo = res.data;
+        }
+        // console.log(self.showData.memberCompanyVo)
+      });
   },
   methods: {
     onSubmit() {

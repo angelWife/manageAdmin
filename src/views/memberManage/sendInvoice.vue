@@ -67,7 +67,7 @@
 </template>
 <script>
 import { pageTen, pubParam, apiSelect } from "../../utils/common";
-import { apiShow, apiDic, backPage } from "../../utils/commonApi";
+import { apiShow, apiDic, backPage,hasPage } from "../../utils/commonApi";
 import billTable from "./component/table/billTable";
 export default {
   data() {

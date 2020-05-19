@@ -8,37 +8,27 @@
           <span class="blue">规则说明</span>
         </div>
         <el-form-item label="机构类型" class="mustFill">
-          <el-select
-            v-model="sizeForm.region"
+          <!-- <el-select
+            v-model="vipCost.institutionTypeVal"
             placeholder="请选择机构类型"
             class="selectWidth"
-            :rules="[
-                { required: true, message: '请选择机构类型', trigger: 'blur' }
-            ]"
-          >
             <el-option label="保险资产管理机构" value="shanghai"></el-option>
             <el-option label="保险资产管理机构" value="beijing"></el-option>
-          </el-select>
+          </el-select> -->
+           <el-input
+            v-model="vipCost.institutionTypeVal"></el-input>
         </el-form-item>
         <div class="text">机构类型将会决定会费基础计算规则</div>
         <el-form-item label="业务规模(亿元)" class="mustFill inputWidth">
           <el-input
-            v-model="sizeForm.name"
-            :rules="[
-            { required: true, message: '请输入业务规模', trigger: 'blur' }
-          ]"
-          ></el-input>
+            v-model="vipCost.businessScale"></el-input>
         </el-form-item>
         <div class="text">系统将自动填入会员填写的业务规模字段（如果存在），可根据需要，修改为协会自行审定的业务规模作为计算参数</div>
         <el-form-item
           label="会费周期："
-          class="mustFill"
-          :rules="[
-                { required: true, message: '请选择会费周期：', trigger: 'blur' }
-            ]"
-        >
+          class="mustFill">
           <el-date-picker
-            v-model="sizeForm.dataTime"
+            v-model="vipCost.timeVal"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -48,12 +38,8 @@
         <div class="text">系统将自动填入当前审批日期至当前年份最后一天作为会费周期</div>
         <el-form-item label="入会会费：" class="mustFill">
           <el-input
-            v-model="sizeForm.fee"
-            class="selectWidth mustFill"
-            :rules="[
-                { required: true, message: '请输入入会会费：：', trigger: 'blur' }
-            ]"
-          ></el-input>
+            v-model="vipCost.dues"
+            class="selectWidth mustFill"></el-input>
           <el-button type="primary">自动计算</el-button>
         </el-form-item>
         <div class="text">点击自动计算，系统将综合以上机构类型/业务规模/会费周期根据规则计算出入会会费，可根据需要，自行调整</div>
@@ -62,16 +48,15 @@
           <el-button type="primary" class="rebuild">重新生成</el-button>
           <span class="red">缴费通知书已过期，请点击重新生成</span>
         </el-form-item>
-        <el-form-item size="large" style="text-align:right">
-          <el-button>退回初审</el-button>
-          <el-button type="primary">审批通过</el-button>
-        </el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 <script>
 export default {
+   props: {
+    vipCost: { vipCost: Object, required: true },
+  },
   data() {
     return {
       infoSrc: "../../../static/certificate.png",
@@ -86,6 +71,9 @@ export default {
         fee: ""
       }
     };
+  },
+  created() {
+    this.vipCost.timeVal = [this.vipCost.dateCycleStart,this.vipCost.dateCycleEnd]
   },
   methods: {
     onSubmit() {

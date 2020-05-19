@@ -227,23 +227,35 @@ export default {
     },
     // 会员删除
     handleDelete(row) {
-      this.$api.member
-        .deleteMember({
-          companyId: row.companyId,
-          groupId: this.id,
-          detailId: row.id
-        })
-        .then(res => {
-          if (res.success) {
-            this.displayMember(this.pageLocation);
-            tipMES("删除成功");
-          } else {
-            warnMES(res.message);
-          }
-        })
-        .catch(error => {
-          console.log(error);
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+            this.$api.member
+              .deleteMember({
+                companyId: row.companyId,
+                groupId: this.id,
+                detailId: row.id
+              })
+              .then(res => {
+                if (res.success) {
+                  this.displayMember(this.pageLocation);
+                  tipMES("删除成功");
+                } else {
+                  warnMES(res.message);
+                }
+              })
+              .catch(error => {
+                console.log(error);
+              });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
         });
+      
     },
     handleSelect(checkVal) {
       console.log(checkVal);
@@ -254,22 +266,34 @@ export default {
     },
     // 批量删除
     batchDelete() {
-      this.$api.member
-        .delBatchMember({
-          detailIdList: this.detailIdList,
-          groupId: this.id
-        })
-        .then(res => {
-          if (res.success) {
-            this.displayMember(this.pageLocation);
-            tipMES("删除成功");
-          } else {
-            warnMES(res.message);
-          }
-        })
-        .catch(error => {
-          console.log(error);
+         this.$confirm('此操作将永久删除这些文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+           this.$api.member
+            .delBatchMember({
+              detailIdList: this.detailIdList,
+              groupId: this.id
+            })
+            .then(res => {
+              if (res.success) {
+                this.displayMember(this.pageLocation);
+                tipMES("删除成功");
+              } else {
+                warnMES(res.message);
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
         });
+     
     },
     // 查询显示
     showQuery(params) {

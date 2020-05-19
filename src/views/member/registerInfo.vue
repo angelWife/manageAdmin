@@ -100,15 +100,31 @@ export default {
     },
 
     cut(row) {
-      apiOperate(
-        "member",
-        "deleteEnroll",
-        { id: row.id },
-        () => {
-          this.showReg();
-        },
-        "删除成功"
-      );
+      if(!row.id){
+        this.joinData.splice(row.index,1)
+      }else{
+          this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+              apiOperate(
+                "member",
+                "deleteEnroll",
+                { id: row.id },
+                () => {
+                  this.showReg();
+                },
+                "删除成功"
+              );
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      } 
+   
     },
     save(scope) {
       scope.row.isEdit = false;
@@ -131,7 +147,8 @@ export default {
         duty: "",
         mobileNum: "",
         email: "",
-        isEdit: true
+        isEdit: true,
+        index:this.joinData.length
       });
     },
     isShow(i) {}

@@ -145,3 +145,11 @@ export const manageMoreAddFile = (data) => {
     data
   })
 }
+//会费信息 
+export const getVipCost = (data) => {
+  return axios({
+      url: '/admin/member/pay/get-dues',
+      method: 'post',
+      data
+  })
+}

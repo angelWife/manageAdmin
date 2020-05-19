@@ -58,23 +58,23 @@
       </el-table-column>
       <el-table-column prop="publishStatusVal" label="发布状态" align="center"></el-table-column>
       <el-table-column prop="creatorName" label="创建人" align="center"></el-table-column>
-      <el-table-column label="操作" prop="act" min-width="100">
+      <el-table-column label="操作" prop="act" min-width="140">
         <template slot-scope="scope">
           <span v-if="scope.row.publishStatus == 1">
-            <el-button type="primary" size="small">发布</el-button>
+            <el-button type="primary" size="small" @click="puslishYear(scope.row.id)">发布</el-button>
             <el-button type="primary" size="small" @click="handleCalc(scope.row.id)">年费计算</el-button>
             <el-button size="small" @click="handleDelte(scope.row.id)">删除</el-button>
           </span>
           <span v-if="scope.row.publishStatus == 2">
-            <el-button type="primary" size="small">下架</el-button>
+            <el-button type="primary" size="small" @click="downProject(scope.row.id)">下架</el-button>
             <el-button type="primary" size="small" @click="handleCalc(scope.row.id)">年费计算</el-button>
             <el-button type="primary" size="small" @click="payMonitor(scope.row.id)">缴纳监控</el-button>
           </span>
           <span v-if="scope.row.publishStatus == 3">
-            <el-button type="primary" size="small">发布</el-button>
+             <el-button type="primary" size="small" @click="puslishYear(scope.row.id)">发布</el-button>
             <el-button type="primary" size="small" @click="handleCalc(scope.row.id)">年费计算</el-button>
             <el-button type="primary" size="small" @click="payMonitor(scope.row.id)">缴纳监控</el-button>
-            <el-button type="primary" size="small">删除</el-button>
+            <el-button type="primary" size="small" @click="handleDelte(scope.row.id)">删除</el-button>
           </span>
         </template>
       </el-table-column>
@@ -101,11 +101,18 @@
         </el-form-item>
         <el-form-item label="周期：">
           <el-date-picker
-            v-model="projectData.dateTime"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            v-model="projectData.dateStart"
+            placeholder="开始日期"
+            
+            
+          ></el-date-picker>
+
+           <el-date-picker
+            style="margin-top:10px;"
+            v-model="projectData.dateEnd"
+            placeholder="结束日期"
+            
+            
           ></el-date-picker>
         </el-form-item>
       </el-form>
@@ -131,7 +138,7 @@ import {
   mapTime,
   getDateTime
 } from "../../utils/common";
-
+import { publishYearCostProject ,yearCostProjectDown,viewYearCost}  from "../../http/moudules/member"
 export default {
   data() {
     return {
@@ -180,21 +187,33 @@ export default {
       this.$router.push({ path: "/member/mintorPay" });
     },
     handleDelte(id) {
-      this.$api.member
-        .deleteFee({
-          id: id
-        })
-        .then(res => {
-          if (res.success) {
-            tipMES("删除成功");
-            this.handleQuery(this.pageLocation);
-          } else {
-            warnMES(res.message);
-          }
-        })
-        .catch(error => {
-          console.error(error);
+       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+            this.$api.member
+            .deleteFee({
+              id: id
+            })
+            .then(res => {
+              if (res.success) {
+                tipMES("删除成功");
+                this.handleQuery(this.pageLocation);
+              } else {
+                warnMES(res.message);
+              }
+            })
+            .catch(error => {
+              console.error(error);
+            });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
         });
+      
     },
     queryIF() {
       const query = {
@@ -206,7 +225,46 @@ export default {
       };
       return query;
     },
-
+    puslishYear(id){
+         this.$confirm('确定发布?, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+             publishYearCostProject({id:id}).then(rep=>{
+                if(rep && rep.code=='200'){
+                    successMES('发布成功')
+                    this.handleQuery(this.pageLocation);
+                }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });          
+          });
+       
+    },
+    downProject(id){
+       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+             yearCostProjectDown({id:id}).then(rep=>{
+                   if(rep && rep.code=='200'){
+                        successMES('下架成功')
+                        this.handleQuery(this.pageLocation);
+                    }
+              })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+     
+    },
     handleQuery(pageIn) {
       if (!!pageIn) {
         this.displayReview({
@@ -255,12 +313,13 @@ export default {
         });
     },
     newBuild() {
-      this.projectData = {
-        yearOfPayment: "",
-        name: "",
-        dateTime: ""
-      };
-      this.proVisible = true;
+      viewYearCost().then(rep=>{
+          if(rep && rep.code==200 && rep.data){
+               this.projectData = rep.data
+                this.proVisible = true;
+          }
+      })
+      
     },
     submitFee() {
       this.proVisible = false;
@@ -270,8 +329,8 @@ export default {
           this.yearList
         ),
         name: this.projectData.name,
-        dateStart: getDateTime(this.projectData.dateTime[0]),
-        dateEnd: getDateTime(this.projectData.dateTime[1]),
+        dateStart: this.projectData.dateStart,
+        dateEnd: this.projectData.dateEnd,
         id: ""
       };
       this.$api.member

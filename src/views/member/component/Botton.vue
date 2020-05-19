@@ -60,9 +60,14 @@ export default {
         .catch(() => {});
     },
     save() {
-      this.$store.commit("closeEdit");
-      this.$store.commit("closeMemberMask");
-      this.$store.commit("closeMsgMask");
+      if(this.$parent.onSubmit){
+         this.$parent.onSubmit();
+      }else{
+          this.$store.commit("closeEdit");
+          this.$store.commit("closeMemberMask");
+          this.$store.commit("closeMsgMask");
+      }
+      
     }
   }
 };

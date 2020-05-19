@@ -71,7 +71,7 @@
       <el-table-column prop="messageContent" label="短信内容" class-name="textEllipsis"></el-table-column>
       <el-table-column prop="sendObjectTypeVal" label="对象类型" width="100px"></el-table-column>
       <el-table-column prop="objectNameList" label="发送对象" class-name="textEllipsis">
-        <template slot-scope="scope">{{scope.row.objectNameList.toString()}}</template>
+        <template slot-scope="scope">{{scope.row.objectNameList}}</template>
       </el-table-column>
       <el-table-column prop="sendTime" label="发送时间">
         <template slot-scope="scope">{{format(scope.row.sendTime,true)}}</template>
@@ -214,9 +214,12 @@ export default {
       });
     },
     newBuild() {
-      this.$router.push({ path: "/newsCenter/newsAdd" });
+      this.$router.push({ path: "/newsCenter/newsAdd",query:{add:true}});
     },
     handleEdit(id) {
+      /*if(id){
+
+      }*/
       this.$router.push({
         path: "/newsCenter/newsAdd",
         query: {
@@ -241,10 +244,11 @@ export default {
       this.$store.commit("openMonitor");
     },
     handleDelete(id) {
+      console.log('id',id);
       apiOperate(
         "message",
         "smsDelete",
-        { id },
+        { id:id },
         () => {
           this.displayQuery(this.pageLocation);
         },
@@ -263,9 +267,8 @@ export default {
       );
     },
     handleCopy(id) {
-      this.$api.message
-        .smsCopy({ id })
-        .then(res => {
+      console.log(id);
+      this.$api.message.smsCopy({id:id}).then(res => {
           if (res.success) {
             apiOperate(
               "message",
@@ -309,7 +312,7 @@ export default {
 .container {
   background: #fff;
   padding: 30px;
-  height: 100%;
+  height: auto;
   .input_style,
   .el-select {
     width: calc(100% - 110px);

@@ -34,7 +34,7 @@
 <script>
 export default {
   props: {
-    monitorData: { type: Array, required: true },
+    monitorData: { type: Array, required: true,default: () => [] },
     pageTab: { type: Object, required: true },
     pageChange: { type: Function, required: true }
   },

@@ -120,7 +120,7 @@
           >延迟</el-radio>
         </div>
         <el-date-picker
-          v-model="send.sendDate"
+          v-model="send.sendTime"
           type="datetime"
           placeholder="选择时间"
           :disabled="send.flagSendDelay==1 || check"
@@ -254,7 +254,7 @@ export default {
   props: {
     title: { type: String, required: true },
     bus: { type: Object, required: false },
-    id: { type: Number, required: true },
+    id: { type: String, required: false },
     pushType: { type: Number, required: true, default: 1 }, // (1, "活动) (2, "年审") (3,"系统消息") (4,"通知公告") (5,"邮件发送") (6,"短信发送")
     check: { type: Boolean, required: false },
     seleMember: { type: Boolean, required: false, default: false },
@@ -270,7 +270,7 @@ export default {
       sendObjectType: 1, //1:会员,2:邮箱,3:手机号码
       send: {
         flagSendDelay: 1,
-        sendDate: ""
+        sendTime: ""
       },
       annualCheck: false,
       name: "",
@@ -416,6 +416,7 @@ export default {
       this.checkArr = this.tags;
       this.passData();
       console.log("删除后的companyId:", this.msgUp.companyIdList);
+      /*this.pMsgUp();*/
     },
     addMember() {
       this.addVisible = true;
@@ -502,6 +503,7 @@ export default {
       this.passData();
       console.log("会员ID", this.msgUp.companyIdList);
       console.log("数组对象", this.tags);
+      /*this.pMsgUp();*/
     },
     checkChange(check) {
       if (check.checked) {
@@ -538,7 +540,11 @@ export default {
       }
 
       this.passData();
-    }
+    },
+   /* pMsgUp(){
+      console.log('cmsgup',this.msgUp);
+      this.$emit('pMsgUp',this.msgUp);
+    }*/
   }
 };
 </script>

@@ -1,10 +1,10 @@
 <template>
   <el-table :data="approData" style="width: 100%" empty-text="没有符合条件的流程">
     <el-table-column prop="serialNumber" label="业务流水"></el-table-column>
-    <el-table-column prop="type" label="机构类型" :formatter="setType"></el-table-column>
-    <el-table-column prop="name" label="机构名称"></el-table-column>
-    <el-table-column prop="code" label="社会统一编码"></el-table-column>
-    <el-table-column prop="appro" label="审批业务" width="150"></el-table-column>
+    <el-table-column prop="institutionTypeVal" label="机构类型"></el-table-column>
+    <el-table-column prop="companyName" label="机构名称"></el-table-column>
+    <el-table-column prop="creditId" label="社会统一编码"></el-table-column>
+    <el-table-column prop="type" label="审批业务" width="150" :formatter="setType"></el-table-column>
     <el-table-column prop="status" label="状态" width="100" :formatter="setStatus"></el-table-column>
     <el-table-column fixed="right" label="操作" width="100">
       <template slot-scope="scope">
@@ -53,7 +53,7 @@ export default {
       });
       let _data = { type: "info",number:row.serialNumber,dataType:row.type,taskId :row.taskId,companyId:row.companyId}
       this.$store.commit('setPassVal',_data)
-       this.$store.commit('setProcessIde',row.processInstanceId)
+      this.$store.commit('setProcessIde',row.processInstanceId)
     },
     setType(){
       let val = arguments[2];

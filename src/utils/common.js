@@ -66,7 +66,19 @@ export let pubParam = {
 /**公共接口 
  * 状态  公共推送
 */
-
+//工作流状态字典表
+export function workFlowStatus(arr){
+   vm.$api.dict.workFlowStatus({}).then(res => {
+        if (res.success) {
+            arr.length = 0
+            arr.push(...res.data);
+        } else {
+            warnMES(res.message);
+        }
+    }).catch(err => {
+        console.error(err)
+    })
+}
 // 机构类型
 export function apiSelect(param, arr) {
     vm.$api.dict.sysType(param).then(res => {
@@ -106,7 +118,74 @@ export function apiPublishStatus(arr) {
         console.error(err)
     })
 }
+//公司类型
+export function companyTypeList(arr){
+       vm.$api.dict.companyTypeList().then(res => {
+        if (res.success) {
+            arr.length = 0
 
+            arr.push(...res.data);
+
+        } else {
+            warnMES(res.message);
+        }
+    }).catch(err => {
+        console.error(err)
+    })
+}
+//最高类型
+export function educationType(arr){
+     vm.$api.dict.hightestEducation().then(res => {
+        if (res.success) {
+            arr.length = 0
+            arr.push(...res.data);
+        } else {
+            warnMES(res.message);
+        }
+    }).catch(err => {
+        console.error(err)
+    })
+}
+//性别
+export function genderList(arr){
+      vm.$api.dict.getGender().then(res => {
+        if (res.success) {
+            arr.length = 0
+            arr.push(...res.data);
+        } else {
+            warnMES(res.message);
+        }
+    }).catch(err => {
+        console.error(err)
+    })
+}
+
+//是否上市
+export const getListed=(arr)=>{
+      vm.$api.dict.getListed().then(res => {
+        if (res.success) {
+            arr.length = 0
+            arr.push(...res.data);
+        } else {
+            warnMES(res.message);
+        }
+    }).catch(err => {
+        console.error(err)
+    })
+}
+//股东类型
+export const shareholderType=(arr)=>{
+      vm.$api.dict.shareholderType().then(res => {
+        if (res.success) {
+            arr.length = 0
+            arr.push(...res.data);
+        } else {
+            warnMES(res.message);
+        }
+    }).catch(err => {
+        console.error(err)
+    })
+}
 // 公共查询type
 export function selectType(val, list) {
     if (val == "") return "";

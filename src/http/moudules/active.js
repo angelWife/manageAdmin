@@ -1,6 +1,6 @@
 import axios from '../axios'
 
-/* 
+/*
  *市场活动
  */
 
@@ -131,9 +131,10 @@ export const sendListen = (data) => {
 }
 // 全体监控
 export const sendAll = (data) => {
-    return axios({
-        url: '/admin/activity/info/send_listen_all',
-        method: 'post',
-        data
-    })
+  return axios({
+    url: '/admin/activity/info/send_listen_all',
+    method: 'post',
+    data
+  })
 }
+

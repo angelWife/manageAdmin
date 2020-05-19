@@ -268,7 +268,21 @@ export const menuList = [
       name: "数据字典管理",
       path: "/system/dictionary",
     }]
-  },
+  }/* ,
+  {
+    id: Math.random() * 99999,
+    name: "电子签章",
+    icon: "el-icon-s-claim",
+    children: [{
+      id: Math.random() * 99999,
+      name: "iWebOffice",
+      path: "/iWebOffice/iWebOffice",
+    }, {
+      id: Math.random() * 99999,
+      name: "officeDemo",
+      path: "/iWebOffice/officeDemo",
+    }]
+  } */
 ]
 
 export default {

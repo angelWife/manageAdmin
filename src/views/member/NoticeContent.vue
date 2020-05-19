@@ -9,8 +9,8 @@
       </el-col>
     </el-row>
     <div>
-      <span class="blue cur-pointer">下载</span>
-      <el-checkbox v-model="checked" class="m-l-20">《中国保险资产管理业发展报告（2019）》感谢信</el-checkbox>
+      <!--<span class="blue cur-pointer">下载</span>
+      <el-checkbox v-model="checked" class="m-l-20">《中国保险资产管理业发展报告（2019）》感谢信</el-checkbox>-->
     </div>
   </div>
 </template>

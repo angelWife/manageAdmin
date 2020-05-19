@@ -12,7 +12,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/': {
-        // target: 'http://192.168.43.39:7778',李云山
+        // target: 'http://192.168.4.39:7778',李云山
+        // target:"http://192.168.43.96:7778",
         target:"http://47.97.18.42:7778",
         ws: false,
         changeOrigin: true,
@@ -24,6 +25,79 @@ module.exports = {
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
     port: 8090, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    autoOpenBrowser: false,
+    errorOverlay: true,
+    notifyOnErrors: true,
+    poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
+
+    /**
+     * Source Maps
+     */
+
+    // https://webpack.js.org/configuration/devtool/#development
+    devtool: 'cheap-module-eval-source-map',
+
+    // If you have problems debugging vue-files in devtools,
+    // set this to false - it *may* help
+    // https://vue-loader.vuejs.org/en/options.html#cachebusting
+    cacheBusting: true,
+
+    cssSourceMap: false
+  },
+  localh: {
+    // Paths
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/',
+    proxyTable: {
+      '/': {
+        target:"http://192.168.31.60:7778",
+        ws: false,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/': ''
+        }
+      },
+    },
+    // Various Dev Server settings
+    host: 'localhost', // can be overwritten by process.env.HOST
+    port: 7777, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    autoOpenBrowser: false,
+    errorOverlay: true,
+    notifyOnErrors: true,
+    poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
+
+
+    /**
+     * Source Maps
+     */
+
+    // https://webpack.js.org/configuration/devtool/#development
+    devtool: 'cheap-module-eval-source-map',
+
+    // If you have problems debugging vue-files in devtools,
+    // set this to false - it *may* help
+    // https://vue-loader.vuejs.org/en/options.html#cachebusting
+    cacheBusting: true,
+
+    cssSourceMap: false
+  },
+  test: {
+    // Paths
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/',
+    proxyTable: {
+      '/': {
+        target:"http://192.168.31.60:7778",
+        ws: false,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/': ''
+        }
+      },
+    },
+    // Various Dev Server settings
+    host: '192.168.31.60', // can be overwritten by process.env.HOST
+    port: 7777, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
@@ -61,6 +135,44 @@ module.exports = {
     },
     // Various Dev Server settings
     host: '47.97.18.42', // can be overwritten by process.env.HOST
+    port: 7777, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    autoOpenBrowser: false,
+    errorOverlay: true,
+    notifyOnErrors: true,
+    poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
+
+
+    /**
+     * Source Maps
+     */
+
+    // https://webpack.js.org/configuration/devtool/#development
+    devtool: 'cheap-module-eval-source-map',
+
+    // If you have problems debugging vue-files in devtools,
+    // set this to false - it *may* help
+    // https://vue-loader.vuejs.org/en/options.html#cachebusting
+    cacheBusting: true,
+
+    cssSourceMap: false
+  },
+  staging: {
+
+    // Paths
+    assetsSubDirectory: 'static',
+    assetsPublicPath: '/',
+    proxyTable: {
+      '/': {
+        target: 'http://47.97.18.42:7778',
+        ws: false,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/': ''
+        }
+      },
+    },
+    // Various Dev Server settings
+    host: '127.0.0.1', // can be overwritten by process.env.HOST
     port: 7777, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,

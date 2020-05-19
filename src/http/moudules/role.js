@@ -1,6 +1,6 @@
 import axios from '../axios'
 
-/* 
+/*
  * 角色管理模块
  */
 
@@ -59,4 +59,12 @@ export const getMemberStatus = (data) => {
         method: 'post',
         data
     })
+}
+//平台角色更改状态
+export const changeStatus = (data) => {
+  return axios({
+    url: '/admin/app/user/modify_status',
+    method: 'post',
+    data
+  })
 }

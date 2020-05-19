@@ -1,10 +1,10 @@
 import axios from '../axios'
 
-/* 
+/*
  * 会员模块
  */
 
-/* 
+/*
  * 会员组管理
  */
 export const showGroup = (data) => {
@@ -231,7 +231,7 @@ export const newAnnual = (data) => {
 // 公共  --推送提交
 export const publicMsg = (data) => {
     return axios({
-        url: '/common/app/info/modify',
+        url: `/common/app/info/modify`,
         method: 'post',
         data
     })
@@ -302,7 +302,22 @@ export const basicInfo = (params) => {
         params
     })
 }
-
+//判断12种业务  管理员
+export const basicType = (params) => {
+    return axios({
+        url: '/admin/member/archives/businessType',
+        method: 'get',
+        params
+    })
+}
+//判断12种业务  成员
+export const serviceType = (params) => {
+    return axios({
+        url: '/api/member/info/businessType',
+        method: 'get',
+        params
+    })
+}
 // 发票寄送管理
 export const queryInvoice = (data) => {
     return axios({
@@ -343,7 +358,14 @@ export const viewInfo = (data) => {
         data
     })
 }
-
+//缴纳监控
+export const payMintorList=(data)=>{
+     return axios({
+        url: '/admin/member/pay/view_listen',
+        method: 'post',
+        data
+    })
+}
 // 显示监控数据
 export const showTotal = (data) => {
     return axios({
@@ -468,6 +490,7 @@ export const serviceInfo = (params) => {
         params
     })
 }
+
 // 会员档案 变更记录
 export const serviceChangeNote = (data) => {
     return axios({
@@ -501,7 +524,14 @@ export const addBill = (data) => {
         data
     })
 }
-
+//年费缴纳
+export const yearPay=(data)=>{
+     return axios({
+        url: '/api/member/pay/payFee',
+        method: 'post',
+        data
+    })
+}
 // 通知公告箱
 export const noticeRead = (data) => {
     return axios({
@@ -535,7 +565,7 @@ export const systemTable = (data) => {
     })
 
 }
-//会员管理 
+//会员管理
 //联系人新增
 export const linkManAdd = (data,url) => {
     return axios({
@@ -583,7 +613,7 @@ export const setDefaultLinkMan=(url)=>{
         return axios({
         url,
         method: 'put',
-       
+
     })
 }
 //保存业务信息
@@ -602,7 +632,7 @@ export const linkManAddCommon=(data)=>{
         data
     })
 }
-//会员认定 股东保存  
+//会员认定 股东保存
  export const saveShareholderCommon=(data)=>{
       return axios({
         url:"/common/member/apply/shareholder/addOrUpdateBatch",
@@ -623,7 +653,7 @@ export function getSeniorExecutiveListCommon(){
       return axios({
         url:"/common/member/apply/senior/list",
         method: 'get',
-        
+
     })
 }
 //会员认定 高管删除
@@ -632,14 +662,102 @@ export function delSeniorExecutiveListCommon(data){
       return axios({
         url:`/common/member/apply/senior/delete?id=${data.id}`,
         method: 'delete',
-       
-        
+
+
     })
 }
-  //会员认定 业务信息保存
+  //会员认定 业务信息保存1
   export const saveBusCommon=(data)=>{
       return axios({
         url:"/common/member/apply/modify_business",
+        method: 'post',
+        data
+    })
+ }
+ //会员认定 业务信息保存2
+  export const saveBus_2_Common=(data)=>{
+      return axios({
+        url:"/common/member/apply/modify_business_two",
+        method: 'post',
+        data
+    })
+ }
+ //会员认定 业务信息保存3
+  export const saveBus_3_Common=(data)=>{
+      return axios({
+        url:"/common/member/apply/modify_business_three",
+        method: 'post',
+        data
+    })
+ }
+  //会员认定 业务信息保存4
+  export const saveBus_4_Common=(data)=>{
+      return axios({
+        url:"/common/member/apply/modify_business_four",
+        method: 'post',
+        data
+    })
+ }
+ //会员认定 业务信息保存5
+  export const saveBus_5_Common=(data)=>{
+      return axios({
+        url:"/common/member/apply/modify_business_five",
+        method: 'post',
+        data
+    })
+ }
+  //会员认定 业务信息保存6
+  export const saveBus_6_Common=(data)=>{
+      return axios({
+        url:"/common/member/apply/modify_business_six",
+        method: 'post',
+        data
+    })
+ }
+ //会员认定 业务信息保存7
+  export const saveBus_7_Common=(data)=>{
+      return axios({
+        url:"/common/member/apply/modify_business_seven",
+        method: 'post',
+        data
+    })
+ }
+ //会员认定 业务信息保存8
+  export const saveBus_8_Common=(data)=>{
+      return axios({
+        url:"/common/member/apply/modify_business_eight",
+        method: 'post',
+        data
+    })
+ }
+ //会员认定 业务信息保存9
+  export const saveBus_9_Common=(data)=>{
+      return axios({
+        url:"/common/member/apply/modify_business_nine",
+        method: 'post',
+        data
+    })
+ }
+  //会员认定 业务信息保存10
+  export const saveBus_10_Common=(data)=>{
+      return axios({
+        url:"/common/member/apply/modify_business_ten",
+        method: 'post',
+        data
+    })
+ }
+  //会员认定 业务信息保存11
+  export const saveBus_11_Common=(data)=>{
+      return axios({
+        url:"/common/member/apply/modify_business_eleven",
+        method: 'post',
+        data
+    })
+ }
+ //会员认定 业务信息保存12
+  export const saveBus_12_Common=(data)=>{
+      return axios({
+        url:"/common/member/apply/modify_business_twelve",
         method: 'post',
         data
     })
@@ -649,8 +767,8 @@ export function delSeniorExecutiveListCommon(data){
       return axios({
         url:"/common/member/apply/qualification-checkbox/view",
         method:'get',
-       
-        
+
+
     })
  }
   //会员认定 业务信息删除
@@ -674,7 +792,7 @@ export function delSeniorExecutiveListCommon(data){
       return axios({
         url:`/common/member/apply/contact/set-default?contactId=${data.contactId}`,
         method: 'put',
-       
+
     })
  }
  //会员认定 获取联系人列表
@@ -682,7 +800,7 @@ export function getLinkManListCommon(){
       return axios({
         url:"/common/member/apply/contact/list",
         method: 'get',
-        
+
     })
 }
 //会员认定 联系人删除
@@ -690,8 +808,8 @@ export function linkmanDeleteCommon(data){
       return axios({
         url:`/common/member/apply/contact/delete?contactId=${data.contactId}`,
         method: 'delete',
-        
-        
+
+
     })
 }
 //会员认定 股东列表获取
@@ -699,7 +817,7 @@ export function getShareholderCommon(){
      return axios({
         url:"/common/member/apply/shareholder/list",
         method: 'get',
-        
+
     })
 }
 //会员认定 股东删除
@@ -707,7 +825,7 @@ export function delShareholderCommon(data){
      return axios({
         url:`/common/member/apply/shareholder/delete?id=${data.id}`,
         method: 'delete',
-        
+
     })
 }
 // 会员认定  加载业务信息
@@ -724,7 +842,7 @@ export function getCompanyInfoCommon(){
         url:"/common/member/apply/company-info/view",
         method: 'post',
         data:{}
-       
+
     })
 }
 
@@ -734,8 +852,17 @@ export function getRepCommon(){
         url:"/common/member/apply/rep/view",
         method: 'post',
         data:{}
-       
+
     })
+
+}
+export function companyPwdChange(data){
+  return axios({
+    url:"/admin/member/company/reset",
+    method: 'post',
+    data
+
+  })
 
 }
 
@@ -744,35 +871,35 @@ export function deleteLinkMan(url){
      return axios({
         url,
         method: 'delete',
-    
+
     })
-} 
+}
 //会员  股东删除  api and admin
 export function deleteShareholder(url){
      return axios({
         url,
         method: 'delete',
-    
+
     })
-} 
+}
 
 //会员 高管删除  api and admin
 export function deleteSeniorExecute(url){
      return axios({
         url,
         method: 'delete',
-    
+
     })
-} 
+}
  //会员 具备投资能力 api and admin
  export function getQualities(url,params){
      return axios({
             url,
             method:'get',
             params
-    
+
       })
- }    
+ }
 
 
 
@@ -789,6 +916,100 @@ export function loadLicenceTypeCommon(data){
     return axios({
        url:"/common/sys/dict/load_license_type",
        method: 'get',
+
+   })
+}
+
+//退会申请
+export function memberOut(data){
+    return axios({
+       url:"/api/member/leave/save",
+       method: 'post',
+       data
+   })
+}
+//会员服务 年审listGET
+export function yearApproval(){
+    return axios({
+       url:"/api/member/annual/query_list",
+       method: 'get',
+
+   })
+}
+//会员服务  年审提交
+export function yearApprovalSubmit(params){
+    return axios({
+       url:"/api/member/annual/confirm",
+       method: 'get',
+       params
+   })
+}
+export function yearCostConfirm(params){
+  return axios({
+    url:"/api/member/annual/confirm",
+    method: 'get',
+    params
+  })
+}
+export function publishYearCostProject(params){
+  return axios({
+    url:"/api/member/annual/confirm",
+    method: 'get',
+    params
+  })
+}
+export function yearCostProjectDown(params){
+     return axios({
+       url:"/admin/member/pay/down",
+       method: 'put',
+       params
+   })
+} 
+// 会员管理 年费计算
+export function yearCostAutoCalc(data){
+     return axios({
+       url:"/admin/member/pay/auto-calc",
+       method: 'post',
+       data
+   })
+}
+//会员管理 新建年费回显
+export function viewYearCost(){
+     return axios({
+       url:"/admin/member/pay/view_annual",
+       method: 'get',
       
    })
+}
+//会员认定总的提交
+export function memberApprovalSaveAll(data){
+    return axios({
+       url:"/api/member/info/save_all",
+       method: 'post',
+       data
+   })
+}
+//api 工作流
+export function workflowAPI(data){
+    return axios({
+       url:"/api/workflow/get_ing_task_ref_module",
+       method: 'post',
+       data
+   })
+}
+//admin 工作流
+export function workflowAdmin(data){
+    return axios({
+       url:"/admin/workflow/get_ing_task_ref_module",
+       method: 'post',
+       data
+   })
+}
+//寄送
+export function setSentStatus(params){
+     return axios({
+       url:"/admin/member/pay/set-status",
+       method: 'put',
+       params
+    })
 }

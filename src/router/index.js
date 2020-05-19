@@ -14,6 +14,7 @@ import userApply from '@/views/users/apply'
 import progressApply from '@/views/users/progressApply';
 import costInfo from '@/views/users/costInfo';
 import userMsg from '@/views/users/userMsg';
+import msgList from '@/views/users/msgList';
 import approManage from '@/views/approval/approManage';
 import approMember from '@/views/approval/approMember';
 import infoChange from '@/views/approval/infoChange';
@@ -107,10 +108,13 @@ import sysUser from '@/views/system/user';
 import sysDictionary from '@/views/system/dictionary';
 
 import yearFee from '@/views/approval/yearFee';
+import iWebOffice from '@/views/iWebOffice/iWebOffice';
+import officeDemo from '@/views/iWebOffice/officeDemo';
 // import Generator from "@/views/Generator/Generator";
 import api from "@/http/api";
 import store from "@/store";
 // component:resolve=>require(["../components/login.vue"],resolve)
+//iweboffice
 
 Vue.use(Router);
 
@@ -155,6 +159,11 @@ const router = new Router({
           path: "/users/userMsg",
           name: "会员信息",
           component: userMsg
+        },
+        {
+          path: "/users/msgList",
+          name: "信息列表",
+          component: msgList
         },
       ]
     },
@@ -600,6 +609,24 @@ const router = new Router({
           component: sysDictionary
         },
       ]
+    },//iweboffice
+    {
+      path: "/",
+      name: "电子签章",
+      component: Home,
+      iconCls: 'el-icon-s-flag',
+      leaf: false, //只有一个节点
+      children: [
+        {
+          path: "/iWebOffice/iWebOffice",
+          name: "iWebOffice",
+          component: iWebOffice
+        },
+        {
+          path: "/iWebOffice/officeDemo",
+          name: "officeDemo",
+          component: officeDemo
+        }]
     },
     { // 登录 注册 重置密码
       path: "/login/index",
@@ -630,11 +657,6 @@ const router = new Router({
       path: "/login/success",
       name: "LoginSuccess",
       component: LoginSuccess
-    },
-    {
-      path: "/404",
-      name: "notFound",
-      component: NotFound
     }
   ],
   base: '/',

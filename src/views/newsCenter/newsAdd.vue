@@ -8,7 +8,9 @@
               type="textarea"
               :disabled="check"
               v-model="form.messageContent"
-              placeholder="请输入短信内容，注意不要超过140个字"
+              placeholder="请输入短信内容，不要超过140个字"
+              maxlength="140"
+              show-word-limit
             ></el-input>
           </el-form-item>
         </el-col>
@@ -21,6 +23,7 @@
                 slot="append"
                 type="primary"
                 style="background-color: #409EFF;border-color: #409EFF;color:#fff"
+                @click="sendTest"
               >发送短信测试</el-button>
             </el-input>
           </el-form-item>
@@ -38,8 +41,8 @@
       ></msgPush>
     </el-form>
     <div class="footBtnBox text_right">
-      <el-button type>取消</el-button>
-      <el-button type="primary" @click="submitForm()">提交</el-button>
+      <el-button type @click="back">取消</el-button>
+      <el-button type="primary" @click="submitForm()" v-if="!check">提交</el-button>
     </div>
   </div>
 </template>
@@ -62,8 +65,11 @@ export default {
       ObjParam: {},
       messageId: "",
       check: false,
-
-      sendOn: {}
+      edit:false,
+      add:false,
+      id:'',
+      sendOn: {},
+      msgUpData:{}
     };
   },
   created() {
@@ -83,9 +89,9 @@ export default {
     });
 
     if (!!this.$route.query.rowId) {
-      this.messageId = Number(this.$route.query.rowId);
+      this.messageId = this.$route.query.rowId.toString();
       this.check = this.$route.query.check ? true : false;
-      apiShow("message", "smsView", {
+      apiShow("message", "smsEdit", {
         id: this.messageId
       }).then(resolve => {
         this.form = {
@@ -94,7 +100,7 @@ export default {
         };
         this.sendOn = {
           flagSendDelay: resolve.flagSendDelay,
-          sendDate: resolve.sendTime
+          sendTime: resolve.sendTime
         };
         this.bus.$emit("timeEdit", this.sendOn);
         this.bus.$emit("sendObject", resolve.sendObjectType);
@@ -103,15 +109,46 @@ export default {
   },
   methods: {
     submitForm() {
-      apiShow("message", "smsAdd", {
-        ...this.form,
-        ...this.sendParam,
-        id: this.messageId,
-        sendObjectType: this.ObjParam
-      }).then(resolve => {
-        publicMsg(this.msgParam, resolve, 6, false, "sms", "smsPublish");
-      });
+      if(!!this.form.messageContent&&(this.msgParam.companyIdList.length>0||this.msgParam.groupIdList.length>0)){
+        apiShow("message", "smsAdd", {
+          ...this.form,
+          ...this.sendParam,
+          id: this.messageId,
+          memberList: this.msgParam.companyIdList.join(","),
+          memberGroupList: this.msgParam.groupIdList.join(","),
+          sendObjectType: this.ObjParam
+        }).then(resolve => {
+          publicMsg(this.msgParam, resolve, 6, false, "sms", "smsPublish");
+          this.$router.go(-1);
+        });
+      }else{
+        this.$message({
+            message: '请填写短信内容和短信接收人或组！',
+            type: 'warning'
+        });
+      }
+
+    },
+    back(){
+      this.$router.go(-1);
+    },
+    sendTest(){
+      let reg = /^1[345789]\d{9}$/;
+        if(!!this.form.testMobileNum&&reg.test(this.form.testMobileNum)&&this.form.messageContent){
+          apiShow("message", "sendTest", {
+            'messageContent':this.form.messageContent,
+            'testMobileNum':this.form.testMobileNum
+          }).then(resolve => {
+              this.$message.success('发送成功');
+          })
+        }else{
+          this.$message.warning('手机号不正确或者短信内容未填');
+        }
     }
+    /*msgUp(data){
+      this.msgUpData = data;
+      console.log('msgUpData',this.msgUpData);
+    }*/
   },
   components: {
     msgPush

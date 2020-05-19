@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <!-- <el-row class="btn_content">
-      <el-col :span="12">
-        <el-button type="primary" @click="authVisible = true">新建</el-button>
-      </el-col>
-    </el-row>-->
+     <el-row class="btn_content">
+    <el-col :span="12">
+      <!--<el-button type="primary" @click="authVisible = true">新建</el-button>-->
+    </el-col>
+  </el-row>
     <el-table
       :data="tableData"
       style="width: 100%"
@@ -19,7 +19,7 @@
       <el-table-column prop="path" label="页面路径"></el-table-column>
       <el-table-column prop="sortNum" label="序号"></el-table-column>
       <el-table-column prop="type" label="类型" :formatter="setPagetype"></el-table-column>
-      <el-table-column prop="updateTime" label="更新时间"></el-table-column>
+      <el-table-column prop="updateTime" label="更新时间" :formatter="timeFormat"></el-table-column>
       <el-table-column fixed="right" label="操作" width="100">
         <template slot-scope="scope">
           <el-button @click="handleClick(scope.row)" type="primary" size="small">编辑</el-button>
@@ -30,7 +30,7 @@
 
     <el-dialog class="new-auth" title="新增权限" :visible.sync="authVisible" width="30%">
       <el-form :model="authData" label-width="90px">
-        <el-form-item label="上级菜单：">
+        <el-form-item label="父节点：">
           <el-select v-model="authData.parent" placeholder="请选择">
             <el-option
               v-for="item in parentList"
@@ -71,7 +71,7 @@
 
     <el-dialog class="new-auth" title="编辑权限" :visible.sync="editVisible" width="30%">
       <el-form :model="authEdit" label-width="90px">
-        <el-form-item label="上级菜单：">
+        <el-form-item label="父节点：">
           <!-- <el-select v-model="authEdit.parent" placeholder="请选择">
             <el-option
               v-for="item in parentList"
@@ -115,6 +115,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import {formatWithSeperator} from "../../utils/datetime";
 export default {
   data() {
     return {
@@ -240,6 +241,9 @@ export default {
       } else {
         return "";
       }
+    },
+    timeFormat() {
+      return formatWithSeperator(arguments[2], "-", ":");
     }
   }
 };
@@ -254,7 +258,7 @@ export default {
 .container {
   background: #fff;
   padding: 30px;
-  height: 100%;
+  height: auto;
   .el-row {
     .el-input,
     .el-select {

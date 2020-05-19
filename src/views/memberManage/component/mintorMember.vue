@@ -125,7 +125,7 @@ export default {
       this.memberList = resolve;
     });
     apiShow("member", "showTotal", {
-      bizId: this.id,
+      id: this.id,
       type: 2
     }).then(resolve => {
       this.total = resolve;

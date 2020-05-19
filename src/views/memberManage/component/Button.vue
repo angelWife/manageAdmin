@@ -9,9 +9,9 @@
       >冻结</el-button>
       <el-button type="warning" v-if="thaw" @click="thawVisible = true">解冻</el-button>
       <el-button type="warning" :disabled="exited||affirming" @click="exitVisible = true">退会</el-button>
-      <el-button type="primary">重置密码</el-button>
-      <span v-if="showEdit">
-        <el-button type="primary" :disabled="affirming" @click="openEdit()" v-if="!edit">编辑</el-button>
+      <el-button type="primary" @click="resetVisible = true">重置密码</el-button>
+      <span v-if="showEdit">`
+        <el-button type="primary" :disabled="affirming " @click="openEdit()" v-if="!edit">编辑</el-button>
         <el-button type="primary" @click="cancelSave" v-if="edit">取消</el-button>
         <el-button type="primary" @click="upVisible = true" v-if="edit">提交</el-button>
       </span>
@@ -75,6 +75,16 @@
         <el-button type="primary" @click="thawSubmit()">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="重置密码" :visible.sync="resetVisible" width="30%">
+      <div class="new">
+        <span>新密码：</span>
+        <el-input v-model="password" placeholder="请输入新密码" show-password></el-input>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="resetVisible = false">取消</el-button>
+        <el-button type="primary" @click="sureChangePwd">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -89,6 +99,8 @@ export default {
   },
   data() {
     return {
+      password:'',
+      resetVisible:false,
       msgCK: true,
       memCK: true,
       upVisible: false,
@@ -151,7 +163,24 @@ export default {
       this.freeze = true;
       this.thaw = false;
       this.thawVisible = false;
-    }
+    },
+    sureChangePwd() {
+      const reg = /^[a-zA-Z0-9]{8}$/;
+      if (!reg.test(this.password)) {
+        this.$message.error('请输入8位数字英文密码！')
+        return
+      }
+      let params = {
+        companyId: this.$route.query.companyId,
+        password: this.password
+      }
+      this.$api.member.companyPwdChange(params).then(res => {
+        if (res.success) {
+          this.$message.success('修改该用户的密码成功！')
+          this.resetVisible = false;
+        }
+      })
+    },
   },
   components: {
     footNote,

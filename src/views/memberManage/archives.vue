@@ -461,7 +461,7 @@ export default {
 .container {
   background: #fff;
   padding: 30px;
-  height: 100%;
+  height: auto;
   .input_style,
   .el-select {
     width: calc(100% - 180px);

@@ -45,3 +45,47 @@ export const changeUserPwd = (data) => {
         data
     })
 }
+//代办事项 
+export const getTodoList=(data)=>{
+    return axios({
+      url: '/api/workflow/get_serial_list',
+      method: 'post',
+      data
+  })
+} 
+//获取通知公告列表
+export const getNoticeList=(data)=>{
+      return axios({
+        url: '/api/message/notice/table_data',
+        method: 'post',
+        data
+    })
+} 
+//查看公告通知
+export const checkNoticeDetail=(id)=>{
+       return axios({
+        url: '/api/message/system/read',
+        method: 'post',
+        data:{id}
+    })
+} 
+//系统消息列表
+export const getSysMessageList=(data)=>{
+      return axios({
+        url: '/api/message/system/table_data',
+        method: 'post',
+        data
+    })
+}
+//系统消息查看
+export const checkSysMessageDetail=(id)=>{
+      return axios({
+        url: '/api/message/system/read',
+        method: 'post',
+        data:{id}
+    })
+}
+//获取年费详情
+export const getYearPayDetail=(id)=>{
+    
+}

@@ -73,7 +73,10 @@ export default function $axios(options) {
       response => {
         let data;
         // IE9时response.data是undefined，因此需要使用response.request.responseText(Stringify后的字符串)
-        if (response.data == undefined) {
+
+         if( response.config.responseType=='blob'){
+             return response;
+         } else if (response.data == undefined) {
           data = JSON.parse(response.request.responseText)
           
         } else if(response.data) {
@@ -156,12 +159,13 @@ export default function $axios(options) {
 
     // 请求处理
     instance(options).then(res => {
-      if(!res.success){
+      if(!res.success && ((res.config && res.config.responseType!="blob" ) || !res.config )) {
         Message.error(res.message?res.message:'数据错误');
       }
       resolve(res)
       return false
     }).catch(error => {
+     
       Message.error(error.message?error.message:'网络错误');
       reject(error)
     })

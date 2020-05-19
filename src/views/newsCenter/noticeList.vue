@@ -66,7 +66,7 @@
         <template slot-scope="scope">{{turnStr(scope.row.noticeData)}}</template>
       </el-table-column>
       <el-table-column prop="companyNameList" label="发送对象">
-        <template slot-scope="scope">{{scope.row.companyNameList.toString()}}</template>
+        <template slot-scope="scope">{{scope.row.companyNameList}}</template>
       </el-table-column>
       <el-table-column prop="sendTime" label="发送时间">
         <template slot-scope="scope">{{format(scope.row.sendTime,true)}}</template>

@@ -141,17 +141,23 @@ export default {
       this.$store.commit("showResetDialog");
     },
     Login() {
-      this.$api.login
-        .logout()
-        .then(res => {
-          if (res.success) {
-            this.$router.push("/login/index");
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      this.$confirm('是否注销登录', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$api.login.logout().then(res => {
+            if (res.success) {
+              this.$router.push("/login/index");
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }).catch(() => {
+      });
     },
+
     onCollapse() {
       this.collapse = !this.collapse;
       if (this.collapse) {
@@ -168,12 +174,13 @@ export default {
     },
     handleselect(e) {
       this.menuIndex = e;
-      // console.log(e);
+      console.log('e',e);
     },
     handleRoute(menu) {
       // this.headTitle = this.$store.state.app.headTitle = menu.name;
       this.$store.commit("setHeadTitle", menu.name);
       console.log(menu.name);
+      //console.log(this.$route.name);
     }
   }
 };
@@ -257,7 +264,7 @@ export default {
     overflow: hidden;
   }
   .iframe-container {
-    height: 100%;
+    height: auto;
     position: relative;
     // transform: translateZ(0);
     .frame {

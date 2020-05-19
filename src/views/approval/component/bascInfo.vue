@@ -47,7 +47,7 @@
             <div class="formMain">
               <el-form
                 label-width="140px"
-                ref="form" 
+                ref="form"
                 :model="showData"
                 label="left"
               >

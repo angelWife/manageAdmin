@@ -12,7 +12,7 @@
         <el-col :span="16">
           <el-form-item label="公告内容：">
             <el-card style="height: 540px;">
-              <quill-editor v-model="form.noticeData" style="height: 400px;" :disabled="check"></quill-editor>
+              <quill-editor v-model="form.noticeData" style="height: 320px;" :disabled="check"></quill-editor>
             </el-card>
           </el-form-item>
         </el-col>
@@ -28,7 +28,7 @@
       ></msgPush>
     </el-form>
     <div class="footBtnBox text_right">
-      <el-button>取消</el-button>
+      <el-button @click="back">取消</el-button>
       <el-button type="primary" @click="submitForm()">提交</el-button>
     </div>
   </div>
@@ -95,13 +95,32 @@ export default {
   },
   methods: {
     submitForm() {
-      apiShow("message", "noticeAdd", {
-        ...this.form,
-        ...this.sendParam,
-        id: this.messageId
-      }).then(resolve => {
-        publicMsg(this.msgParam, resolve, 4, false, "", "noticePublish");
-      });
+      /*if(!this.form.noticeTitle){
+        this.$message.warning('请输入标题')
+        return
+      }
+       if(!this.form.noticeData){
+        this.$message.warning('请输入公告内容')
+        return
+      }*/
+      if(!!this.form.noticeData&&!!this.form.noticeTitle&&(this.msgParam.companyIdList.length>0||this.msgParam.groupIdList.length>0)){
+        apiShow("message", "noticeAdd", {
+          ...this.form,
+          ...this.sendParam,
+          id: this.messageId
+        }).then(res => {
+          publicMsg(this.msgParam, res, 4, false, "", "noticePublish");
+          this.$router.go(-1);
+        });
+      }else{
+        this.$message({
+          message: '请填写通知内容，标题和短信接收人！',
+          type: 'warning'
+        });
+      }
+    },
+    back(){
+      this.$router.go(-1);
     }
   }
 };

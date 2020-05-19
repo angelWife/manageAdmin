@@ -113,7 +113,7 @@ export default {
       this.basicList = resolve;
     });
     apiShow("member", "showTotal", {
-      bizId: this.id,
+      id: this.id,
       type: 1
     }).then(resolve => {
       this.total = resolve;

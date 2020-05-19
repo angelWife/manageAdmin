@@ -4,7 +4,7 @@
       <el-form ref="form" label-width="130px">
         <el-form-item label="缴费名目：">
           <el-select v-model="feeName" placeholder="请选择" size="medium" @change="nameSelect">
-            <el-option v-for="item in nameList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            <el-option v-for="item in nameList" :key="item.memberPayId" :label="item.name" :value="item.memberPayId"></el-option>
           </el-select>
         </el-form-item>
         <div class="nameTip" v-show="!form.show">请选择可参与的缴费名目，完成相应缴费并上传凭证，如有已提交名目可以在会员信息的变更记录中查询到详情</div>
@@ -12,7 +12,7 @@
           <el-form-item label="缴费通知书：">
             <el-image :src="infoSrc"></el-image>
           </el-form-item>
-          <el-form-item label="周期：">{{format(form.dateCycleStart)}}至{{format(form.dateCycleEnd)}}</el-form-item>
+          <el-form-item label="周期：">{{form.dateStart}}至{{form.dateEnd}}</el-form-item>
           <el-form-item label="会费金额：">{{form.annualFee}}</el-form-item>
           <el-form-item label="缴费凭证：">
             <el-image :src="url" :preview-src-list="srcList"></el-image>
@@ -32,17 +32,29 @@
             <div style="color:#999">支持JPG/PNG/PDF格式</div>
           </el-form-item>
           <el-form-item label="发票寄送信息：">
-            <el-form-item class="m-b-22" label="收件人：">
-              <el-input placeholder="请输入内容" v-model="bill.receiver" class="w-input"></el-input>
+            <el-form-item class="m-b-22">
+              <span slot="label">
+                 <span style="color:#ff0000">*</span>
+                 <span>收件人：</span>
+              </span>
+              <el-input placeholder="请输入内容" v-model="form.receiver" class="w-input"></el-input>
             </el-form-item>
-            <el-form-item class="m-b-22" label="收件人手机：">
-              <el-input placeholder="请输入内容" v-model="bill.mobileNum" class="w-input"></el-input>
+            <el-form-item class="m-b-22" >
+                <span slot="label">
+                 <span style="color:#ff0000">*</span>
+                 <span>收件人手机：</span>
+              </span>
+              <el-input placeholder="请输入内容" v-model="form.mobileNum" class="w-input"></el-input>
             </el-form-item>
-            <el-form-item class="m-b-22" label="收件地址：">
+            <el-form-item class="m-b-22" >
+              <span slot="label">
+                 <span style="color:#ff0000">*</span>
+                 <span>收件地址：</span>
+              </span>
               <el-input
                 placeholder="请输入内容"
                 type="textarea"
-                v-model="bill.address"
+                v-model="form.address"
                 :rows="2"
                 class="w-input"
               ></el-input>
@@ -70,7 +82,7 @@
           <div class="title">缴费凭证</div>
           <div class="content">使用线下支付请通过系统提供的转账信息，经由工作人员确认后进入到流程下一步</div>
         </div>
-        <div class="btn-box footBtnBox">
+        <div class="btn-box footBtnBox"  v-show="nameList.length">
           <el-button>取消</el-button>
           <el-button type="primary" @click="onSubmit">提交</el-button>
         </div>
@@ -101,10 +113,17 @@ export default {
       ],
       isWrite: true, // 是否录入新一年的年费
       form: {
-        dateCycleEnd: "",
-        dateCycleStart: "",
-        annualFee: "",
-        show: false
+        address: null,
+        annualFee: null,
+        dateCycleEnd:null,
+        dateCycleStart:null,
+        dateEnd: null,
+        dateStart: null,
+        mobileNum: null,
+        name: "",
+        receiver: null,
+        show:false
+
       },
       bill: {
         receiver: "",
@@ -124,37 +143,65 @@ export default {
   methods: {
     format,
     nameSelect(v) {
-      this.memberPayId = v;
-      apiShow("member", "servicePayDetail", { id: v }).then(reslove => {
-        this.form = {
-          dateCycleEnd: reslove.dateCycleEnd,
-          dateCycleStart: reslove.dateCycleStart,
-          annualFee: reslove.annualFee,
-          show: true
-        };
-      });
+     if(!v){
+       return;
+     }
+      let tempArr=[];
+      tempArr =this.nameList.filter(item=>{
+         
+          return v==item.memberPayId
+      })
+      if(tempArr.length){
+        this.form.show=true;
+        this.form={...this.form,...tempArr[0]}
+        this.form.dateCycleStart=tempArr[0].dateStart;
+        this.form.dateCycleEnd=tempArr[0].dateEnd;
+      }
+      
+      // apiShow("member", "servicePayDetail", { id: v }).then(reslove => {
+      //    this.form.show=true;
+      //    this.form={...this.form,...reslove}
+      //   });
     },
     onSubmit() {
-        if(!this.bill.receiver){
+        if(!this.form.receiver){
             this.$message.error('请输入收件人')
             return;
         }
-        if(!this.bill.mobileNum){
+        if(!this.form.mobileNum){
             this.$message.error('请输入收件人联系方式')
             return;
         }
-        if(!this.bill.address){
+        if(!this.form.address){
             this.$message.error('请输入收件地址')
             return;
         }
       apiOperate(
         "member",
-        "addBill",
+        "yearPay",
         {
           memberPayId: this.memberPayId,
-          ...this.bill
+          ...this.form
         },
-        "",
+        ()=>{
+           this.feeName="";
+           this.form={
+                address: null,
+                annualFee: null,
+                dateCycleEnd:null,
+                dateCycleStart:null,
+                dateEnd: null,
+                dateStart: null,
+                mobileNum: null,
+                name: "",
+                receiver: null,
+                show:false
+              }
+           apiDic("feeName", {}).then(reslove => {
+              this.nameList = reslove;
+            });   
+
+        },
         "提交成功"
       );
     },

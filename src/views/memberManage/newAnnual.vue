@@ -285,9 +285,7 @@ export default {
               "buildDate",
               "dateJoin"
             );
-          } else {
-            warnMES(res.message);
-          }
+          } 
         })
         .catch(error => {
           console.log(error);
@@ -359,18 +357,27 @@ export default {
     },
     // 新建 name
     newName() {
+      if(!this.name){
+         warnMES("年审名称必填");
+         return
+      } 
+      if(this.groupIdList.length==0 && this.companyIdList.length==0){
+         warnMES("邀请对象至少选一个");
+         return
+      }
+      
       this.$api.member
         .newAnnual({
           name: this.name,
-          id: this.id
+          id: this.id,
+          memberGroupList:this.groupIdList.join(','),
+          memberList:this.companyIdList.join(',')
         })
         .then(res => {
           if (res.success) {
             let typeId = res.data;
             this.newGet(typeId);
-          } else {
-            warnMES(res.message);
-          }
+          } 
         })
         .catch(error => {
           console.error(error);

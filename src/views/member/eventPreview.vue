@@ -51,7 +51,7 @@
       </el-form>
     </div>
     <div class="footBtnBox text_right">
-      <el-button>取消</el-button>
+      <el-button @click="$router.go(-1)">取消</el-button>
       <el-button type="primary" @click="submitForm()">开始报名</el-button>
     </div>
   </div>
@@ -91,6 +91,9 @@ export default {
     },
     onSubmit() {
       console.log("submit!");
+    },
+    submitForm(){
+
     }
   }
 };

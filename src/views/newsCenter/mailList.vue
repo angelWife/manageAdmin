@@ -287,9 +287,7 @@ export default {
       );
     },
     handleCopy(id) {
-      this.$api.message
-        .emailCopy({ id })
-        .then(res => {
+      this.$api.message.emailCopy({ id }).then(res => {
           if (res.success) {
             apiOperate(
               "message",
@@ -333,7 +331,7 @@ export default {
 .container {
   background: #fff;
   padding: 30px;
-  height: 100%;
+  height: auto;
   .input_style,
   .el-select {
     width: calc(100% - 110px);

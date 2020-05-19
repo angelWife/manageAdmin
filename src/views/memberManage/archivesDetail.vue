@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <bascInfoEdit :showEditBtn="false"></bascInfoEdit>
-    <Button></Button>
+    <Button ></Button>
   </div>
 </template>
 <script>
@@ -10,7 +10,14 @@ import Button from "./component/Button";
 
 export default {
   data() {
-    return {};
+    return {
+      
+    };
+  },
+  methods:{
+    updateEidtBtnStatus(){
+
+    }
   },
   components: {
     bascInfoEdit,

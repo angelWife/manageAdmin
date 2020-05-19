@@ -23,7 +23,7 @@
       <el-table-column prop="name" label="角色"></el-table-column>
       <el-table-column prop="remark" label="描述"></el-table-column>
       <el-table-column prop="roleNames" label="权限"></el-table-column>
-      <el-table-column prop="updateTime" label="更新时间"></el-table-column>
+      <el-table-column prop="updateTime" label="更新时间" :formatter="timeFormat"></el-table-column>
       <el-table-column fixed="right" label="操作" width="200">
         <template slot-scope="scope">
           <el-button @click="editRoleInfo(scope.row)" type="primary" size="small">编辑</el-button>
@@ -34,7 +34,7 @@
 
     <el-dialog title="新增角色" :visible.sync="roleVisible" width="30%">
       <el-form :model="roleData" label-width="90px">
-        <el-form-item label="角色：">
+        <el-form-item label="角色：" class="mustFill">
           <el-input placeholder="请输入" v-model="roleData.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="权限组：">
@@ -93,6 +93,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import {formatWithSeperator} from "../../utils/datetime";
 export default {
   data() {
     return {
@@ -202,7 +203,7 @@ export default {
     },
     handleAct(rowdata) {
       let self = this;
-      self.$message("亲，我们正在开发中...");
+      //self.$message("亲，我们正在开发中...");
       // this.$api.system.editRoleInfo(this.roleData).then(res=>{
       //   if(res.success){
       //     self.roleVisible=false
@@ -215,6 +216,27 @@ export default {
       //     self.getRoleTable();
       //   }
       // })
+
+      this.$confirm('是否删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let params = {'id':rowdata.id};
+        //console.log(params);
+        self.$api.system.editRoleStatus(params).then(res => {
+          if (res.success) {
+            this.$message({
+              type: 'success',
+              message: '操作成功!'
+            });
+            self.getRoleTable()
+          }
+        });
+      }).catch(() => {
+      });
+
+
     },
     addRole() {
       this.roleVisible = true;
@@ -270,6 +292,9 @@ export default {
           self.getRoleTable();
         }
       });
+    },
+    timeFormat() {
+      return formatWithSeperator(arguments[2], "-", ":");
     }
   }
 };
@@ -284,7 +309,7 @@ export default {
 .container {
   background: #fff;
   padding: 30px;
-  height: 100%;
+  height: auto;
   .el-row {
     .el-input,
     .el-select {

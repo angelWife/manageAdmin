@@ -12,12 +12,12 @@
       <el-table-column prop="act" label="操作" min-width="120px">
         <template slot-scope="scope">
           <el-button
-            v-if="scope.row.sendStatus == 1"
+            v-if="scope.row.sendStatus == 2"
             @click="handleClick(scope.row)"
             type="primary"
             size="small"
-          >编辑</el-button>
-          <el-button size="small">查看</el-button>
+          >寄送</el-button>
+          <el-button v-else size="small" type="primary">{{scope.row.sendStatusVal}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -31,9 +31,11 @@
       :current-page.sync="pageTab.currentPage"
       @current-change="pageChange"
     ></el-pagination>
+
   </div>
 </template>
 <script>
+import { setSentStatus } from "@/http/moudules/member"
 export default {
   props: {
     billData: { type: Array, required: true, default: () => [] },
@@ -44,6 +46,14 @@ export default {
     return {};
   },
   created() {},
-  methods: {}
+  methods: {
+    handleClick(row){
+         setSentStatus({orgId:row.orgId}).then(rep=>{
+              if(rep && rep.code=="200"){
+                this.pageChange(this.pageTab.currentPag);
+              }
+         })
+    }
+  }
 };
 </script>

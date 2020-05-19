@@ -21,12 +21,12 @@
       <el-table-column fixed="right" label="操作" width="400">
         <template slot-scope="scope">
           <el-button @click="editDepartment(scope.row)" type="primary" size="small">编辑</el-button>
-          <!-- <el-button @click="handleAct(scope.row)" type size="small">删除</el-button> -->
+          <el-button @click="handleAct(scope.row)" type size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-dialog class="new-depart" title="新增部门" :visible.sync="departVisible">
+    <el-dialog class="new-depart" :title="departEdit.name?'编辑部门':'新增部门'" :visible.sync="departVisible">
       <el-form :model="departEdit" label-width="100px">
         <el-form-item label="父部门：" class="mustFill">
           <el-cascader
@@ -121,6 +121,7 @@ export default {
     initPage() {
       let self = this;
       this.$api.system.departmentList().then(res => {
+        console.log('res',res);
         if (res.success) {
           self.tableData = res.data;
         }
@@ -128,6 +129,7 @@ export default {
     },
     editDepartment(tab) {
       this.departVisible = true;
+      console.log('tab',tab);
       if (tab) {
         tab.parentId = [tab.id];
         this.departEdit = tab;
@@ -163,9 +165,24 @@ export default {
         }
       });
     },
-
+    handleAct(rowdata) {
+      let self = this;
+      /*self.$message("亲，我们正在开发中...");*/
+       this.$api.system.delDepartment(this.roleData).then(res=>{
+         if(res.success){
+           self.roleVisible=false
+           self.dicVisible=false
+           if(self.roleData.id){
+             self.$message('删除成功！');
+           }else{
+              self.$message('删除成功！');
+           }
+           self.initPage();
+         }
+       })
+    },
     handleChange(value) {
-      console.log(value);
+      console.log('change',value);
       this.departEdit.parentId = value;
     },
     timeFormat() {
@@ -184,7 +201,7 @@ export default {
 .container {
   background: #fff;
   padding: 30px;
-  height: 100%;
+  height: auto;
   .el-cascader {
     width: 100%;
   }

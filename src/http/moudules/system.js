@@ -27,6 +27,15 @@ export const getRoleInfo = (data) => {
   })
 }
 
+//角色状态编辑
+export const editRoleStatus = (data) => {
+  return axios({
+    url: '/admin/app/role/modify_status',
+    method: 'post',
+    data
+  })
+}
+
 // 权限编辑
 export const editAuthority = (data) => {
   return axios({
@@ -54,7 +63,7 @@ export const departmentEdit = (data) => {
   })
 }
 
-//用户列表 
+//用户列表
 export const getUserList = (data) => {
   return axios({
       url: '/admin/app/user/table_data',
@@ -79,11 +88,18 @@ export const userEdit = (data) => {
       data
   })
 }
-//修改用户密码  
+//修改用户密码
 export const userPwdChange = (data) => {
   return axios({
       url: '/admin/app/user/modify_pd',
       method: 'post',
       data
+  })
+}
+export const delDepartment = (data) => {
+  return axios({
+    url: '/admin/app/user/modify_pd',
+    method: 'post',
+    data
   })
 }

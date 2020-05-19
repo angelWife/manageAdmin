@@ -1,6 +1,6 @@
 import axios from '../axios'
 
-/* 
+/*
  * 系统登录模块
  */
 
@@ -39,10 +39,12 @@ export const registerUser = (data) => {
 }
 
 //忘记密码
-export const getPassword = () => {
+export const getPassword = (data, header) => {
     return axios({
         url: '/login/forget',
-        method: 'post'
+        method: 'post',
+        data,
+        header
     })
 }
 //重置密码
@@ -58,4 +60,12 @@ export const savePayPage = () => {
         url: '/login/save_pay_info',
         method: 'post'
     })
+}
+//短信发送
+export const smsSend = (data) => {
+  return axios({
+    url: '/sms/register',
+    method: 'post',
+    data
+  })
 }

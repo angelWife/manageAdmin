@@ -4,6 +4,14 @@ import axios from '../axios'
  * 字典管理模块
  */
 
+//工作流状态
+export const workFlowStatus=(params)=>{
+    return axios({
+        url: '/dict/workflow/wktype',
+        method: 'get',
+        params
+    })
+}
 
 // 显示
 export const showDic = (data) => {
@@ -43,6 +51,41 @@ export const sysType = (data) => {
         url: '/common/sys/dict/load_by_type',
         method: 'post',
         data
+    })
+}
+//公司类型
+export const companyTypeList=()=>{
+     return axios({
+        url: '/dict/member/companyType',
+        method: 'get',
+    })
+}
+//最高学历
+export const hightestEducation=()=>{
+     return axios({
+        url: '/dict/member/educatorType',
+        method: 'get',
+    })
+}
+//性别
+export const getGender=()=>{
+     return axios({
+        url: '/dict/member/gender',
+        method: 'get',
+    })
+}
+//是否上市
+export const getListed=()=>{
+     return axios({
+        url: '/dict/member/listed',
+        method: 'get',
+    })
+}
+//股东类型
+export const shareholderType=()=>{
+     return axios({
+        url: '/dict/member/shareholderTypeList',
+        method: 'get',
     })
 }
 // 会员状态

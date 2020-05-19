@@ -64,7 +64,7 @@
       <el-table-column prop="title" label="消息标题"></el-table-column>
       <el-table-column prop="content" label="消息内容"></el-table-column>
       <el-table-column prop="companyNameList" label="发送对象">
-        <template slot-scope="scope">{{scope.row.companyNameList.toString()}}</template>
+        <template slot-scope="scope">{{scope.row.companyNameList}}</template>
       </el-table-column>
       <el-table-column prop="sendTime" label="发送时间">
         <template slot-scope="scope">{{format(scope.row.sendTime,true)}}</template>
@@ -303,7 +303,7 @@ export default {
 .container {
   background: #fff;
   padding: 30px;
-  height: 100%;
+  height: auto;
   .input_style,
   .el-select {
     width: calc(100% - 180px);

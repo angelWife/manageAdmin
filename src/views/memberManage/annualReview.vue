@@ -45,7 +45,7 @@
         <template slot-scope="scope">
           <span v-if="scope.row.publishStatus==2">
             <el-button type="primary" size="small" @click="handleDown(scope.row.id)">下架</el-button>
-            <el-button type="primary" size="small" @click="handleMonit(scope.row)">年审监控</el-button>
+            <el-button type="primary" size="small" @click="handleMonit(scope.row.id)">年审监控</el-button>
             <el-button size="small" @click="handleCheck(scope.row)">查看</el-button>
           </span>
           <span v-if="scope.row.publishStatus==1">
@@ -143,55 +143,85 @@ export default {
       });
     },
     handleDelete(id) {
-      this.$api.member
-        .deleteAnnual({
-          id: id
-        })
-        .then(res => {
-          if (res.success) {
-            tipMES("删除成功");
-            this.handleQuery(this.pageLocation);
-          } else {
-            warnMES(res.message);
-          }
-        })
-        .catch(error => {
-          console.log(error);
+       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+           this.$api.member
+            .deleteAnnual({
+              id: id
+            })
+            .then(res => {
+              if (res.success) {
+                tipMES("删除成功");
+                this.handleQuery(this.pageLocation);
+              } 
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
         });
+      
     },
     handlePublish(id) {
-      this.$api.member
-        .publishAnnual({
-          id: id
-        })
-        .then(res => {
-          if (res.success) {
-            tipMES("发布成功");
-            this.handleQuery();
-          } else {
-            warnMES(res.message);
-          }
-        })
-        .catch(error => {
-          console.log(error);
+        this.$confirm('确定发布?, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+            this.$api.member
+            .publishAnnual({
+              id: id
+            })
+            .then(res => {
+              if (res.success) {
+                tipMES("发布成功");
+                this.handleQuery();
+              } 
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
         });
+      
     },
     handleDown(id) {
-      this.$api.member
-        .downAnnual({
-          id: id
-        })
-        .then(res => {
-          if (res.success) {
-            tipMES("下架成功");
-            this.handleQuery();
-          } else {
-            warnMES(res.message);
-          }
-        })
-        .catch(error => {
-          console.log(error);
+       this.$confirm('确认下架?, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+             this.$api.member
+              .downAnnual({
+                id: id
+              })
+              .then(res => {
+                if (res.success) {
+                  tipMES("下架成功");
+                  this.handleQuery();
+                } 
+              })
+              .catch(error => {
+                console.log(error);
+              });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
         });
+     
     },
     handleMonit(id) {
       this.$router.push({ path: "/member/annualMonitor", query: { id: id } });
@@ -200,6 +230,7 @@ export default {
       this.title = "";
       this.memberValue = "";
       this.creator = "";
+      this.publish='';
     },
     queryIF() {
       const query = {

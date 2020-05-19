@@ -82,7 +82,7 @@ export default {
 <style lang="less">
 .iframe-container {
   width: 100%;
-    height: 100%;
+    height: auto;
     position:relative;
   .frame {
     width: 100%;

@@ -7,7 +7,7 @@
         <el-input placeholder="请输入会员代码/邮箱" v-model="user" prefix-icon="el-icon-user"></el-input>
       </div>
       <div class="item">
-        <el-input placeholder="请输入密码" v-model="password" prefix-icon="el-icon-lock"></el-input>
+        <el-input placeholder="请输入密码" v-model="password" prefix-icon="el-icon-lock" show-password></el-input>
       </div>
       <div class="item text_right fs13">
         <router-link to="getPassword" class="link" @click="getPwd">忘记密码</router-link>
@@ -37,8 +37,8 @@ export default {
   },
   data() {
     return {
-      user: "member",
-      password: "123456"
+      user: "",
+      password: ""
     };
   },
   created() {
@@ -58,15 +58,13 @@ export default {
         }).then(res => {
           if (res.success) {
             let in2hours = 1 / 12;
-           
+
             Cookies.set("token", res.data.token, {
               expires: in2hours
             });
             this.$store.commit('setUserInfo',res.data);
             sessionStorage.setItem("userType", res.data.userType);
             this.$router.push({ path: "/myHome/index" });
-          } else {
-            this.$message.error(res.message);
           }
         })
         .catch(error => {
@@ -87,7 +85,9 @@ export default {
 #login {
   min-height: 100vh;
   padding-top: 50px;
-  background-color: #f1f2f6;
+  /*background-color: #f1f2f6;*/
+  background:url("~@/assets/bg.jpg") no-repeat center center;
+  background-size: cover;
   .loginMain {
     width: 370px;
     margin: 0 auto;

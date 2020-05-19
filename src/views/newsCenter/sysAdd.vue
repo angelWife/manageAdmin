@@ -31,7 +31,7 @@
       ></msgPush>
     </el-form>
     <div class="footBtnBox text_right">
-      <el-button type>取消</el-button>
+      <el-button type @click="back">取消</el-button>
       <el-button type="primary" @click="submitForm()">提交</el-button>
     </div>
   </div>
@@ -70,8 +70,11 @@ export default {
     });
 
     if (!!this.$route.query.rowId) {
-      this.messageId = Number(this.$route.query.rowId);
+      /*console.log(this.$route.query.rowId);*/
+      this.messageId = parseInt(this.$route.query.rowId);
+      console.log(this.messageId);
       this.check = this.$route.query.check ? true : false;
+      /*this.$api.message.sysView({ id: this.messageId })*/
       apiShow("message", "sysView", {
         id: this.messageId
       }).then(resolve => {
@@ -89,13 +92,23 @@ export default {
   },
   methods: {
     submitForm() {
+      if(!!this.form.content&&!!this.form.title&&(this.msgParam.companyIdList.length>0||this.msgParam.groupIdList.length>0)){
       apiShow("message", "sysAdd", {
         ...this.form,
         ...this.sendParam,
         id: this.messageId
       }).then(resolve => {
         publicMsg(this.msgParam, resolve, 3, false, "", "sysPublish");
-      });
+        this.$router.go(-1);
+      });}else{
+        this.$message({
+          message: '请填写系统信息内容，标题和短信接收人！',
+          type: 'warning'
+        });
+      }
+    },
+    back(){
+      this.$router.go(-1);
     }
   },
   components: {

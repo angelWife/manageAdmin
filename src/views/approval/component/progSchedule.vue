@@ -11,10 +11,10 @@
       :header-cell-style="thStyle"
     >
       <el-table-column prop="name" label="审批节点" width="100" align="center"></el-table-column>
-      <el-table-column prop="ideal" label="处理意见" width="100" align="center"></el-table-column>
-      <el-table-column prop="assignee" label="操作人" align="center"></el-table-column>
-      <el-table-column prop="createDate" label="处理时间" align="center"></el-table-column>
-      <el-table-column prop="explain" label="说明" width="300" align="center"></el-table-column>
+      <el-table-column prop="ideal" label="处理意见" align="center"></el-table-column>
+      <el-table-column prop="assignee" label="操作人" width="100" align="center"></el-table-column>
+      <el-table-column prop="createDate" label="处理时间" width="200" align="center"></el-table-column>
+      <el-table-column prop="explain" label="说明" width="400" align="center"></el-table-column>
     </el-table>
   </div>
 </template>
@@ -22,12 +22,11 @@
 import { mapState } from "vuex";
 export default {
   name: "proSchedule",
-  props: { number: { type: String, required: true } },
+  props: { proData: { type: Array, required: true } },
   data() {
     return {
       ttHeadStyle: { "background-color": "#fafafa" },
       thStyle: { border: 0 },
-      proData: [],
       type:''
     };
   },
@@ -38,14 +37,7 @@ export default {
     this.type= this.$store.state.manage.passVal.type
   },
   methods: {
-    getProcessList(){
-      let self = this
-      this.$api.manage.manageProcessList({serialNumber:self.number}).then(res=>{
-        if(res.success){
-          self.proData = res.data
-        }
-      })
-    }
+    
   },
 };
 </script>
