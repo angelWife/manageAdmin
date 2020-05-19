@@ -223,6 +223,7 @@ export default {
     background: #fff;
     padding: 30px;
     height: 100%;
+    overflow: hidden;
 }
 .el-row {
     margin-bottom: 20px;
@@ -270,6 +271,7 @@ export default {
       display: inline-block;
       width: 16%;
       box-sizing: border-box;
+      padding-top:7px;
   }
  .dateText{
      color: rgba(0,0,0,0.3);

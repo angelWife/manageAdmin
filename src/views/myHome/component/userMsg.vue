@@ -219,7 +219,7 @@ export default {
     getTodoList() {
       let params = {
         pageIndex: 1,
-        pageSize: 6,
+        pageSize: 5,
         status: 1
       };
       let self = this;
@@ -355,6 +355,7 @@ export default {
   background: #fff;
   padding: 30px;
   height: 100%;
+  overflow: hidden;
 }
 .el-row {
   margin-bottom: 20px;
@@ -382,15 +383,12 @@ export default {
   padding: 10px 20px;
   border-bottom: 1px solid #eee;
 }
-.todoContent {
-  margin: 0 20px;
-}
 .todoeve {
   list-style-type: none;
   font-size: 14px;
   color: #999;
   border-bottom: 1px solid #eee;
-  padding: 15px 0;
+  padding: 10px 20px;
 }
 .todoText {
   display: inline-block;
@@ -402,6 +400,7 @@ export default {
   display: inline-block;
   width: 16%;
   box-sizing: border-box;
+  padding-top:7px;
 }
 .dateText {
   color: rgba(0, 0, 0, 0.3);

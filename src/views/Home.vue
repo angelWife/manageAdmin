@@ -71,7 +71,7 @@ import { pubParam } from "@/utils/common";
 import Cookies from "js-cookie";
 import MenuTree from "@/components/MenuTree/menuTree";
 // 导航模拟假数据
-import { menuList } from "@/utils/menuList.js";
+// import { menuList } from "@/utils/menuList.js";
 import resetPass from "./Dialog/resetPass";
 export default {
   name: "Home",
@@ -84,7 +84,13 @@ export default {
       asideWidth: "250px",
       collapse: false,
       // headTitle:"",
-      menuList: menuList,
+      menuList: [{
+    id: 1,
+    name: "首页",
+    icon: "el-icon-location",
+    path: "/myHome/index",
+    hasChild: false
+  }],
       // hasFoot: false
       menuIndex: 1
     };

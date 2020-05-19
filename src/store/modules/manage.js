@@ -5,7 +5,8 @@ export default {
       number: '', // 流水号
       dataType: '', // 流水类型
       taskId: '', // 流水id
-      companyId: '' // 公司id
+      companyId: '', // 公司id
+      title:'' // 当前流程名称
     },
     processId: null
   },

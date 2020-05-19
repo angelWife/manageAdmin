@@ -153,3 +153,11 @@ export const getVipCost = (data) => {
       data
   })
 }
+
+//入会申请书下载 
+export const getFilePath = (id) => {
+    return axios({
+        url: '/admin/member/company/file/rhsqh_load?companyId='+id,
+        method: 'post',
+    })
+  }

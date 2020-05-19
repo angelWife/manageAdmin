@@ -108,8 +108,8 @@ import sysUser from '@/views/system/user';
 import sysDictionary from '@/views/system/dictionary';
 
 import yearFee from '@/views/approval/yearFee';
-import iWebOffice from '@/views/iWebOffice/iWebOffice';
-import officeDemo from '@/views/iWebOffice/officeDemo';
+// import iWebOffice from '@/views/iWebOffice/iWebOffice';
+// import officeDemo from '@/views/iWebOffice/officeDemo';
 // import Generator from "@/views/Generator/Generator";
 import api from "@/http/api";
 import store from "@/store";
@@ -617,16 +617,17 @@ const router = new Router({
       iconCls: 'el-icon-s-flag',
       leaf: false, //只有一个节点
       children: [
-        {
-          path: "/iWebOffice/iWebOffice",
-          name: "iWebOffice",
-          component: iWebOffice
-        },
-        {
-          path: "/iWebOffice/officeDemo",
-          name: "officeDemo",
-          component: officeDemo
-        }]
+        // {
+        //   path: "/iWebOffice/iWebOffice",
+        //   name: "iWebOffice",
+        //   component: iWebOffice
+        // },
+        // {
+        //   path: "/iWebOffice/officeDemo",
+        //   name: "officeDemo",
+        //   component: officeDemo
+        // }
+    ]
     },
     { // 登录 注册 重置密码
       path: "/login/index",

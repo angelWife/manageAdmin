@@ -28,14 +28,8 @@
                 label="left"
               >
                 <el-form-item label="入会申请书.doc" class="m-t-20">
-                  <el-upload
-                    class="upload-box float-left"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    :file-list="fileList"
-                    multiple
-                    :limit="3"
-                  ></el-upload>
-                  <div class="float-left blue m-l-20 cur-pointer">下载</div>
+                  <img :src="filePath"/>
+                  <div class="float-left blue m-l-20 cur-pointer" @click="getFils()">下载</div>
                 </el-form-item>
               </el-form>
             </div>
@@ -574,6 +568,7 @@ export default {
         commonMemberBusinessVo:null,
         memberPayVo:null,
       },
+      filePath:'',
       leftMenu: [
         { name: "入会申请书", active: true, id: "#applyBook" },
         { name: "公司基本信息", active: false, id: "#baseInfo" },
@@ -643,6 +638,19 @@ export default {
       //     self.showData.memberPayVo = res.data;
       //   }
       // });
+    },
+    getFils(){
+        let self = this
+        this.$api.manage.getFilePath(this.companyId).then(res=>{
+            if (res.success) {
+                if(res.data.has){
+                    self.filePath = res.data.fullPath
+                }else{
+                    self.$message.warning('暂无入会申请书下载')
+                }
+                
+            }
+        })
     }
   },
   components: {}

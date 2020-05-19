@@ -223,6 +223,7 @@ export default {
         filePath: "111",
         id: this.id
       }).then(resolve => {
+        window.history.back(-1);
         this.typeId = resolve;
         this.newGet(resolve);
       });

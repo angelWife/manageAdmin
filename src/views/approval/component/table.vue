@@ -32,32 +32,45 @@ export default {
     typeVO: { type: Array, required: true }
   },
   data() {
-    return {};
+    return {
+        handelName:''
+    };
   },
   created() {
    
   },
   methods: {
     handleAct(row) {
-
       this.$router.push({
         path: "/approval/memberDetails",
       });
-      let _data = { type: "hasOper",number:row.serialNumber,dataType:row.type,taskId :row.taskId,companyId:row.companyId}
+      
+      let _data = { type: "hasOper",number:row.serialNumber,dataType:row.type,taskId :row.taskId,companyId:row.companyId,title:this.getTitle(row.type)}
       this.$store.commit('setPassVal',_data)
       this.$store.commit('setProcessIde',row.processInstanceId)
     },
     handleCheck(row) {
+       
       this.$router.push({
         path: "/approval/memberDetails",
       });
-      let _data = { type: "info",number:row.serialNumber,dataType:row.type,taskId :row.taskId,companyId:row.companyId}
+      
+      let _data = { type: "info",number:row.serialNumber,dataType:row.type,taskId :row.taskId,companyId:row.companyId,title:this.getTitle(row.type)}
       this.$store.commit('setPassVal',_data)
       this.$store.commit('setProcessIde',row.processInstanceId)
     },
     setType(){
       let val = arguments[2];
       let name=""
+      this.typeVO.filter(v=>{
+        if(v.key==val){
+          name = v.val
+        }
+      })
+      return name;
+    },
+    getTitle(val){
+        let name=""
       this.typeVO.filter(v=>{
         if(v.key==val){
           name = v.val

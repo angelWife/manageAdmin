@@ -129,6 +129,7 @@ export default {
         this.$store.commit("setContainerFoot", true);
       }
       this.getProcessList();
+      this.$store.commit('setHeadTitle',this.$store.state.manage.passVal.title)
       // this.initPageInfo();
     });
 
