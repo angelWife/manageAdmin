@@ -1,74 +1,78 @@
 <template>
   <div class="container">
-    <el-row>
-      <el-col :span="8">
-        <div>
-          <span>活动名称：</span>
-          <el-input v-model="query.activityName" placeholder="请输入" class="input_style"></el-input>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div>
-          <span>类型：</span>
-          <el-select v-model="query.activityType" placeholder="请选择">
-            <el-option
-              v-for="item in typeList"
-              :label="item.dictVal"
-              :value="item.dictKey"
-              :key="item.dictKey"
-            ></el-option>
-          </el-select>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div>
-          <span>活动起止日期：</span>
-
-          <el-date-picker
-            v-model="query.activityDate"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="yyyy-MM-dd"
-          ></el-date-picker>
-        </div>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="8">
-        <div>
-          <span>活动地点：</span>
-          <el-input v-model="query.address" placeholder="请输入" class="input_style"></el-input>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div>
-          <span>报名截止日期：</span>
-          <el-date-picker
-            v-model="query.enrolDate"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            value-format="yyyy-MM-dd"
-          ></el-date-picker>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div>
-          <span>报名状态：</span>
-          <el-select v-model="query.enrolStatus" placeholder="请选择">
-            <el-option
-              v-for="item in erollList"
-              :label="item.val"
-              :value="item.key"
-              :key="item.key"
-            ></el-option>
-          </el-select>
-        </div>
-      </el-col>
-    </el-row>
+    <el-form :model="query"  label-position="top"> 
+      <el-row style="margin-bottom:0px;">
+        <el-col :span="8">
+          <el-form-item label="活动名称：">
+                <el-input v-model="query.activityName" placeholder="请输入" size="small" class="input_style"></el-input>
+          </el-form-item>
+         
+        </el-col>
+        <el-col :span="8">
+           <el-form-item label="类型：">
+               <el-select v-model="query.activityType" placeholder="请选择"  size="small" >
+              <el-option
+                v-for="item in typeList"
+                :label="item.dictVal"
+                :value="item.dictKey"
+                :key="item.dictKey"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          
+        </el-col>
+        <el-col :span="8">
+           <el-form-item label="活动起止日期：">
+                <el-date-picker
+                  v-model="query.activityDate"
+                  type="daterange"
+                   size="small" 
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
+                ></el-date-picker>
+          </el-form-item>
+          
+        </el-col>
+      </el-row>
+      <el-row style="margin-bottom:0px;">
+        <el-col :span="8">
+           <el-form-item label="活动地点：">
+                <el-input v-model="query.address" placeholder="请输入"  size="small"  class="input_style"></el-input>
+          </el-form-item>
+         
+      
+        </el-col>
+        <el-col :span="8">
+            <el-form-item label="报名截止日期：">
+              <el-date-picker
+                v-model="query.enrolDate"
+                 size="small" 
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                value-format="yyyy-MM-dd"
+              ></el-date-picker>
+            </el-form-item>
+       
+        </el-col>
+        <el-col :span="8">
+           <el-form-item label="报名状态：">
+              <el-select v-model="query.enrolStatus" placeholder="请选择"  size="small" >
+              <el-option
+                v-for="item in erollList"
+                :label="item.val"
+                :value="item.key"
+                :key="item.key"
+              ></el-option>
+            </el-select>
+            </el-form-item>
+         
+        </el-col>
+      </el-row>
+    </el-form>
     <div calss="btn_content" style="text-align:right">
       <el-button type="primary" @click="handleQuery()">查询</el-button>
       <el-button @click="clear()">重置</el-button>
@@ -91,7 +95,7 @@
       </el-table-column>
       <el-table-column prop="activivyEnrolStatusVal" label="活动可报名状态"></el-table-column>
       <el-table-column prop="enrolStatusVal" label="报名状态"></el-table-column>
-      <el-table-column prop="act" label="操作" min-width="120px">
+      <el-table-column prop="act" label="操作" min-width="150px">
         <template slot-scope="scope">
           <span v-if="scope.row.activivyEnrolStatus==1 && scope.row.enrolStatus == 4">
             <el-button @click="handleReg(scope.row)" type="primary" size="small">报名</el-button>
@@ -109,7 +113,7 @@
     </el-table>
     <el-pagination
       background
-      style="margin-top:20px"
+      style="margin-top:35px;"
       class="text_center"
       layout="total,prev, pager, next"
       :total="pageAll.total"

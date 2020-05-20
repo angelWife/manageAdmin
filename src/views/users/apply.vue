@@ -30,13 +30,14 @@
 
                 <div >
                  <div>
-                    <a href="static/pic2.png" target="_blank" 
+                    <a :href="applyBookUrl" target="_blank"  v-show="applyBookUrl"
                         style="display:inline-block;position:relative;">
                           <span class="el-icon-close" 
                                 style="position:absolute;right:-16px;top:14px;color:#ff0000; " 
                                 @click.prevent="removeFile(1)"></span>
-                          入会申请书.doc
+                          {{applyBookName}}
                    </a> 
+
                  </div> 
                  
                   <el-upload
@@ -802,6 +803,7 @@
               </div>  
         </div>
         <div class="formBox" id="msgInfo" :class="{businessMask:businessMask}">
+            <div class="mask"></div>
             <div class="title">
               <span class="text" name="msgInfo">业务信息</span>
               <el-button size="small"  type="primary"
@@ -855,7 +857,7 @@
                 </div>
               </div>
               <div class="formBox"  >
-                <div class="title" style="margin-bottom:10px;">
+                <div class="title" style="margin-bottom:10px;" v-show="qualificationTypeIds.length > 0 && busType==1">
                   <span class="text">资格信息</span>
 
                 </div>
@@ -878,6 +880,12 @@
                     </el-row>
 
                     <!-- 1 -->
+                  <div class="formBox" id="msgInfo">
+                    <div class="title">
+                      <span class="text">规模信息</span>
+                       
+                    </div>
+                   </div>
                     <el-row v-if="busType==1">
                       <el-col :span="10">
                         <el-form-item label="上年度末受托管理保险资金（亿元）：" label-width="265px">
@@ -1188,7 +1196,7 @@
       </div>
     </div>
     <div class="footBtn text_right membership-recognition-application">
-      <el-button type @click="saveAllInterFace">保存</el-button>
+      <el-button type @click="saveAllInterFace">提交</el-button>
       <!-- <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button> -->
     </div>
   </div>
@@ -1200,7 +1208,7 @@
   import { apiBasicMember, apiDic,saveCompanyBasicInfoCommon ,successMES,warnMES} from "../../utils/commonApi";
   import { format } from "../../utils/datetime";
   import { memberUploadFile,memberDownloadTemplate,blobDownloadFile } from "./../../http/moudules/common"
-  import  {linkManAddCommon,saveMemberRepresentativeCommon,saveShareholderCommon,saveSeniorExecutiveCommon,saveBusCommon,setDefaultLinkManCommon,getLinkManListCommon,linkmanDeleteCommon,getShareholderCommon,delShareholderCommon,getSeniorExecutiveListCommon,delSeniorExecutiveListCommon,loadBusinessInformationCommon,getCompanyInfoCommon,getRepCommon,getBusListCommon,loadLicenceTypeCommon ,serviceType,saveBus_2_Common,saveBus_3_Common,saveBus_4_Common,saveBus_5_Common,saveBus_6_Common,saveBus_7_Common,saveBus_8_Common,saveBus_9_Common,saveBus_10_Common,saveBus_11_Common,saveBus_12_Common,memberApprovalSaveAll,workflowAPI} from "./../../http/moudules/member"
+  import  {linkManAddCommon,saveMemberRepresentativeCommon,saveShareholderCommon,saveSeniorExecutiveCommon,saveBusCommon,setDefaultLinkManCommon,getLinkManListCommon,linkmanDeleteCommon,getShareholderCommon,delShareholderCommon,getSeniorExecutiveListCommon,delSeniorExecutiveListCommon,loadBusinessInformationCommon,getCompanyInfoCommon,getRepCommon,getBusListCommon,loadLicenceTypeCommon ,serviceType,saveBus_2_Common,saveBus_3_Common,saveBus_4_Common,saveBus_5_Common,saveBus_6_Common,saveBus_7_Common,saveBus_8_Common,saveBus_9_Common,saveBus_10_Common,saveBus_11_Common,saveBus_12_Common,memberApprovalSaveAll,workflowAPI,queryMembership} from "./../../http/moudules/member"
   export default {
     props: {},
     data() {
@@ -1421,7 +1429,9 @@
            7:'seniorMask',
            10:'memberMask',
            15:'businessMask',
-        }
+        },
+        applyBookUrl:"",
+        applyBookName:""
       };
     },
     // computed: {
@@ -1439,7 +1449,7 @@
       /**
        * 展示会员信息
        */
-
+      this.loadMembership();
       this.initBasicInfo();
     },
     mounted() {
@@ -1449,14 +1459,26 @@
       this.scrollDocument();
     },
     methods: {
+        loadMembership(){
+            queryMembership({}).then(rep=>{
+              if(rep && rep.code=='200'){
+                this.applyBookUrl=rep.data.fullPath
+                this.applyBookName=rep.data.name
+              }
+            })
+        },
         getWorkFlowStatus(){
            workflowAPI({}).then(rep=>{
               if(rep && rep.code=="200" && rep.data){
                  let arr=rep.data.map(item=>{
                       return item.toString()
                      })
+                 
                   for(let key in this.workflowObj){
-                     if(arr.indexOf(key) > -1){
+                     if(arr.indexOf('9') > -1){
+                        this[this.workflowObj[key]]=true;
+                     }
+                     if(arr.indexOf(key) > -1 && arr.indexOf('9')==-1){
                           this[this.workflowObj[key]]=true;
                      }
                   }
@@ -1476,11 +1498,18 @@
         }
         let formData = new FormData();
         formData.append('file',obj.file);
-        memberUploadFile(formData).then((res=>{
+        let url="",method="";
+        if(obj.data.id==1){
+            url="/api/member/company/file/rhsqh_upload";
+            method="post"
+        }
+        memberUploadFile(formData,url,method).then((res=>{
              if(res && res.code=='200' && res.data){
                   successMES('上传成功');
                  if(obj.data.id==1){
-
+                    // this.applyBookUrl=res.data.fullPath
+                    // this.applyBookName=obj.file.name
+                    this.loadMembership();
                  }else if(obj.data.id==2){
                    this.companyForm.imgPathLicence=res.data.fullPath
                  }else if(obj.data.id==3){
@@ -1496,6 +1525,8 @@
       },
       removeFile(type,index){
          if(type==1){
+            this.applyBookUrl='';
+            this.applyBookName='';
             this.$refs.uploadApplication.clearFiles()
          }else if(type==2){
              this.$refs.uploadImgPathLicence.clearFiles()
@@ -1509,6 +1540,10 @@
       },
       saveAllInterFace(){
          let self=this;
+         if(!this.applyBookUrl){
+             warnMES('请上传入会申请书');
+             return
+         }
         let validateRules=  new Promise((resolve, reject) => {
                 if(this.companyMask){
                     resolve(true)
@@ -1758,6 +1793,7 @@
            }
         }).then(preflag=>{
             if(this.businessMask){
+
                return true
              }
             if(preflag){
@@ -1822,6 +1858,7 @@
               memberApprovalSaveAll(params).then(rep=>{
                   if(rep && rep.code=='200'){
                       successMES('保存成功');
+                      this.$router.push({path:"/"})
                   }
               })
             }

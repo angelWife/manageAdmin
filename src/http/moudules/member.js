@@ -326,12 +326,12 @@ export const queryInvoice = (data) => {
         data
     })
 }
-// 会员档案 变更记录
-export const changeNote = (data) => {
+// 会员档案 变更记录`
+export const changeNote = (params) => {
     return axios({
-        url: '/admin/member/info/query_change',
-        method: 'post',
-        data
+        url: '/admin/member/archives/query_change_record',
+        method: 'get',
+        params
     })
 }
 // 会员档案 缴费记录
@@ -492,11 +492,11 @@ export const serviceInfo = (params) => {
 }
 
 // 会员档案 变更记录
-export const serviceChangeNote = (data) => {
+export const serviceChangeNote = (params) => {
     return axios({
-        url: '/api/member/info/query_change',
-        method: 'post',
-        data
+        url: '/api/member/info/query_change_record',
+        method: 'get',
+        params
     })
 }
 // 会员档案 缴费记录
@@ -953,8 +953,8 @@ export function yearCostConfirm(params){
 }
 export function publishYearCostProject(params){
   return axios({
-    url:"/api/member/annual/confirm",
-    method: 'get',
+    url:"/admin/member/pay/publish",
+    method: 'PUT',
     params
   })
 }
@@ -1011,5 +1011,21 @@ export function setSentStatus(params){
        url:"/admin/member/pay/set-status",
        method: 'put',
        params
+    })
+}
+//会员认定加载会员认定书
+export function queryMembership(data){
+     return axios({
+       url:"/api/member/company/file/rhsqh_load",
+       method: 'post',
+       data
+    })
+}
+//管理员加载会员认定书
+export function queryMembershipAdmin(data){
+     return axios({
+       url:`/admin/member/company/file/rhsqh_load?companyId=${data.companyId}`,
+       method: 'post',
+       data
     })
 }

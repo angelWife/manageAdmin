@@ -115,21 +115,23 @@
                         <span style="color:#F56C6C;"> * </span>
                              入会申请书.doc
                       </span>
-                  <span class="blue m-l-20 cur-pointer hideEle" :class="{editInput:!edit}">
-                   <a href="#"> 下载</a>
+                  <span class="blue m-l-20 cur-pointer hideEle" :class="{editInput:!edit && userType!=1}">
+                      <a :href="applyBookUrl" v-if="applyBookUrl">  {{applyBookName}}</a>
+                      <span v-else>点击编辑上传申请书</span>
                  </span>
-                  <div class="hideEle" :class="{editInput:edit}">
+                  <div class="hideEle" :class="{editInput:edit && userType!=1}">
                     <div>
-                      <a href="static/pic2.png" target="_blank" 
+                      <a :href="applyBookUrl" target="_blank"  v-show="applyBookUrl"
                           style="display:inline-block;position:relative;">
                             <span class="el-icon-close" 
                                   style="position:absolute;right:-16px;top:14px;color:#ff0000; " 
                                   @click.prevent="removeFile(1)"></span>
-                            hehehehehehehe.doc
+                              {{applyBookName}}
                      </a> 
                    </div> 
                     <el-upload
                       class="upload-box float-left"
+                      ref="uploadApplication"
                       :multiple="false"
                       :show-file-list="false"
                       :action="global.baseUrl+global.commonFileUploadUrl"
@@ -1566,7 +1568,7 @@ import footNoteDisable from "./component/footNoteDisable";
 import { mapState } from "vuex";
 import { apiBasicMember, apiDic,saveCompanyBasicInfo ,successMES,warnMES} from "../../utils/commonApi";
 import { format } from "../../utils/datetime";
-import  {linkManAdd,shareholdersAdd,saveMemberRepresentative,saveShareholder,saveSeniorExecutive,saveBus,deleteLinkMan,deleteShareholder,deleteSeniorExecute,setDefaultLinkMan,getQualities,loadLicenceTypeCommon,workflowAdmin ,workflowAPI} from "./../../http/moudules/member"
+import  {linkManAdd,shareholdersAdd,saveMemberRepresentative,saveShareholder,saveSeniorExecutive,saveBus,deleteLinkMan,deleteShareholder,deleteSeniorExecute,setDefaultLinkMan,getQualities,loadLicenceTypeCommon,workflowAdmin ,workflowAPI,queryMembership,queryMembershipAdmin} from "./../../http/moudules/member"
  import { memberUploadFile,formSubmit,blobDownloadFile } from "./../../http/moudules/common"
 import {apiSelect,companyTypeList,educationType,genderList,getListed,shareholderType} from "@/utils/common";
 export default {
@@ -1796,6 +1798,8 @@ export default {
          15:'businessMask',
       },
       hasworkflowStatus:false,
+      applyBookUrl:"",
+      applyBookName:''
     };
   },
   computed: {
@@ -1978,12 +1982,17 @@ export default {
               }
               fun(params).then(rep=>{
                   if(rep && rep.code=="200" && rep.data){
-                     this.getWorlFlowStatus=true;
+                     // this.getWorlFlowStatusFlag=true;
                      let arr=rep.data.map(item=>{
                           return item.toString()
                          })
+
+
                       for(let key in this.workflowObj){
-                         if(arr.indexOf(key) > -1){
+                         if(arr.indexOf('9') > -1){
+                            this[this.workflowObj[key]]=true;
+                         }
+                         if(arr.indexOf(key) > -1 && arr.indexOf('9')==-1){
                               this[this.workflowObj[key]]=true;
                          }
                       }
@@ -1999,11 +2008,22 @@ export default {
           }
           let formData = new FormData();
           formData.append('file',obj.file);
-          memberUploadFile(formData).then((res=>{
+           let url="",method="";
+          if(obj.data.id==1){
+              if(this.userType==1){
+
+              }else{
+                  url="/api/member/company/file/rhsqh_upload";
+                  method="post"
+              }
+             
+          }
+          memberUploadFile(formData,url,method).then((res=>{
                if(res && res.code=='200' && res.data){
                     successMES('上传成功');
                    if(obj.data.id==1){
-
+                      this.applyBookUrl=res.data.fullPath
+                       this.applyBookName=obj.file.name
                    }else if(obj.data.id==2){
                      this.companyForm.imgPathLicence=res.data.fullPath
                    }else if(obj.data.id==3){
@@ -2018,6 +2038,8 @@ export default {
       },
       removeFile(type,index){
          if(type==1){
+            this.applyBookUrl=""
+           this.applyBookName=""
             this.$refs.uploadApplication.clearFiles()
          }else if(type==2){
              this.$refs.uploadImgPathLicence.clearFiles()
@@ -2494,6 +2516,7 @@ export default {
     showInfo() {
       let upParm = {};
       let urlFront = "service";
+      let applyBookFun=queryMembership;
       let url="/api/member/info/qualification-checkbox/view";
       companyTypeList(this.companyTypeData)//公司类型
       educationType(this.educationTypeList)//最高学历
@@ -2508,6 +2531,7 @@ export default {
       if (sessionStorage.getItem("userType") == 1) {
            this.urlFront=urlFront = "basic";
            url="/admin/member/archives/qualification-checkbox/view";
+           applyBookFun=queryMembershipAdmin;
         upParm = {
           companyId: this.$route.query.companyId
         };
@@ -2518,6 +2542,13 @@ export default {
           path: "/member/visitNote"
         });
       }
+      applyBookFun(upParm).then(rep=>{
+          if(rep && rep.code=='200'){
+              this.applyBookUrl=rep.data.fullPath
+              this.applyBookName=rep.data.name
+          }
+
+      })
       getQualities(url,upParm).then(rep=>{
        if(rep && rep.code=='200'){
           this.qualificationTypeIds=rep.data

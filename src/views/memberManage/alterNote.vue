@@ -17,8 +17,8 @@
         <h1 class="title">变更记录</h1>
       </div>
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column prop="businessFlow" label="业务流水"></el-table-column>
-        <el-table-column prop="workTypeVal" label="业务类型"></el-table-column>
+        <el-table-column prop="serialNumber" label="业务流水"></el-table-column>
+        <el-table-column prop="typeVal" label="业务类型"></el-table-column>
         <el-table-column prop="submitDate" label="提交时间">
           <template slot-scope="scope">{{format(scope.row.submitDate)}}</template>
         </el-table-column>
@@ -124,7 +124,7 @@ export default {
       let urlFun = "serviceChangeNote";
       if (sessionStorage.getItem("userType") == 1) {
         idObj = {
-          id: sessionStorage.getItem("compid")
+          companyId: sessionStorage.getItem("compid")
         };
         urlFun = "changeNote";
         this.leftMenu.push({
@@ -137,6 +137,7 @@ export default {
       apiShow("member", urlFun, { ...idObj, ...param }).then(reslove => {
         this.tableData = reslove.rows;
         this.pageAll = backPage(reslove);
+        console.log(this.pageAll);
       });
     },
     pageChange(i) {
@@ -200,7 +201,8 @@ export default {
     }
     .pageCSS {
       text-align: center;
-      margin-top: 30px;
+      margin-top: 10px;
+      margin-bottom:80px;
     }
   }
 }

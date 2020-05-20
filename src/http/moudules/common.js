@@ -25,10 +25,10 @@ export const uploadBackFile = (data) => {
   })
 }
 //会员文件上传
-export const memberUploadFile = (data) => {
+export const memberUploadFile = (data,url,method) => {
   return axios({
-      url: '/common/file/upload',
-      method: 'post',
+      url: url ? url : '/common/file/upload',
+      method: method ? method : 'post',
       data,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
