@@ -92,22 +92,30 @@ export default {
   },
   methods: {
     submitForm() {
-      if(!!this.form.content&&!!this.form.title&&(this.msgParam.companyIdList.length>0||this.msgParam.groupIdList.length>0)){
-      apiShow("message", "sysAdd", {
-        ...this.form,
-        ...this.sendParam,
-        id: this.messageId
-      }).then(resolve => {
-        publicMsg(this.msgParam, resolve, 3, false, "", "sysPublish");
-        this.$router.go(-1);
-      });}else{
+      if (
+        !!this.form.content &&
+        !!this.form.title &&
+        (this.msgParam.companyIdList.length > 0 ||
+          this.msgParam.groupIdList.length > 0)
+      ) {
+        apiShow("message", "sysAdd", {
+          ...this.form,
+          ...this.sendParam,
+          id: this.messageId,
+          memberList: this.msgParam.companyIdList.join(","),
+          memberGroupList: this.msgParam.groupIdList.join(",")
+        }).then(resolve => {
+          publicMsg(this.msgParam, resolve, 3, false, "", "sysPublish");
+          this.$router.go(-1);
+        });
+      } else {
         this.$message({
-          message: '请填写系统信息内容，标题和短信接收人！',
-          type: 'warning'
+          message: "请填写系统信息内容，标题和短信接收人！",
+          type: "warning"
         });
       }
     },
-    back(){
+    back() {
       this.$router.go(-1);
     }
   },

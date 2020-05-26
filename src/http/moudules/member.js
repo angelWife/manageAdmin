@@ -1029,3 +1029,29 @@ export function queryMembershipAdmin(data){
        data
     })
 }
+
+// 会员认定流程   /api/workflow/get_my_ing_member_check_task
+export function getMemberProcess(data){
+    return axios({
+      url:`/api/workflow/get_my_ing_member_check_task`,
+      method: 'post',
+      data
+   })
+}
+
+//会费缴纳   api/member/pay/payDues
+export function payMemberDues(data){
+    return axios({
+      url:`/api/member/pay/payDues`,
+      method: 'post',
+      data
+   })
+}
+//审批   /api/workflow/complete_task
+export function memberCheckCost(data){
+    return axios({
+      url:`/api/workflow/complete_task`,
+      method: 'post',
+      data
+   })
+}

@@ -44,7 +44,17 @@ export default {
       uploadUrl:global.baseUrl+'/api/member/leave/upload'
     };
   },
+  mounted() {
+    this.getMemberStatus()
+  },
   methods: {
+    getMemberStatus(){
+      this.$api.role.getMemberStatus().then(res=>{
+        if(res.success){
+
+        }
+      })
+    },
     uploadFile(obj){
       if( Math.floor( obj.file.size/(1024*1024) ) > 10 ){
           warnMES('最多上传10M')

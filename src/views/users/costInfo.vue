@@ -51,7 +51,7 @@
           <div class="flex item">
             <div class="name">发票收件人：</div>
             <div class="msg">
-              <el-input></el-input>
+              <el-input v-model="params.receiver"></el-input>
             </div>
           </div>
         </el-col>
@@ -61,7 +61,7 @@
           <div class="flex item">
             <div class="name">收件人手机：</div>
             <div class="msg">
-              <el-input></el-input>
+              <el-input v-model="params.mobileNum"></el-input>
             </div>
           </div>
         </el-col>
@@ -71,7 +71,7 @@
           <div class="flex item">
             <div class="name">收件地址：</div>
             <div class="msg">
-              <el-input type="textarea"></el-input>
+              <el-input v-model="params.address"></el-input>
             </div>
           </div>
         </el-col>
@@ -91,7 +91,7 @@
     </div>
     <div class="footBtn text_right">
       <el-button type="">保存</el-button>
-      <el-button type="primary">提交</el-button>
+      <el-button type="primary" @click="sureCost">提交</el-button>
     </div>
     <transition name="el-fade-in-linear">
     <div class="picModal" v-if="showDemoPic">
@@ -110,7 +110,13 @@ export default {
   data() {
     return {
       imageUrl: "",
-      showDemoPic: false
+      showDemoPic: false,
+      params:{
+        memberPayId:1,
+        address:'',
+        mobileNum:'',
+        receiver:''
+      }
     };
   },
   methods: {
@@ -119,7 +125,34 @@ export default {
     },
     closeBigPic(){
       this.showDemoPic = false;
-    }
+    },
+    sureCost(){
+      let self = this
+      let params = this.params
+      this.$api.member.payMemberDues(params).then(res=>{
+        if(res.success){
+            self.$message.success('缴纳成功，请等待审核');
+            self.checkCost().then(res=>{
+              if(res.success){
+                self.$router.push({ path: "/myHome/index" });
+              }
+            })
+           
+        }
+      })
+    },
+    checkCost(){
+      let params = {
+        taskId:this.$route.query.taskId,
+        serialNumber:this.$route.query.serialNumber,
+        inResultStr:true
+      }
+      return this.$api.member.memberCheckCost(params).then(res=>{
+        return res;
+      })
+    },
+    beforeAvatarUpload(){},
+    handleAvatarSuccess(){}
   }
 };
 </script>

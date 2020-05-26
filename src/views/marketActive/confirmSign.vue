@@ -286,7 +286,9 @@ export default {
           type: "warning"
         }
       )
-        .then(() => {})
+        .then(() => {
+          apiOperate("active", "sendAll", {id: this.activityId}, "", "发送成功");
+        })
         .catch(() => {});
     },
     // 查询

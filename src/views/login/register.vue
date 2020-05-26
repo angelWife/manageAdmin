@@ -30,8 +30,8 @@
                 </div>
               </div>
             </div>
-            <div class="compList">
-              <el-row>
+            <div class="compList" v-if="listObj">
+              <el-row >
                 <el-col
                   v-for="(item, ind) in listObj"
                   :key="ind"
@@ -53,6 +53,7 @@
                 </el-col>
               </el-row>
             </div>
+            <div v-else>暂无机构数据</div>
             <div class="text_center btnBox">
               <el-button type="primary" @click="nextStep(1)">下一步</el-button>
             </div>
@@ -403,20 +404,19 @@ export default {
       console.log(this.myform.institutionType);
     },
     sendMark() {
-      //console.log('issend',this.isSend);
       this.isSend = true; //按钮被禁用
       if (this.myform.mobileNum == "") {
         this.mymodal.text = "请输入手机号码";
         this.mymodal.modalShow = true;
         this.isSend = false;
-        return false;
+        return;
       } else {
         let reg = /^1[345789]\d{9}$/;
         if (!reg.test(this.myform.mobileNum)) {
           this.mymodal.text = "请输入正确的手机号码";
           this.mymodal.modalShow = true;
           this.isSend = false;
-          return false;
+          return;
         }
       }
       if (this.isSend) {
@@ -425,17 +425,15 @@ export default {
           if (res.success) {
             this.$message("短信发送成功！");
           } else {
-            console.log(11111);
             this.isSend = false;
-            return false;
+            return;
           }
         });
       }
+      
       let num = 60;
       let self = this;
       let timer = null;
-
-      // this.getMark();
       function downCount() {
         if (num > 1) {
           num--;
@@ -446,7 +444,6 @@ export default {
           self.btnText = "获取验证码";
         }
       }
-
       downCount();
       timer = setInterval(() => {
         downCount();

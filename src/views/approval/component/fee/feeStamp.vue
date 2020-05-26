@@ -30,7 +30,7 @@
         <el-form-item label="缴费通知书（未盖章）：">
           <el-image :src="infoSrc"></el-image>
           <el-button type="primary"
-                     class="rebuild">电子盖章</el-button>
+                     class="rebuild" @click="stampFile">电子盖章</el-button>
         </el-form-item>
         <!-- <el-form-item size="large" style="text-align:right">
           <el-button>驳回缴费初审</el-button>
@@ -64,6 +64,13 @@ export default {
   methods: {
     onSubmit() {
       console.log("submit!");
+    },
+    stampFile(){
+     let routeData =  this.$router.resolve({
+        name:'Signature',
+        query:{type:'',filePath:''}
+      })
+      window.open(routeData.href,'_blank');
     }
   }
 };

@@ -34,6 +34,7 @@
             :change-on-select="true"
             :options="tableData"
             :props="myprop"
+            ref="roleKeys"
             v-model="departEdit.parentId"
             @change="handleChange"
           ></el-cascader>
@@ -50,11 +51,12 @@
             v-model="departEdit.remark"
             type="textarea"
             autocomplete="off"
+            maxlength = '40'
           ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="departVisible = false">取消</el-button>
+        <el-button @click="cancelBtn">取消</el-button>
         <el-button type="primary" @click="sureBtn">提交</el-button>
       </div>
     </el-dialog>
@@ -118,6 +120,9 @@ export default {
     this.initPage();
   },
   methods: {
+    cancelBtn(){
+      this.departVisible = false;
+    },
     initPage() {
       let self = this;
       this.$api.system.departmentList().then(res => {
@@ -130,9 +135,37 @@ export default {
     editDepartment(tab) {
       this.departVisible = true;
       console.log('tab',tab);
+      let tableData = this.tableData;
       if (tab) {
-        tab.parentId = [tab.id];
-        this.departEdit = tab;
+        let parentId = tab.parentId;
+        console.log(parentId)
+        let arr = [];
+        for(let i=0;i<tableData.length;i++){
+          let item1 = tableData[i];
+          if(parentId == item1.id){
+            arr = [tab.id];
+            console.log(arr);
+          }else{
+            if(item1.children.length){
+              for(let j=0;j<item1.children.length;j++){
+                let item2 = item1.children[j];
+                if(parentId == item2.id){
+                  arr.push(item1.id);
+                  arr.push(parentId);
+                }
+              }
+            }
+          }
+        }
+        // tab.parentId = arr;
+        if(parentId == -1){
+          tab.parentId = [tab.id];
+        }
+        // console.log(tab)
+        for(let key in tab){
+          this.departEdit[key] = tab[key];
+        }
+        // this.departEdit = tab;
       } else {
         this.departEdit = {
           parentId: "",
@@ -146,40 +179,45 @@ export default {
       let self = this;
       let params = this.departEdit;
       // params.parentId = params.parentId.join(",");
+      console.log(params.parentId)
       params.parentId = params.parentId[params.parentId.length-1]
       this.$api.system.departmentEdit(params).then(res => {
         if (res.success) {
           if (params.id) {
             self.$message({
-              message: "新增成功！",
+              message: "操作成功！",
               type: "success"
             });
           } else {
             self.$message({
-              message: "操作成功！",
+              message: "新增成功！",
               type: "success"
             });
           }
           self.departVisible = false;
           self.initPage();
+          self.cancelBtn();
         }
       });
     },
     handleAct(rowdata) {
       let self = this;
+      console.log(rowdata)
       /*self.$message("亲，我们正在开发中...");*/
-       this.$api.system.delDepartment(this.roleData).then(res=>{
+      this.$confirm('是否删除'+rowdata.name+'?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$api.system.delDepartment({id:rowdata.id,name:rowdata.name}).then(res=>{
          if(res.success){
-           self.roleVisible=false
-           self.dicVisible=false
-           if(self.roleData.id){
-             self.$message('删除成功！');
-           }else{
-              self.$message('删除成功！');
-           }
-           self.initPage();
+          self.roleVisible=false
+          self.dicVisible=false
+          self.$message('删除成功！');
+          self.initPage();
          }
        })
+      })
     },
     handleChange(value) {
       console.log('change',value);

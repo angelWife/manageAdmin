@@ -40,7 +40,7 @@
               </div>
             </el-col>
             <el-col :span="18" class="topMenu">
-              <span class="name">{{username}}</span>
+              <span class="name">{{userName}}</span>
               <a class="text" @click="resetPass()">重置密码</a>
               <a class="text" @click="Login()">注销</a>
             </el-col>
@@ -56,6 +56,10 @@
             <span>业务咨询</span>
             <div class="msg">
               <div class="title">业务咨询</div>
+              <div><span>电话：</span><span>010-83361666</span></div>
+              <div><span>邮箱：</span><span>service@iamac.org.cn</span></div>
+              <div><span style="float: left;">公众号：</span><span><img class="qr-code" src="@/assets/qr-code.png" /></span></div>
+
             </div>
           </div>
         </el-main>
@@ -85,15 +89,16 @@ export default {
       collapse: false,
       // headTitle:"",
       menuList: [{
-    id: 1,
-    name: "首页",
-    icon: "el-icon-location",
-    path: "/myHome/index",
-    hasChild: false
-  }],
+        id: 1,
+        name: "首页",
+        icon: "el-icon-location",
+        path: "/myHome/index",
+        hasChild: false
+      }],
       // hasFoot: false
-      menuIndex: 1
-    };
+      menuIndex: 1,
+      userName:'',
+   }
   },
   watch: {
     $route: "handleRoute"
@@ -102,7 +107,7 @@ export default {
     ...mapState({
       // headTitle: state => state.app.headTitle,
       hasFoot: state => state.app.hasFoot,
-      username:state => state.user.userInfo.userName,
+      // username:state => state.user.userInfo.userName,
     }),
     headTitle: {
       get() {
@@ -110,14 +115,16 @@ export default {
       },
       set(val) {}
     },
-    username: {
-      get() {
-        return this.$store.state.user.userInfo.userName;
-      },
-      set(val) {}
-    },
+    // username: {
+    //   get() {
+    //     return this.$store.state.user.userInfo.userName;
+    //   },
+    //   set(val) {}
+    // },
   },
   created() {
+    this.userName = localStorage.getItem("userNameIndex");
+    console.log(localStorage.getItem("userNameIndex"));
     // this.handleRoute(this.$route);
     // this.headTitle = this.$store.state.app.headTitle;
     // 导入菜单;
@@ -127,6 +134,8 @@ export default {
         if (res.success) {
           this.menuList = res.data;
           this.$store.state.menu = res.data;
+        }else{
+          console.log('1111');
         }
       })
       .catch(error => {
@@ -291,8 +300,38 @@ export default {
       cursor: pointer;
       .msg {
         display: none;
+
+            color: #555;
+            width: 260px;
+           right: 50px;
+           position: absolute;
+           top: 0;
+		   margin-top: -200px;
+           text-align: left;
+           padding: 15px;
+           box-shadow: 0 0 10px 0 #bbb;
+           .title{
+             margin-top: 0;
+             border-bottom: 1px solid #ddd;
+             padding-bottom: 10px;
+           }
+          div{
+            margin-top: 10px;
+
+
+
+          }
+      }
+      .qr-code{
+        width: 120px;
+        height: 120px;
       }
     }
+
+    .rightBar:hover .msg{
+    	display: block;
+    }
+
   }
   .pmenu-bar-collapse-width {
     width: 65px;

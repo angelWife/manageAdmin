@@ -1,6 +1,6 @@
 import axios from '../axios'
 import Cookies from "js-cookie";
-/* 
+/*
  *
  */
 export const uploadFile = (data) => {
@@ -20,7 +20,7 @@ export const uploadBackFile = (data) => {
         'Content-Type': 'application/x-www-form-urlencoded',
         'channel':'Management',
         'token':Cookies.get('token'),
-       
+
       }
   })
 }
@@ -34,7 +34,7 @@ export const memberUploadFile = (data,url,method) => {
         'Content-Type': 'application/x-www-form-urlencoded',
         'channel':'Management',
         'token':Cookies.get('token'),
-       
+
       }
   })
 }
@@ -62,38 +62,40 @@ export const memberDownloadTemplate = (url,data) => {
 export function blobDownloadFile(rep,fileName){
   let name='';
    if(rep.headers["content-disposition"]){
-        let regex = /"([^"]*)"/g;
+      let regex = /"([^"]*)"/g;
       let currentResult;
       let results = [];
       let strValue=rep.headers["content-disposition"].split('; ')[1];
       while ((currentResult = regex.exec(strValue)) !== null) {
           results.push(currentResult[1]);
       }
-           name=results[0];
+           // name=results[0];
+            name= '入会申请书.docx';
            if(name==undefined){
               name=strValue.split('=')[1];
            }
-        
+
    }else{
-      name= fileName;
+     //name = fileName
+      name= '入会申请书.docx';
    }
-   
+
      let fileReader = new FileReader();
      fileReader.onload = function() {
       try {
          let jsonData = JSON.parse(this.result);
          if (jsonData.code==200 && !jsonData.data) {
              Message.error('暂无数据导出');
-        
+
           }else{
-            
-             Message.error(jsonData.info || '暂无数据导出'); 
+
+             Message.error(jsonData.info || '暂无数据导出');
           }
       } catch (err) {
-        
+
           let fileDownload = require("js-file-download");
         fileDownload(rep.data, name);
      }
    }
     fileReader.readAsText(rep.data);
-} 
+}

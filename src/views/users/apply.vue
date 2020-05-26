@@ -10,36 +10,33 @@
             :class="item.active?'active':''"
             @click="chooseMenu(ind)" >
             <a :href="item.id">{{item.name}}</a>
-
           </div>
         </div>
       </div>
       <div class="flex-1 formModal">
         <div class="formBox" id="applyBook">
           <div class="title">
-            
             <span class="text" name="applyBook">入会申请书</span>
           </div>
           <div class="formMain">
-            <el-form label-width="150px" label="left">
+            <span slot="label" v-if="!applyBookName" style="float: left;line-height: 40px;margin-right: 30px;">
+                <span  style="color:#F56C6C;"> * </span>
+                     <a href="#" style="color:#606266">请上传入会申请书</a>
+               </span>
+            <el-form  label="left">
               <el-form-item  class="m-t-20">
-                <span slot="label">
-                      <span style="color:#F56C6C;"> * </span>
-                           <a href="#" style="color:#606266">入会申请书.doc</a>
-                       </span>
-
-                <div >
+                <div>
                  <div>
                     <a :href="applyBookUrl" target="_blank"  v-show="applyBookUrl"
                         style="display:inline-block;position:relative;">
-                          <span class="el-icon-close" 
-                                style="position:absolute;right:-16px;top:14px;color:#ff0000; " 
+                          <span class="el-icon-close"
+                                style="position:absolute;right:-16px;top:14px;color:#ff0000; "
                                 @click.prevent="removeFile(1)"></span>
                           {{applyBookName}}
-                   </a> 
+                   </a>
 
-                 </div> 
-                 
+                 </div>
+
                   <el-upload
                     class="upload-box float-left"
                     :multiple="false"
@@ -70,7 +67,7 @@
                         @click="saveCompanyInfo('companyForm')">保存</el-button>
           </div>
           <div class="formMain">
-            <el-form ref="companyForm" :model="companyForm" label-width="190px" label="left" :rules="companyFormRules">
+            <el-form ref="companyForm" :model="companyForm" label-width="120px" label="left" :rules="companyFormRules">
               <el-row class="m-t-20">
                 <el-col :span="10">
                   <el-form-item label="机构类型：" prop="institutionType" >
@@ -110,15 +107,12 @@
               <el-row>
                 <el-col :span="10">
                   <el-form-item label="名称：" prop="companyName">
-
-
                     <el-input
                       v-model="companyForm.companyName" placeholder="请输入内容"  size="small"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="10">
-                  <el-form-item label="英文名称：" prop="companyNameEng">
-
+                  <el-form-item label="英文名称："  class="nobt">
                     <el-input
                       size="small"
                       v-model="companyForm.companyNameEng"
@@ -136,19 +130,14 @@
 
                       placeholder="请选择公司类型"
                     >
-
                       <el-option  v-for="(item,index) in companyTypeData"
                                   :label="item.val" :value="item.key" :key="index"></el-option>
-
                     </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="10">
                   <el-form-item label="成立日期：" prop="dateBuild">
-
                     <el-date-picker
-
-
                       format="yyyy-MM-dd"
                       value-format  ="yyyy-MM-dd"
                       type="date"
@@ -195,7 +184,7 @@
               </el-row>
               <el-row>
                 <el-col :span="18">
-                  <el-form-item label="办公地址：" prop="workAddress">
+                  <el-form-item label="办公地址：" >
 
                     <el-input  size="small"
                                v-model="companyForm.workAddress"
@@ -205,7 +194,7 @@
               </el-row>
               <el-row>
                 <el-col :span="18">
-                  <el-form-item label="公司网址：" prop="companyWeb">
+                  <el-form-item label="公司网址：">
 
                     <el-input   size="small"
                                 v-model="companyForm.companyWeb"
@@ -239,15 +228,15 @@
                       <span style="color:#F56C6C;"> * </span>
                          营业执照：
                     </span>
-                     <a :href="companyForm.imgPathLicence" target="_blank" 
+                     <a :href="companyForm.imgPathLicence" target="_blank"
                         v-show="companyForm.imgPathLicence"
                         style="display:inline-block;position:relative;height:100px;">
-                          <span class="el-icon-close" 
-                                style="position:absolute;right:5px;top:5px;color:#ff0000; " 
+                          <span class="el-icon-close"
+                                style="position:absolute;right:5px;top:5px;color:#ff0000; "
                                 @click.prevent="removeFile(2)"></span>
                           <img :src="companyForm.imgPathLicence"  width="100"  height="100" />
-                     </a> 
-                     <div>
+                     </a>
+                     <div style="overflow: hidden;">
                      <el-upload
                         class="avatar-uploader f-left"
                         :multiple="false"
@@ -259,15 +248,13 @@
                         :limit="1"
                         :show-file-list="false">
                         <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        <i v-else class="el-icon-plus avatar-uploader-icon" v-if="!companyForm.imgPathLicence" ></i>
                       </el-upload>
 
-                      <span
-                        class="m-l-20 f-left"
-                        style="color:red;"
-                      >公司基本信息发生变更，请务必重新上传营业执照，审批会核对两者间是否匹配</span>
                     </div>
+                    <div class="f-left" style="color:red;margin-top: 20px;">公司基本信息发生变更，请务必重新上传营业执照，审批会核对两者间是否匹配</div>
                   </el-form-item>
+
                 </el-col>
               </el-row>
               <el-row>
@@ -278,16 +265,16 @@
                          经营业务许可证：
                     </span>
                     <template v-for="(item,index) in (companyForm.imgPathBusinessList || [])" >
-                      <a :href="item" target="_blank" 
+                      <a :href="item" target="_blank"
                          :key="index"
                           style="display:inline-block;position:relative;height:100px;margin-right:10px;">
-                            <span class="el-icon-close" 
-                                  style="position:absolute;right:5px;top:5px;color:#ff0000; " 
+                            <span class="el-icon-close"
+                                  style="position:absolute;right:5px;top:5px;color:#ff0000; "
                                   @click.prevent="removeFile(3,index)"></span>
                             <img :src="item"  width="100"  height="100" />
                        </a>
                      </template>
-                    <div>
+                    <div style="overflow: hidden;">
                       <el-upload
                         class="avatar-uploader f-left"
                         :multiple="false"
@@ -295,17 +282,16 @@
                         :action="global.baseUrl+global.commonFileUploadUrl"
                         :http-request="uploadFile"
                         :data="{id:3}"
-                       
+
                         accept=".png,.gif,.jpg,.pgeg"
                         :show-file-list="false">
                         <img v-if="imageUrl" :src="imageUrl" class="avatar" />
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                       </el-upload>
-                      <span
-                        class="m-l-20 f-left"
-                        style="color:red;"
-                      >公司基本信息发生变更，请务必重新上传经营业务许可证，审批会核对两者间是否匹配</span>
+
                     </div>
+                    <div style="color:red;margin-top: 20px;"
+                    >公司基本信息发生变更，请务必重新上传经营业务许可证，审批会核对两者间是否匹配</div>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -315,7 +301,7 @@
         <div class="formBox" id="userInfo" :class="{companyMask:linkManMask}">
           <div class="mask"></div>
           <div class="title">
-            
+
             <span class="text" name="userInfo">联系人信息</span>
             <el-button size="small"  type="primary"
 
@@ -396,7 +382,7 @@
           <div class="mask"></div>
           <div class="formBox" id="vipUser">
             <div class="title">
-             
+
               <span class="text" name="vipUser">会员代表</span>
               <el-button size="small"  type="primary"
 
@@ -429,37 +415,7 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
-               <!--  <el-row>
-                  <el-col :span="10">
-                    <el-form-item  >
-                      <span slot="label">
-                         <span style="color:#F56C6C">*</span>
-                            证件照片：
-                        </span>
-                        <a href="static/pic2.png" target="_blank" 
-                          style="display:inline-block;position:relative;height:100px;">
-                            <span class="el-icon-close" 
-                                  style="position:absolute;right:5px;top:5px;color:#ff0000; " 
-                                  @click.prevent="removeFile(4)"></span>
-                            <img src="static/pic2.png"  width="100"  height="100" />
-                       </a>
-                      <div>
-                        <el-upload
-                          class="avatar-uploader f-left"
-                          :multiple="false"
-                          :action="global.baseUrl+global.commonFileUploadUrl"
-                          :http-request="uploadFile"
-                          :data="{id:4}"
-                          accept=".png,.gif,.jpg,.pgeg"
-                          :limit="1"
-                          :show-file-list="false">
-                          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                        </el-upload>
-                      </div>
-                    </el-form-item>
-                  </el-col>
-                </el-row> -->
+
                 <el-row>
                   <el-col :span="10">
                     <el-form-item label="签发机关：" prop="publishOrgan">
@@ -523,11 +479,9 @@
 
                       <el-date-picker
                         size="small"
-
                         format="yyyy-MM-dd"
                         value-format  ="yyyy-MM-dd"
                         v-model="repForm.birth"
-
                         placeholder="选择时间"
                         type="date"
                         style="width: 100%;"
@@ -538,14 +492,13 @@
                 <el-row>
                   <el-col :span="10">
                     <el-form-item label="民族：" prop="nation">
-
                       <el-input   size="small"
                                   v-model="repForm.nation"
                                   placeholder="请输入民族"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="10">
-                    <el-form-item label="最高学历："  prop="highestEducation">
+                    <el-form-item label="最高学历：" prop="highestEducation">
 
                       <el-select
 
@@ -561,11 +514,12 @@
                 </el-row>
                 <el-row>
                   <el-col :span="10">
-                    <el-form-item label="政治面貌："  prop="politicalAffiliation">
+                    <el-form-item label="政治面貌：" prop="politicalAffiliation">
 
-                      <el-input  size="small"
-                                 v-model="repForm.politicalAffiliation"
-                                 placeholder="请输入政治面貌"></el-input>
+                     <el-select  size="small" v-model="repForm.politicalAffiliation" placeholder="请选择政治面貌">
+                       <el-option  :value="item" :key="index" v-for="(item,index) in  politicalAffiliationList"></el-option>
+                     </el-select>
+
                     </el-form-item>
                   </el-col>
                   <el-col :span="10">
@@ -661,7 +615,7 @@
 
                   <div class="formMain " >
                     <div class="tableBox" >
-                     
+
                       <table class="myTable m-t-20">
                         <thead>
                         <tr>
@@ -767,7 +721,7 @@
                                     <el-option :label="item.val" :value="item.key" :key="item.key" v-for="(item,index) in  educationTypeList"></el-option>
                                   </el-select>
                                  </td>
-                   
+
                                 <td>
                                   <el-date-picker
                                     v-model="item.appointTime"
@@ -798,11 +752,11 @@
                               <el-button icon="el-icon-plus" size="small" @click="addTableItem(3);">新增</el-button>
                             </div>
                           </div>
-                      </div>    
+                      </div>
 
-              </div>  
+              </div>
         </div>
-        <div class="formBox" id="msgInfo" :class="{businessMask:businessMask}">
+        <div class="formBox" id="msgInfo" :class="{businessMask:businessMask}" v-if="busType!=-1">
             <div class="mask"></div>
             <div class="title">
               <span class="text" name="msgInfo">业务信息</span>
@@ -818,6 +772,7 @@
                   <thead>
                   <tr>
                     <th><span style="color:#F56C6C;"> * </span>资管部门名称</th>
+                    <th><span style="color:#F56C6C;"> * </span>部门信息</th>
                     <th><span style="color:#F56C6C;"> * </span>人员数量</th>
                     <th><span style="color:#F56C6C;"> * </span>部门负责人</th>
                     <th><span style="color:#F56C6C;"> * </span>办公电话</th>
@@ -830,6 +785,9 @@
                   <tr v-for="(item,ind) in editBusTable" :key="ind">
                     <td>
                       <ElInput v-model="item.departmentName" size="small"></ElInput>
+                    </td>
+                    <td>
+                      <ElInput v-model="item.departmentInfo" size="small"></ElInput>
                     </td>
                     <td>
                       <ElInput v-model="item.personNum" size="small"></ElInput>
@@ -861,29 +819,28 @@
                   <span class="text">资格信息</span>
 
                 </div>
-                <div class="formMain">
+                <div class="formMain tznl">
                   <el-form :model="ruleForm" ref="ruleForm" label-width="140px"  label-position="top">
                     <el-row class="m-t-20" v-show="qualificationTypeIds.length > 0 && busType==1">
                       <el-col :span="24">
                         <el-form-item label="具备投资能力：">
-                          <el-checkbox-group v-model="qualityList">
+                          <el-checkbox-group v-model="qualityList" >
                             <el-checkbox
                               v-for="item in qualificationTypeIds"
                               :label="item.key"
                               :key="item.key"
-
                             >{{item.val}}</el-checkbox>
                           </el-checkbox-group>
-
                         </el-form-item>
                       </el-col>
+                       <el-input v-model="qualityOther" class="tznl-other" placeholder="其他" size="small"></el-input>
                     </el-row>
 
                     <!-- 1 -->
                   <div class="formBox" id="msgInfo">
                     <div class="title">
                       <span class="text">规模信息</span>
-                       
+
                     </div>
                    </div>
                     <el-row v-if="busType==1">
@@ -903,8 +860,8 @@
                     <el-row v-if="busType==1">
                       <el-col :span="10">
                         <el-form-item label="上年度末受托管理规模总计（亿元）：" label-width="265px">
-
-                          <el-input v-model="sizeInformationForm.yearTotalFund" placeholder="请输入"></el-input>
+                           {{totalNumber()}}
+                          <el-input :value="sizeInformationForm.yearTotalFund" placeholder="请输入"></el-input>
                         </el-form-item>
                       </el-col>
                       <el-col :span="10">
@@ -1177,7 +1134,7 @@
                         <el-form-item label="备注：" >
 
                           <el-input
-                            v-model="sizeInformationForm.remark"
+                            v-model="sizeInformationForm.scaleRemark"
                             type="textarea"
                             style="width:100%;"
                             placeholder="请输入备注"
@@ -1188,10 +1145,7 @@
                   </el-form>
                 </div>
               </div>
-
-
             </div>
-          
         </div>
       </div>
     </div>
@@ -1248,7 +1202,7 @@
         shareholdersRules:['shareholderName','shareholdingRatio','chuziRatio','shareholderType' ],
         seniorExecutiveRules:['seniorName','sex','duties','nation','birth','highestEducation','appointTime',
           'departInCharge','officerPhone','mail'],
-        busTableRules:[ 'fordepartmentName',"personNum","departHeader", "officePhone",  "mobilePhone", "email"],
+        busTableRules:[ 'fordepartmentName', 'departmentInfo',"personNum","departHeader", "officePhone",  "mobilePhone", "email"],
         leftMenu: [
           { name: "入会申请书", active: true, id: "#applyBook" },
           { name: "公司基本信息", active: false, id: "#baseInfo" },
@@ -1265,6 +1219,7 @@
           {value:4,label:'国有法人股东'},
 
         ],
+        politicalAffiliationList:['团员','党员','群众'],
         ruleFormRules:{
           licenseType:[{ required: true, message: '请选择证件类型', trigger: 'blur' }],
           licenceNum:[{ required: true, message: '请填写证件号码', trigger: 'blur' }],
@@ -1276,7 +1231,7 @@
           birth:[{ required: true, message: '请选择出生年月', trigger: 'blur' }],
           nation:[{ required: true, message: '请输入民族', trigger: 'blur' }],
           highestEducation:[{ required: true, message: '请选择最高学历', trigger: 'blur' }],
-          politicalAffiliation:[{ required: true, message: '请输入政治面貌', trigger: 'blur' }],
+          politicalAffiliation:[{ required: true, message: '请选择政治面貌', trigger: 'blur' }],
           duty:[{ required: true, message: '请输入职务', trigger: 'blur' }],
           officeNum:[{ required: true, message: '请输入办公电话', trigger: 'blur' }],
           fax:[{ required: true, message: '请输入传真', trigger: 'blur' }],
@@ -1366,9 +1321,10 @@
         storeBusTable:[],
         editBusTable:[],
         qualityList: [],
+        qualityOther:'',
         quality: [],
         busType: 0,
-        sizeInformationForm: {},
+        // sizeInformationForm: {},
         storesizeInformationForm:{},
         msgCK: true,
         memCK: true,
@@ -1396,7 +1352,7 @@
             9:'businessNineDto',
             10:'businessTenDto',
             11:'businessElevenDto',
-            12:'businessTwelveDto',   
+            12:'businessTwelveDto',
         },
         upVisible: false,
         upform: {
@@ -1459,9 +1415,14 @@
       this.scrollDocument();
     },
     methods: {
+      totalNumber(){
+        this.sizeInformationForm.yearTotalFund = Number(this.sizeInformationForm.yearInsureFund) + Number(this.sizeInformationForm.yearInsureFundNot)
+        console.log(this.sizeInformationForm.yearTotalFund);
+      },
         loadMembership(){
             queryMembership({}).then(rep=>{
               if(rep && rep.code=='200'){
+                console.log(rep);
                 this.applyBookUrl=rep.data.fullPath
                 this.applyBookName=rep.data.name
               }
@@ -1473,7 +1434,7 @@
                  let arr=rep.data.map(item=>{
                       return item.toString()
                      })
-                 
+
                   for(let key in this.workflowObj){
                      if(arr.indexOf('9') > -1){
                         this[this.workflowObj[key]]=true;
@@ -1491,7 +1452,7 @@
             })
         },
         uploadFile(obj){
-        
+
         if( Math.floor( obj.file.size/(1024*1024) ) > 10 ){
             warnMES('最多上传10M')
             return
@@ -1520,7 +1481,7 @@
                   // this.filePath=res.data
              }
         })).catch(error=>{
-           
+
         })
       },
       removeFile(type,index){
@@ -1543,6 +1504,10 @@
          if(!this.applyBookUrl){
              warnMES('请上传入会申请书');
              return
+         }
+
+         if(self.qualityOther){
+           self.qualityList.push(qualityOther)
          }
         let validateRules=  new Promise((resolve, reject) => {
                 if(this.companyMask){
@@ -1703,7 +1668,7 @@
                         }
                      }
                   }
-                 
+
               })
               if(flag){
                 let filed="";
@@ -1714,7 +1679,7 @@
                      case 'shareholderType': filed="股东类型";break;
                      default : filed="";break;
                  }
-                 
+
                  warnMES("股东第" +(index+1)+"行--"+filed+'--必填');
                  // this.$store.commit("closeEdit",false);
                  return false;
@@ -1759,7 +1724,7 @@
 
                          }
                       }
-                     
+
                 })
                  if(emailValid){
                     warnMES("第" +(index+1)+"行--邮箱格式不正确");
@@ -1780,14 +1745,14 @@
                        case 'officerPhone': filed="办公电话";break;
                        case 'mail': filed="邮箱";break;
                        default : filed="";break;
-                       
+
                    }
                    warnMES("高管第" +(index+1)+"行--"+filed+'--必填');
                    // this.$store.commit("closeEdit",false);
                    return false;
                  }
 
-                 return true 
+                 return true
            }else{
                 return false
            }
@@ -1828,7 +1793,7 @@
                     warnMES("资格信息必填");
                     return false
                   }
-        
+
                   return true
             }else{
                return false
@@ -1838,17 +1803,16 @@
             if(preflag){
                 let params={}
                 this.repForm.dateEffective=this.repForm.effectiveDate
-                params[this.busTypeFields[this.busType]]=this.sizeInformationForm  
+                params[this.busTypeFields[this.busType]]=this.sizeInformationForm
                 params[this.busTypeFields[this.busType]]['departmentInfoList']=[...this.editBusTable]
                 params[this.busTypeFields[this.busType]]['qualificationTypeIds']=[...this.qualityList]
-               
+
                 if(this.busType==2 || this.busType==3 ){
                       delete  params[this.busTypeFields[this.busType]].qualificationTypeIds
                 }else if(this.busType!=1) {
                       delete  params[this.busTypeFields[this.busType]].qualificationTypeIds
                       delete  params[this.busTypeFields[this.busType]].departmentInfoList
                 }
-             
               params.companyInfoDto=this.companyForm
               params.contactDtoList=this.editContactTable
               params.memberRepDto=this.repForm
@@ -1858,12 +1822,11 @@
               memberApprovalSaveAll(params).then(rep=>{
                   if(rep && rep.code=='200'){
                       successMES('保存成功');
-                      this.$router.push({path:"/"})
+                      this.$router.push({path:"/myHome/index"})
                   }
               })
             }
         }).catch(error=>{
-
            console.log(error);
         })
       },
@@ -1904,6 +1867,7 @@
         })
         serviceType({}).then(rep=>{
           if(rep && rep.code=="200"){
+            console.log(rep);
             this.busType=rep.data;
           }
         })
@@ -2024,7 +1988,7 @@
              successMES('保存成功');
             this.getWorkFlowStatus()
             this.querySeniorExecutiveList();
-           
+
           }
         }).catch(error=>{
 
@@ -2063,7 +2027,7 @@
           warnMES("资格信息必填");
           return
         }
-        
+
         let params={departmentInfoList:[],qualificationTypeIds:[],...this.sizeInformationForm}
         params.departmentInfoList=[...this.editBusTable]
         params.qualificationTypeIds=[...this.qualityList]
@@ -2166,7 +2130,7 @@
           saveBus_12_Common(params).then(rep=>{
             if(rep && rep.code=='200'){
               successMES('保存成功');
-             
+
               this.getBusinessInformation();
             }
           })
@@ -2183,15 +2147,15 @@
             warnMES('经营业务许可证图片必填');
             return
         }
+
+
+
         this.$refs[formName].validate((valid) => {
           if (valid) {
             saveCompanyBasicInfoCommon(this.companyForm).then(rep=>{
               if(rep && rep.code=='200'){
                  successMES('保存成功');
                 this.getWorkFlowStatus()
-               
-
-
               }
             }).catch(error=>{
               // this.$store.commit("closeEdit",false);
@@ -2267,7 +2231,7 @@
             successMES('保存成功');
             this.getWorkFlowStatus()
             this.queryShareholder();
-            
+
 
           }
         }).catch(error=>{
@@ -2387,7 +2351,7 @@
             successMES('保存成功');
             this.quertLinkManList();
             this.getWorkFlowStatus()
-            
+
 
 
           }
@@ -2424,6 +2388,7 @@
               return item.qualificationType
             })
             this.sizeInformationForm=rep.data
+            console.log( this.sizeInformationForm);
           }
         })
       },
@@ -2497,6 +2462,7 @@
           this.editBusTable.push(
             {
               'fordepartmentName':"",
+               'departmentInfo':"",
               "personNum":"",
               "departHeader":"",
               "officePhone":"",
@@ -2656,7 +2622,7 @@
           let container = document.getElementById("iframeContainer");  //找对象
           if(window.addEventListener){
              container.addEventListener('scroll',this.calcHeight,false)
-              
+
          }else{
              container.attachEvent("onscroll",this.calcHeight,false);
          }
@@ -2913,5 +2879,28 @@
         margin-right: 4px;
       }
     }
+  }
+  .tznl .el-checkbox{
+    display: block;
+  }
+  .tznl-other{
+    width: 260px;
+  }
+  .tznl .el-form-item{
+    margin-bottom: 0;
+  }
+  .el-form-item__content a{
+    float: left;
+    margin-right: 25px !important;
+  }
+
+  .avatar-uploader{
+    background-color: #f5f5f5;
+  }
+  .nobt .el-form-item__label:before{
+    content: none !important;
+  }
+  .appyVip .formModal .tableBox .addItem .el-button{
+    margin-left: 30%;
   }
 </style>

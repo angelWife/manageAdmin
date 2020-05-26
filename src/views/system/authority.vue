@@ -47,7 +47,7 @@
           <el-input placeholder="请输入" v-model="authData.path" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="序号：">
-          <el-input placeholder="请输入" v-model="authData.number" autocomplete="off"></el-input>
+          <el-input placeholder="请输入" type="number" v-model="authData.sortNum" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="类型：">
           <el-select v-model="authData.type" placeholder="请选择">
@@ -89,7 +89,8 @@
           <el-input disabled placeholder="请输入" v-model="authEdit.path" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="序号：">
-          <el-input disabled placeholder="请输入" v-model="authEdit.number" autocomplete="off"></el-input>
+
+          <el-input placeholder="请输入" type="number" v-model="authEdit.sortNum" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="类型：">
           <!-- <el-select v-model="authEdit.type" placeholder="请选择">
@@ -125,7 +126,7 @@ export default {
         parent: "",
         title: "",
         path: "",
-        number: "",
+        sortNum: "",
         type: "",
         remark: ""
       },
@@ -134,7 +135,7 @@ export default {
         parent: "会员系统",
         title: "首页",
         path: "/index",
-        number: "0",
+        sortNum: "0",
         type: "页面",
         remark: "供普通会员使用的首页"
       },
@@ -162,13 +163,15 @@ export default {
           value: "页面2",
           label: "页面2"
         }
-      ]
+      ],
+      parentName:''
     };
   },
   created() {
     //    this.approData = this.allData;
     this.$nextTick(() => {
-      this.tableData = this.$store.state.menu;
+      // this.tableData = this.$store.state.menu;
+      this.getMenuList()
       // this.setMenuList(this.menuList);
     });
   },
@@ -180,11 +183,12 @@ export default {
       let id = rowdata.id;
       this.tableData.filter(v => {
         if (v.id == id) {
+          self.parentName = ""
           self.authEdit.id = v.id;
           self.authEdit.parent = "";
           self.authEdit.title = v.name;
           self.authEdit.path = v.path;
-          self.authEdit.number = v.sortNum;
+          self.authEdit.sortNum = v.sortNum;
           self.authEdit.remark = v.remark;
           self.authEdit.type = "";
         } else {
@@ -195,7 +199,7 @@ export default {
                 self.authEdit.parent = v.name;
                 self.authEdit.title = m.name;
                 self.authEdit.path = m.path;
-                self.authEdit.number = m.sortNum;
+                self.authEdit.sortNum = m.sortNum;
                 self.authEdit.remark = m.remark;
                 self.authEdit.type = "页面";
               }
@@ -210,6 +214,8 @@ export default {
       params.id = this.authEdit.id;
       params.remark = this.authEdit.remark;
       params.name = this.authEdit.title;
+
+      params.sortNum = this.authEdit.sortNum;
       this.$api.system.editAuthority(params).then(res => {
         if (res.success) {
           self.editVisible = false;
@@ -223,8 +229,8 @@ export default {
     },
     getMenuList() {
       let self = this;
-      this.$api.menu
-        .findNavTree({})
+      this.$api.system
+        .getMenuList({})
         .then(res => {
           if (res.success) {
             self.tableData = res.data;

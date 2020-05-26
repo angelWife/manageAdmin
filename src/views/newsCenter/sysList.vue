@@ -83,8 +83,8 @@
           <span v-if="scope.row.msgStatus == 1">
             <el-button @click="handleEdit(scope.row.id)" type="primary" size="small">编辑</el-button>
             <el-button @click="handlePublish(scope.row.id)" type="primary" size="small">发布</el-button>
-            <el-button @click="handleMonitor (scope.row)" type="primary" size="small">发送监控</el-button>
             <el-button @click="handleCopy(scope.row.id)" size="small">复制</el-button>
+            <el-button @click="handleDelete(scope.row.id)" size="small">删除</el-button>
           </span>
           <span v-if="scope.row.msgStatus == 3">
             <el-button @click="handleMonitor(scope.row)" type="primary" size="small">发送监控</el-button>
@@ -306,7 +306,7 @@ export default {
   height: auto;
   .input_style,
   .el-select {
-    width: calc(100% - 180px);
+    width: calc(100% - 30px);
   }
 }
 </style>

@@ -334,7 +334,7 @@ export default {
   height: auto;
   .input_style,
   .el-select {
-    width: calc(100% - 110px);
+    width: calc(100% - 30px);
   }
 }
 </style>
