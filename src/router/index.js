@@ -108,7 +108,7 @@ import sysUser from '@/views/system/user';
 import sysDictionary from '@/views/system/dictionary';
 
 import yearFee from '@/views/approval/yearFee';
-import iWebOffice from '@/views/iWebOffice/iWebOffice';
+import iWebOffice from '@/views/iWebOffice/IWebOffice';
 import officeDemo from '@/views/iWebOffice/officeDemo';
 // import Generator from "@/views/Generator/Generator";
 import api from "@/http/api";
@@ -618,7 +618,7 @@ const router = new Router({
       leaf: false, //只有一个节点
       children: [
         {
-          path: "/iWebOffice/iWebOffice",
+          path: "/iWebOffice/IWebOffice",
           name: "iWebOffice",
           component: iWebOffice
         },
