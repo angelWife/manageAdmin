@@ -4,7 +4,7 @@
       <el-row class="m-t-20" style="padding-left: 30px;">
         <el-col :span="20">
           <el-form-item label="邮件标题：">
-            <el-input v-model="form.emailTitle" placeholder="请输邮件标题" :disabled="check"></el-input>
+            <el-input v-model="form.title" placeholder="请输邮件标题" :disabled="check"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -13,7 +13,7 @@
           <el-form-item label="邮件内容：">
             <el-card style="height: 680px;">
               <quill-editor
-                v-model="form.emailData"
+                v-model="form.content"
                 :disabled="check"
                 ref="myQuillEditor"
                 style="height: 500px;"
@@ -23,7 +23,7 @@
         </el-col>
       </el-row>
       <el-row style="padding-left: 30px;">
-        <el-col :span="8">
+        <el-col :span="16">
           <el-form-item label="发送测试：">
             <el-input placeholder="请输入测试邮箱" v-model="form.email" :disabled="check">
               <el-button
@@ -68,8 +68,8 @@ export default {
     return {
       bus: new Vue(),
       form: {
-        emailTitle: "",
-        emailData: "",
+        title: "",
+        content: "",
         email: ""
       },
       msgParam: {},
@@ -82,6 +82,24 @@ export default {
     };
   },
   created() {
+    if (!!this.$route.query.rowId) {
+      this.messageId = Number(this.$route.query.rowId);
+      this.check = this.$route.query.check ? true : false;
+      apiShow("message", "emailView", {
+        id: this.messageId
+      }).then(resolve => {
+        this.form = {
+          title: resolve.title,
+          content: resolve.content
+        };
+        this.sendOn = {
+          flagSendDelay: resolve.flagSendDelay,
+          sendDate: resolve.sendTime
+        };
+        this.bus.$emit("timeEdit", this.sendOn);
+        this.bus.$emit("sendObject", resolve.sendObjectType);
+      });
+    }
     this.bus.$on("sendTime", data => {
       console.log("sendTime", data);
       this.sendParam = data;
@@ -96,48 +114,34 @@ export default {
       console.log("sendObj", data);
       this.ObjParam = data;
     });
-
-    if (!!this.$route.query.rowId) {
-      this.messageId = Number(this.$route.query.rowId);
-      this.check = this.$route.query.check ? true : false;
-      apiShow("message", "emailView", {
-        id: this.messageId
-      }).then(resolve => {
-        this.form = {
-          emailTitle: resolve.emailTitle,
-          emailData: resolve.emailData
-        };
-        this.sendOn = {
-          flagSendDelay: resolve.flagSendDelay,
-          sendDate: resolve.sendTime
-        };
-        this.bus.$emit("timeEdit", this.sendOn);
-        this.bus.$emit("sendObject", resolve.sendObjectType);
-      });
-    }
   },
   methods: {
     submitForm() {
-      if(!!this.form.emailData&&!!this.form.emailTitle&&(this.msgParam.companyIdList.length>0||this.msgParam.groupIdList.length>0)){
+      if (
+        !!this.form.content &&
+        !!this.form.title &&
+        (this.msgParam.companyIdList.length > 0 ||
+          this.msgParam.groupIdList.length > 0)
+      ) {
         apiShow("message", "emailAdd", {
           ...this.form,
           ...this.sendParam,
-          'id': this.messageId,
-          'memberList': this.msgParam.companyIdList.join(","),
-          'memberGroupList': this.msgParam.groupIdList.join(","),
-          'sendObjectType':this.ObjParam
+          id: this.messageId,
+          memberList: this.msgParam.companyIdList.join(","),
+          memberGroupList: this.msgParam.groupIdList.join(","),
+          sendObjectType: this.ObjParam
         }).then(resolve => {
           publicMsg(this.msgParam, resolve, 5, false, "mail", "emailPublish");
           this.$router.go(-1);
         });
-      }else{
+      } else {
         this.$message({
-          message: '请填写邮件内容，标题和接收人或组！',
-          type: 'warning'
+          message: "请填写邮件内容，标题和接收人或组！",
+          type: "warning"
         });
       }
     },
-    back(){
+    back() {
       this.$router.go(-1);
     }
   },

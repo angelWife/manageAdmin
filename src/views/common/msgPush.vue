@@ -131,12 +131,12 @@
       </el-form-item>
     </el-form>
     <!-- 添加会员 -->
-    <el-dialog title="添加会员" :visible.sync="addVisible" width="60%">
+    <el-dialog title="添加会员" :visible.sync="addVisible" width="70%">
       <el-row>
         <el-col :span="8">
           <div>
             <span>会员类型：</span>
-            <el-select v-model="memberType" placeholder="请选择">
+            <el-select style="width:160px;" v-model="memberType" placeholder="请选择">
               <el-option v-for="item in memberList" :key="item.id" :value="item.dictVal"></el-option>
             </el-select>
           </div>
@@ -144,37 +144,38 @@
         <el-col :span="8">
           <div>
             <span>机构类型：</span>
-            <el-select v-model="orgType" placeholder="请选择">
+            <el-select style="width:160px;" v-model="orgType" placeholder="请选择">
               <el-option v-for="item in orgList" :key="item.id" :value="item.dictVal"></el-option>
             </el-select>
           </div>
         </el-col>
         <el-col :span="8">
           <div>
-            <span>会员名：</span>
-            <el-input v-model="name" placeholder="请输入" class="input_style"></el-input>
+            <span>  会员名：</span>
+            <el-input style="width:160px;" v-model="name" placeholder="请输入" class="input_style"></el-input>
           </div>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8">
+        <el-col :span="7">
           <div>
-            <span>统一社会信用编码：</span>
-            <el-input v-model="scoialcode" placeholder="请输入" class="input_style"></el-input>
+            <span style="vertical-align: middle; display: inline-block; width: 72px;">统一社会信用编码：</span>
+            <el-input style="width:160px;" v-model="scoialcode" placeholder="请输入" class="input_style"></el-input>
           </div>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="7">
           <div>
             <span>公司性质：</span>
-            <el-select v-model="busPro" placeholder="请选择">
+            <el-select style="width:160px;" v-model="busPro" placeholder="请选择">
               <el-option v-for="item in proList" :key="item.id" :value="item.dictVal"></el-option>
             </el-select>
           </div>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="9">
           <div>
             <span>入会时间：</span>
             <el-date-picker
+             style="width:230px;"
               v-model="admiTime"
               type="daterange"
               start-placeholder="开始日期"
@@ -318,13 +319,17 @@ export default {
     apiSelect({ type: 1 }, this.orgList); //机构类型
     apiSelect({ type: 2 }, this.memberList); // 会员类型
     apiSelect({ type: 4 }, this.proList); // 性质
+    let self = this
 
+  },
+  mounted() {
     // 编辑
+    console.log(this.id)
     if (!!this.id) {
       this.apiMsgMember({ type: this.pushType, typeId: Number(this.id) });
       this.bus.$on("timeEdit", data => {
-        this.send = data;
-        this.timeData();
+        self.send = data;
+        self.timeData();
       });
       this.bus.$on("sendObject", data => {
         this.sendObjectType = data;
@@ -334,8 +339,6 @@ export default {
       // 新建
       this.apiMsgMember({}); // 显示会员组
     }
-  },
-  mounted() {
     this.passData();
 
     if (this.sendTime) {
@@ -350,7 +353,7 @@ export default {
       this.bus.$emit("msgBox", this.msgUp);
     },
     timeData() {
-      this.bus.$emit("sendTime", this.send);
+      this.bus.$emit("sendTime", this.send.sendTime);
     },
     objData() {
       this.bus.$emit("sendObj", this.sendObjectType);
@@ -462,6 +465,7 @@ export default {
         memberType: selectType(this.memberType, this.memberList),
         institutionType: selectType(this.orgType, this.orgList),
         companyName: this.name,
+        memberStatus: 1,
         creditId: this.scoialcode,
         companyType: selectType(this.busPro, this.proList),
         joinDateFrom: getDateTime(this.admiTime[0]),
@@ -540,8 +544,8 @@ export default {
       }
 
       this.passData();
-    },
-   /* pMsgUp(){
+    }
+    /* pMsgUp(){
       console.log('cmsgup',this.msgUp);
       this.$emit('pMsgUp',this.msgUp);
     }*/

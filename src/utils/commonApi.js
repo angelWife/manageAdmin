@@ -32,7 +32,7 @@ export async function apiBasicMember(funObj, param) {
     let obj = {};
     await vm.$api.member[funObj](param).then(res => {
         if (res.success) {
-            obj =res.data;
+            obj = res.data;
         } else {
             // warnMES(res.message);
         }
@@ -196,7 +196,7 @@ export function publicMsg(upObj, id, type, remind, platform, apiFun) {
         })
         .then(res => {
             if (res.success) {
-                publishMsg(id, "提交成功", apiFun)
+                /*  publishMsg(id, "提交成功", apiFun) */
             } else {
                 // warnMES(res.message);
             }
@@ -222,7 +222,7 @@ export function publishMsg(id, message, apiFun) {
         console.log(error);
     });
 }
-export function saveCompanyBasicInfo(data,url){
+export function saveCompanyBasicInfo(data, url) {
     return axios({
         url,
         method: 'post',
@@ -230,9 +230,9 @@ export function saveCompanyBasicInfo(data,url){
     })
 }
 //会员认定 公司信息保存
-export function saveCompanyBasicInfoCommon(data){
-      return axios({
-        url:"/common/member/apply/company-info/add",
+export function saveCompanyBasicInfoCommon(data) {
+    return axios({
+        url: "/common/member/apply/company-info/add",
         method: 'post',
         data
     })

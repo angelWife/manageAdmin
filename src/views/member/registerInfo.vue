@@ -41,8 +41,7 @@
       </div>
     </div>
     <div class="footBtnBox text_right" v-if="!(actType == 'check')">
-      <el-button>取消</el-button>
-      <el-button type="primary" @click="submitForm()">提交</el-button>
+      <el-button @click="$router.go(-1)">返回</el-button>
     </div>
   </div>
 </template>
@@ -121,10 +120,10 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
-      } 
-   
+      }
+
     },
     save(scope) {
       scope.row.isEdit = false;

@@ -6,17 +6,16 @@
     <el-table-column prop="creditId" label="社会统一编码"></el-table-column>
     <el-table-column prop="type" label="审批业务" width="150" :formatter="setType"></el-table-column>
     <el-table-column prop="status" label="状态" width="100" :formatter="setStatus"></el-table-column>
-    <el-table-column fixed="right" label="操作" width="100">
+    <el-table-column fixed="right" label="操作" width="160">
       <template slot-scope="scope">
         <el-button
           v-if="scope.row.isAccess"
           @click="handleAct(scope.row)"
-          type="text"
+          type="primary"
           size="small"
         >处理</el-button>
         <el-button
           @click="handleCheck(scope.row)"
-          type="text"
           size="small"
         >查看</el-button>
       </template>

@@ -17,7 +17,7 @@
       </el-row>
     </el-form>
     <div style="padding-left:150px;padding-top:60px">
-      <el-button type>取消</el-button>
+      <el-button @click="queryBtn" type>取消</el-button>
       <el-button type="primary" @click="submitForm()">提交</el-button>
     </div>
   </div>
@@ -39,9 +39,13 @@ export default {
     this.showEdit();
   },
   methods: {
+    queryBtn(){
+      this.$router.go(-1);
+    },
     showEdit() {
       apiShow("message", "modelView", {
-        id: this.$route.query.id
+        id: this.$route.query.id,
+        modelStyle: 1
       }).then(resolve => {
         this.form = {
           modelName: resolve.modelName,
@@ -52,9 +56,11 @@ export default {
     submitForm() {
       apiShow("message", "modelAdd", {
         id: this.$route.query.id,
-        ...this.form
+        ...this.form,
+        modelStyle: 1
       }).then(resolve => {
         successMES("提交成功");
+        this.$router.go(-1);
       });
     }
   }

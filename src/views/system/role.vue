@@ -16,7 +16,7 @@
       </el-col>
       <el-col :span="12" class="text_right">
         <el-button type="primary" @click="getRoleTable">查询</el-button>
-        <el-button>重置</el-button>
+        <el-button @click="reset">重置</el-button>
       </el-col>
     </el-row>
     <el-table :data="tableData" style="width: 100%" class="comTable" empty-text="没有符合条件的角色">
@@ -32,7 +32,7 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog title="新增角色" :visible.sync="roleVisible" width="30%">
+    <el-dialog title="新增角色" :visible.sync="roleVisible" @close = "cancelBtn" width="30%">
       <el-form :model="roleData" label-width="90px">
         <el-form-item label="角色：" class="mustFill">
           <el-input placeholder="请输入" v-model="roleData.name" autocomplete="off"></el-input>
@@ -49,16 +49,16 @@
           ></el-tree>
         </el-form-item>
         <el-form-item label="备注：">
-          <el-input placeholder="请输入" v-model="roleData.remark" type="textarea" autocomplete="off"></el-input>
+          <el-input placeholder="请输入" maxlength="40" v-model="roleData.remark" type="textarea" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="roleVisible = false">取消</el-button>
+        <el-button @click="cancelBtn">取消</el-button>
         <el-button type="primary" @click="sureBtn">确定</el-button>
       </span>
     </el-dialog>
 
-    <el-dialog title="编辑角色" :visible.sync="dicVisible" width="30%">
+    <el-dialog title="编辑角色" :visible.sync="dicVisible" @close = "cancelBtn" width="30%">
       <el-form :model="roleData" label-width="90px">
         <el-form-item label="角色：">
           <el-input placeholder="请输入" v-model="roleData.name" autocomplete="off"></el-input>
@@ -75,11 +75,11 @@
           ></el-tree>
         </el-form-item>
         <el-form-item label="备注：">
-          <el-input placeholder="请输入" v-model="roleData.remark" type="textarea" autocomplete="off"></el-input>
+          <el-input placeholder="请输入" maxlength="40" v-model="roleData.remark" type="textarea" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dicVisible = false">取消</el-button>
+        <el-button @click="cancelBtn">取消</el-button>
         <el-button type="primary" @click="sureBtn">确定</el-button>
       </span>
     </el-dialog>
@@ -94,6 +94,7 @@
 <script>
 import { mapState } from "vuex";
 import {formatWithSeperator} from "../../utils/datetime";
+import { warnMES, successMES, tipMES, pubParam } from "../../utils/common";
 export default {
   data() {
     return {
@@ -161,13 +162,20 @@ export default {
   created() {
     //    this.approData = this.allData;
     this.getRoleTable();
-    console.log();
     this.$nextTick(() => {
       this.autGroup = this.$store.state.menu;
       // this.setMenuList(this.menuList);
+      console.log(this.autGroup);
     });
   },
   methods: {
+    reset(){//重置
+      this.params= {
+        nameLike: "",
+        menuNameLike: ""
+      }
+      this.getRoleTable();
+    },
     getRoleTable() {
       let self = this;
       let params = this.params;
@@ -194,6 +202,7 @@ export default {
     },
     editRoleInfo(rowdata) {
       this.dicVisible = true;
+      this.defaultChecked = [];
       if (rowdata.menuList && rowdata.menuList.length > 0) {
         this.setCheckMenu(rowdata.menuList);
       }
@@ -242,11 +251,13 @@ export default {
       this.roleVisible = true;
       this.defaultExpanded = [];
       this.defaultChecked = [];
+      this.roleData = {menuIdList:[]};
       delete this.roleData.id;
     },
     setCheckMenu(list) {
       let self = this;
       let check = [];
+      this.defaultChecked = [];
       list.filter((v, i) => {
         let _down = false;
         check.push(v.id);
@@ -268,12 +279,31 @@ export default {
         }
       });
       this.defaultChecked = check;
-      console.error(check);
+      // console.error(check);
+    },
+    cancelBtn(){
+      this.roleVisible = false;
+      this.dicVisible = false;
+      // console.log(this.$refs.roleKeys)
+      if (this.$refs.roleKeys) {
+          this.$refs.roleKeys.setCheckedKeys([]);
+      } else { 
+        this.$nextTick(() => {
+          this.$refs.roleKeys.setCheckedKeys([])
+        })
+      }
     },
     sureBtn() {
       let self = this;
       let menuIdList = this.$refs.roleKeys.getCheckedKeys();
       this.roleData.menuIdList = menuIdList;
+      let name = this.roleData.name;
+      for(let i=0;i<this.tableData.length;i++){
+        if( (name == this.tableData[i].name && this.roleVisible ) || (this.roleData.id !=this.tableData[i].id && name == this.tableData[i].name) ){
+          warnMES("角色名已经存在，为避免误解，请更换角色名称");
+          return false;
+        }
+      }
       this.$api.system.editRoleInfo(this.roleData).then(res => {
         if (res.success) {
           self.roleVisible = false;
@@ -289,6 +319,7 @@ export default {
               type: "success"
             });
           }
+          this.$refs.roleKeys.setCheckedKeys([]);
           self.getRoleTable();
         }
       });

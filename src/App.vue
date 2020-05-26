@@ -89,7 +89,7 @@ body {
     }
   }
   .hasFoot {
-    padding-bottom: 60px;
+    padding-bottom: 60px !important;
   }
   .footBtnBox {
     position: fixed;

@@ -7,7 +7,8 @@
         <el-input placeholder="请输入会员代码/邮箱" v-model="user" prefix-icon="el-icon-user"></el-input>
       </div>
       <div class="item">
-        <el-input placeholder="请输入密码" v-model="password" prefix-icon="el-icon-lock" show-password></el-input>
+         <img class="img-eye" :src="showPw?'../../../static/eye-open.png':'../../../static/eye-close.png'" @click="showPassword">
+        <el-input placeholder="请输入密码" v-model="password" prefix-icon="el-icon-lock" :type="showPw?'text':'password'"></el-input>
       </div>
       <div class="item text_right fs13">
         <router-link to="getPassword" class="link" @click="getPwd">忘记密码</router-link>
@@ -38,7 +39,8 @@ export default {
   data() {
     return {
       user: "",
-      password: ""
+      password: "",
+      showPw:false,
     };
   },
   created() {
@@ -51,6 +53,16 @@ export default {
   },
   methods: {
     confirmLogin() {
+      if (!this.user) {
+        this.$message.error("请输入用户账号");
+        return;
+      }
+      if (!this.password) {
+        this.$message.error("请输入用户密码");
+        return;
+      }
+
+
       this.$api.login
         .login({
           passwd: this.password,
@@ -58,10 +70,11 @@ export default {
         }).then(res => {
           if (res.success) {
             let in2hours = 1 / 12;
-
             Cookies.set("token", res.data.token, {
               expires: in2hours
             });
+           
+            localStorage.setItem("userNameIndex", res.data.userName);
             this.$store.commit('setUserInfo',res.data);
             sessionStorage.setItem("userType", res.data.userType);
             this.$router.push({ path: "/myHome/index" });
@@ -76,7 +89,10 @@ export default {
     },
     getPwd() {
       this.$router.push({ path: "/login/getPassword" });
-    }
+    },
+    showPassword(){
+      this.showPw =  !this.showPw
+    },
   }
 };
 </script>
@@ -93,10 +109,19 @@ export default {
     margin: 0 auto;
     .item {
       margin-bottom: 20px;
+      position: relative;
       button {
         width: 100%;
       }
     }
   }
+}
+.img-eye{
+  position: absolute;
+  width: 22px;
+  height: 16px;
+  right: 10px;
+    z-index: 9;
+    margin-top: 12px;
 }
 </style>

@@ -25,6 +25,7 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               @current-change="currentchange"
+              style="width:calc(100% - 20px)"
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -90,35 +91,65 @@
       <el-table-column prop="checkStatusVal" label="审核状态"></el-table-column>
       <el-table-column prop="publishStatusVal" label="发布状态"></el-table-column>
       <el-table-column prop="creator" label="创建人"></el-table-column>
-      <el-table-column fixed="right" label="操作" width="350">
+      <el-table-column fixed="right" label="操作" width="300">
         <template slot-scope="scope">
-          <span v-if="scope.row.publishStatus==1">
-            <el-button type="primary" size="small" @click="handlePublish(scope.row.id)">发布</el-button>
-            <el-button @click="handleConfirm(scope.row.id)" type="primary" size="small">报名确认</el-button>
-            <el-button @click="handleMonitor(scope.row.id)" type="primary" size="small">发送监控</el-button>
-            <el-button @click="handleCheck(scope.row.id)" size="small">查看</el-button>
-            <el-button @click="handleCopy(scope.row.id)" size="small">复制</el-button>
+          <!-- 如果是草稿和驳回状态 -->
+          <span v-if="scope.row.checkStatus==1 || scope.row.checkStatus==2">
+            <el-button type="primary" @click="handleEdit(scope.row)" size="small">编辑</el-button>
+            <el-button @click="handleCheck(scope.row)" size="small">查看</el-button>
+            <el-button @click="handleCopy(scope.row)" size="small">复制</el-button>
+            <el-button @click="handleDelete(scope.row)" size="small">删除</el-button>
           </span>
-          <span v-if="scope.row.publishStatus==2">
-            <el-button type="primary" @click="handleDown(scope.row.id)" size="small">下架</el-button>
+          <!-- 如果是待审批状态 -->
+          <span v-if="scope.row.checkStatus==3">
+            <!-- <el-button type="primary" @click="handleEdit(scope.row)" size="small">编辑</el-button> -->
+            <el-button @click="handleCheck(scope.row)" size="small">查看</el-button>
+            <el-button @click="handleCopy(scope.row)" size="small">复制</el-button>
+            <!-- <el-button size="small">删除</el-button> -->
+          </span>
+          <!-- 如果是已审批状态并且下架 -->
+          <span v-if="scope.row.checkStatus==4 && scope.row.publishStatus==1">
+            <el-button type="primary" size="small" @click="handlePublish(scope.row)">发布</el-button>
             <el-button @click="handleConfirm(scope.row.id)" type="primary" size="small">报名确认</el-button>
             <el-button @click="handleMonitor(scope.row.id)" type="primary" size="small">发送监控</el-button>
             <el-button @click="handleCheck(scope.row)" size="small">查看</el-button>
-            <el-button @click="handleCopy(scope.row.id)" size="small">复制</el-button>
+            <el-button @click="handleCopy(scope.row)" size="small">复制</el-button>
+          </span>
+          <!-- 如果是已审批状态并且上架 -->
+          <span v-if="scope.row.checkStatus==4 && scope.row.publishStatus==2">
+            <el-button type="primary" @click="handleDown(scope.row)" size="small">下架</el-button>
+            <el-button @click="handleConfirm(scope.row.id)" type="primary" size="small">报名确认</el-button>
+            <el-button @click="handleMonitor(scope.row.id)" type="primary" size="small">发送监控</el-button>
+            <el-button @click="handleCheck(scope.row)" size="small">查看</el-button>
+            <el-button @click="handleCopy(scope.row)" size="small">复制</el-button>
+          </span>
+          <!-- <span v-if="scope.row.publishStatus==1">
+            <el-button type="primary" size="small" @click="handlePublish(scope.row)">发布</el-button>
+            <el-button @click="handleConfirm(scope.row.id)" type="primary" size="small">报名确认</el-button>
+            <el-button @click="handleMonitor(scope.row.id)" type="primary" size="small">发送监控</el-button>
+            <el-button @click="handleCheck(scope.row)" size="small">查看</el-button>
+            <el-button @click="handleCopy(scope.row)" size="small">复制</el-button>
+          </span>
+          <span v-if="scope.row.publishStatus==2">
+            <el-button type="primary" @click="handleDown(scope.row)" size="small">下架</el-button>
+            <el-button @click="handleConfirm(scope.row.id)" type="primary" size="small">报名确认</el-button>
+            <el-button @click="handleMonitor(scope.row.id)" type="primary" size="small">发送监控</el-button>
+            <el-button @click="handleCheck(scope.row)" size="small">查看</el-button>
+            <el-button @click="handleCopy(scope.row)" size="small">复制</el-button>
           </span>
           <span v-if="scope.row.publishStatus==3">
             <el-button type="primary" @click="handleEdit(scope.row)" size="small">编辑</el-button>
             <el-button @click="handleCheck(scope.row)" size="small">查看</el-button>
-            <el-button @click="handleCopy(scope.row.id)" size="small">复制</el-button>
+            <el-button @click="handleCopy(scope.row)" size="small">复制</el-button>
             <el-button size="small">删除</el-button>
           </span>
           <span v-if="scope.row.publishStatus==4">
-            <el-button type="primary" size="small" @click="handlePublish(scope.row.id)">发布</el-button>
+            <el-button type="primary" size="small" @click="handlePublish(scope.row)">发布</el-button>
             <el-button @click="handleConfirm(scope.row.id)" type="primary" size="small">报名确认</el-button>
             <el-button @click="handleMonitor(scope.row.id)" type="primary" size="small">发送监控</el-button>
-            <el-button @click="handleCheck(scope.row.id)" size="small">查看</el-button>
-            <el-button @click="handleCopy(scope.row.id)" size="small">复制</el-button>
-          </span>
+            <el-button @click="handleCheck(scope.row)" size="small">查看</el-button>
+            <el-button @click="handleCopy(scope.row)" size="small">复制</el-button>
+          </span> -->
         </template>
       </el-table-column>
     </el-table>
@@ -195,8 +226,38 @@ export default {
       release: "",
       creater: "",
 
-      publishList: [],
-      approList: [],
+      publishList: [
+        {
+            "name":null,
+            "key":2,
+            "val":"已发布",
+            "extendData":null
+        },
+        {
+            "name":null,
+            "key":1,
+            "val":"已下架",
+            "extendData":null
+        }
+      ],
+      approList: [
+        {
+            "key":1,
+            "val":"草稿",
+        },
+        {
+            "key":2,
+            "val":"驳回",
+        },
+        {
+            "key":3,
+            "val":"待审批",
+        },
+        {
+            "key":4,
+            "val":"已审批",
+        }
+      ],
       typeList: [],
 
       activeData: [],
@@ -224,8 +285,8 @@ export default {
     };
   },
   created() {
-    apiChose("publishStatusList", this.publishList);
-    apiChose("payOrganList", this.approList);
+    // apiChose("publishStatusList", this.publishList);//发布状态筛选数据去搓了，不用后台，前端控制4个状态
+    // apiChose("payOrganList", this.approList);//审批状态筛选数据去搓了，不用后台，前端控制4个状态
     apiSelect({ type: 6 }, this.typeList); // 活动类型
 
     this.displayActive({
@@ -255,61 +316,97 @@ export default {
     newBuild() {
       this.$router.push({ path: "/marketActive/activeAdd" });
     },
-    handleEdit(id) {
+    handleEdit(item) {
       this.$router.push({
         path: "/marketActive/activeAdd",
-        query: { rowId: Number(id), edit: true }
+        query: { rowId: Number(item.id), edit: true }
       });
     },
-    handleCheck(id) {
+    handleCheck(item) {//查看按钮点击
       this.$router.push({
+        
         path: "/marketActive/activeAdd",
-        query: { rowId: Number(id), check: true }
+        query: { rowId: Number(item.id), check: true }
       });
     },
-    handleDelete(id) {
-      apiOperate(
-        "active",
-        "deleteActive",
-        { id: id },
-        () => {
-          this.handleQuery(this.pageLocation);
-        },
-        "删除成功"
-      );
+    handleDelete(item) {
+      this.$confirm('是否删除活动？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        apiOperate(
+          "active",
+          "deleteActive",
+          { id: item.id },
+          () => {
+            this.handleQuery(this.pageLocation);
+          },
+          "删除成功"
+        );
+      }).catch(() => {
+                 
+      });
     },
-    handlePublish(id) {
-      apiOperate(
-        "active",
-        "publishActive",
-        { id: id },
-        () => {
-          this.handleQuery();
-        },
-        "发布成功"
-      );
+    handlePublish(item) {
+      this.$confirm('是否发布活动？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        apiOperate(
+          "active",
+          "publishActive",
+          { id: item.id },
+          () => {
+            this.handleQuery();
+          },
+          "发布成功"
+        );
+      }).catch(() => {
+                 
+      });
+      
     },
-    handleCopy(id) {
-      apiOperate(
-        "active",
-        "copyActive",
-        { id: id },
-        () => {
-          this.handleQuery();
-        },
-        "复制成功"
-      );
+    
+    
+    handleCopy(item) {//复制按钮点击
+      this.$confirm('是否复制活动？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        apiOperate(
+          "active",
+          "copyActive",
+          { id: item.id },
+          () => {
+            this.handleQuery();
+          },
+          "复制成功"
+        );
+      }).catch(() => {
+                 
+      });
     },
-    handleDown(id) {
-      apiOperate(
-        "active",
-        "downActive",
-        { id: id },
-        () => {
-          this.handleQuery();
-        },
-        "下架成功"
-      );
+    handleDown(item) {
+      this.$confirm('是否下架活动？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        apiOperate(
+          "active",
+          "downActive",
+          { id: item.id },
+          () => {
+            this.handleQuery();
+          },
+          "下架成功"
+        );
+      }).catch(() => {
+                 
+      });
     },
     showMonitor(param, tb, pg) {
       apiAct("viewListen", {
@@ -327,6 +424,10 @@ export default {
       this.showMonitor(pubParam.pageDialog, "tableAll", "pageAll");
     },
     allPass() {
+      if(this.tableAll.length == 0){
+        this.$message.error('暂无发送对象！')
+        return;
+      }
       apiOperate("active", "sendAll", { id: this.activityId }, "", "发送成功");
     },
     handleConfirm(id) {
@@ -378,6 +479,9 @@ export default {
       this.place = "";
       this.appro = "";
       this.release = "";
+      this.displayActive({
+        ...pubParam.page
+      });
     },
     currentchange(i) {
       this.pageLocation = i;
@@ -436,7 +540,10 @@ export default {
   .input_style,
   .el-date-editor.el-input,
   .el-select {
-    width: calc(100% - 180px);
+    width: calc(100% - 20px);
   }
+  // .input_style{
+  //   width: calc(100% - 20px);
+  // }
 }
 </style>

@@ -14,12 +14,12 @@
             <el-button type="primary" @click="handleExit(scope.row)" size="small">退出</el-button>
           </span>
           <span v-if="scope.row.enrolStatus==2">
-            <el-button @click="handleREConfirm(scope.row)" type="primary" size="small">确认</el-button>
-            <el-button type="primary" @click="handleInform(scope.row)" size="small">确认通知</el-button>
+            <el-button @click="handleConfirm(scope.row)" type="primary" size="small">重新确认</el-button>
+            <el-button type="primary" @click="handleInform(scope.row)" size="small">再次通知</el-button>
           </span>
           <span v-if="scope.row.enrolStatus==3">
-            <el-button @click="handleExit(scope.row)" type="primary" size="small">特殊退出</el-button>
-            <el-button type="primary" @click="handleInform(scope.row)" size="small">退出通知</el-button>
+            <el-button @click="handleExit(scope.row)" type="primary" size="small">强制退出</el-button>
+            <el-button type="primary" @click="handleInform(scope.row)" size="small">再次通知</el-button>
           </span>
         </template>
       </el-table-column>
@@ -83,6 +83,9 @@ export default {
         },
         "退出成功"
       );
+    },
+    handleInform: function (row) {
+      apiOperate("active", "sendListen", { id: row.id }, "", "发送成功");
     }
   }
 };

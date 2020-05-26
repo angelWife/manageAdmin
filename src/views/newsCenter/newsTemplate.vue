@@ -35,7 +35,7 @@
     <el-table :data="tableData" style="width: 100%" class="comTable" empty-text="没有符合条件的短信模板">
       <el-table-column prop="modelName" label="模板名称"></el-table-column>
       <el-table-column prop="modelTypeVal" label="模板类型"></el-table-column>
-      <el-table-column prop="modelContent" label="模板内容" class-name="textEllipsis"></el-table-column>
+      <el-table-column prop="modelContent" property ="modelContent" label="模板内容" class-name="textEllipsis"></el-table-column>
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button @click="handleEdit(scope.row)" type="primary" size="small">编辑</el-button>
@@ -139,10 +139,10 @@ export default {
 .container {
   background: #fff;
   padding: 30px;
-  height: 100%;
+  min-height: 100%;
   .input_style,
   .el-select {
-    width: calc(100% - 180px);
+    width: calc(100% - 30px);
   }
 }
 </style>

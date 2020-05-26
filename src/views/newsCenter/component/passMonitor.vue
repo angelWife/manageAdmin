@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <el-dialog title="发送监控" :visible.sync="passMonitor" @close="submit()">
+    <el-dialog title="发送监控" show-close="true" :visible.sync="passMonitor" @close="submit()">
       <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
         <el-tab-pane label="全部" name="all">
           <minitorTable

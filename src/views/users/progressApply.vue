@@ -1,26 +1,48 @@
 <template>
   <div class="container comModal">
-    <div style="height: 400px;">
+    <div>
       <el-steps direction="vertical" :active="2">
-        <el-step title="申请提交" description="2017-12-07 15:14:14 已完成"></el-step>
-        <el-step title="审批中" description="2017-12-07 15:14:14 已完成"></el-step>
-        <el-step title="待缴费"></el-step>
-        <el-step title="缴费确认"></el-step>
-        <el-step title="申请通过"></el-step>
+        <el-step v-for="(item,ind) in procVO.taskDTOList" :key="ind" :title="item.name" :description="item.createDate" status="finish" process-status="finish"></el-step>
       </el-steps>
+      
     </div>
+    <div v-if="procVO.needPayFee" class="btnBox">
+        <ElButton type="primary" @click="payCost">缴纳会费</ElButton>
+      </div>
   </div>
 </template>
 
 <script>
 export default {
   components: {},
-  methods: {}
+  data() {
+    return {
+      procVO:{}
+    }
+  },
+  created() {
+    this.$api.member.getMemberProcess().then(res=>{
+      if(res.success){
+        this.procVO = res.data
+      }
+    })
+  },
+  methods: {
+    payCost(){
+      let _data = this.procVO.taskDTOList[this.procVO.taskDTOList.length-1];
+      this.$router.push({path: '/users/costInfo',query:{taskId: _data.taskId,serialNumber: this.procVO.serialNumber,}})
+    }
+  }
 };
 </script>
 
 <style lang="less">
 .container{
   padding:20px 40px;
+  height:auto;
+  .btnBox{
+    padding:30px;
+    text-align: center;
+  }
 }
 </style>

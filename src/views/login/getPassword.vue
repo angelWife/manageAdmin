@@ -24,8 +24,8 @@
             <div class="msg">
               如果您的邮箱因为某些原因无法接收重置密码邮件，请扫描以下二维码联系协会工作人员微信协助重置
             </div>
-            <div class="mark">
-              <img src="" alt=""/>
+          <div class="mark">
+              <img src="../../../static/find-pw.png" alt=""/>
             </div>
           </el-col>
         </el-row>
@@ -96,7 +96,9 @@
 <style lang="less">
   #getPassword {
     padding-top: 100px;
-
+    height: 100%;
+    background: url(../../assets/bg.jpg) no-repeat;
+    background-size: cover;
     .main {
       width: 880px;
       margin: 0 auto 100px;
@@ -133,5 +135,12 @@
         }
       }
     }
+  }
+  .mark{
+    text-align: center;
+  }
+  .mark img{
+    width: 140px;
+    height: 140px;
   }
 </style>

@@ -1,11 +1,12 @@
 <template>
-  <div class="acriveAdd comModal hasfoot">
+  <div class="acriveAdd comModal">
     <el-form
       class="comFormBox"
       :model="activityForm"
       ref="activityForm"
       label-width="120px"
       label="left"
+      line="true"
     >
       <el-row class="m-t-20">
         <el-col :span="10">
@@ -28,7 +29,7 @@
       </el-row>
       <el-row>
         <el-col :span="10">
-          <el-form-item label="活动开始结束时间：" class="mustFill">
+          <el-form-item label="活动开始结束时间：" class="mustFill" >
             <el-date-picker
               v-model="activityForm.actStart"
               :disabled="check"
@@ -36,7 +37,7 @@
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              value-format="timestamp"
+              value-format="timestamp" 
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -96,25 +97,32 @@
       </el-row>
       <el-row>
         <el-col :span="10">
-          <el-form-item label="入会申请书.doc" class="mustFill">
+          <el-form-item label="附件" class="mustFill">
             <el-upload
               class="upload-box float-left"
-              action="https://jsonplaceholder.typicode.com/posts/"
-              multiple
-              :limit="3"
-            >
+              :multiple="false"
+              ref="uploadApplication"
+              :action="global.baseUrl+global.commonFileUploadUrl"
+              :http-request="uploadFile"
+              accept=".doc, .docx"
+              :on-change="getWordList"
+              :limit="1">
               <el-button size="small" icon="el-icon-upload2" :disabled="check">上传文件</el-button>
+              <span style="margin-left:10px;" v-if="activityForm.filePath">已上传</span>
             </el-upload>
           </el-form-item>
         </el-col>
         <el-col :span="10"></el-col>
       </el-row>
     </el-form>
-    <msgPush title="消息推送：" :bus="bus" :id="id" :check="check" :pushType="1"></msgPush>
+    <msgPush title="消息推送：" :bus="bus" :id="id" :check="check" :pushType="1" style="padding:0;"></msgPush>
     <div class="footBtnBox text_right" v-if="!check">
-      <el-button type>取消</el-button>
-      <el-button type>保存</el-button>
+      <el-button @click="queryBtn" type>取消</el-button>
+      <el-button @click="keepBtn" type>保存</el-button>
       <el-button type="primary" @click="submitForm()">提交</el-button>
+    </div>
+    <div class="footBtnBox text_right" v-if="check">
+      <el-button @click="queryBtn" type>返回</el-button>
     </div>
   </div>
 </template>
@@ -135,7 +143,9 @@ import {
   mapTime,
   getDateTime
 } from "../../utils/common";
+  import global from '@/utils/global'
 import { apiAct, backPage, apiChose } from "../../utils/commonApi";
+import { memberUploadFile,uploadFile } from "./../../http/moudules/common"
 import { format } from "../../utils/datetime";
 import msgPush from "@/views/common/msgPush";
 import Vue from "vue";
@@ -148,39 +158,49 @@ export default {
       activityForm: {
         name: "",
         type: "",
+        address:'',
         actStart: [],
         liveRep: [],
         actSign: [],
         place: "",
         person: "",
-        number: ""
+        number: "",
+        activityPersonNum:'',
+        organPersonNum:'',
+        filePath:'',//文件地址string化
       },
       typeList: [],
       id: "",
       typeId: 0,
       msgParam: {},
 
-      check: false
+      check: false,
     };
   },
   created() {
     apiSelect({ type: 6 }, this.typeList); // 活动类型
-
+    
     this.bus.$on("msgBox", data => {
       this.msgParam = data;
+      console.log(data)
     });
-
     if (this.$route.query.rowId) {
-      this.id = this.$route.query.rowId;
+      this.id = this.$route.query.rowId + '';
+      console.log(this.id)
       this.check = this.$route.query.check ? true : false;
+      if(this.check){
+        this.$store.commit('setHeadTitle','查看');
+        // this.$store.state.app.headTitle = '查看';
+      }
       apiAct("viewData", { id: this.id }).then(resolve => {
+        console.log()
         this.activityForm = {
           name: resolve.name,
           address: resolve.address,
           activityType: resolve.activityType,
-          actStart: [resolve.activityDateStart, resolve.activityDateEnd],
-          liveRep: [resolve.checkInDateStart, resolve.checkInDateEnd],
-          actSign: [resolve.enrolDateStart, resolve.enrolDateEnd],
+          actStart: [new Date(resolve.activityDateStart), new Date(resolve.activityDateEnd)],
+          liveRep: [new Date(resolve.checkInDateStart), new Date(resolve.checkInDateEnd)],
+          actSign: [new Date(resolve.enrolDateStart), new Date(resolve.enrolDateEnd)],
           organPersonNum: resolve.organPersonNum,
           activityPersonNum: resolve.activityPersonNum,
           filePath: resolve.filePath
@@ -188,7 +208,17 @@ export default {
       });
     }
   },
+  mounted(){
+    
+    
+  },
   methods: {
+    queryBtn(){//取消按钮点击
+      this.$router.go(-1);
+    },
+    keepBtn(){
+      this.submitAnn(1);
+    },
     submitForm() {
       this.$confirm(
         "请注意，活动提交后将需要经过审批流程，审批期间及审批后无法再对活动进行编辑",
@@ -200,14 +230,82 @@ export default {
         }
       )
         .then(() => {
-          this.submitAnn();
+          this.submitAnn(2);
         })
-        .catch(() => {
-          tipMES("已取消");
-        });
+        // .catch(() => {
+        //   // tipMES("已取消");
+        // });
     },
-    // 新建 提交
-    submitAnn() {
+    getWordList(file,fileList){
+      // this.activityForm.filePath = fileList;
+    },
+    uploadFile(obj){//上传文件
+        if( Math.floor( obj.file.size/(1024*1024) ) > 10 ){
+            warnMES('最多上传10M')
+            return
+        }
+        let formData = new FormData();
+        formData.append('file',obj.file);
+        let url="",method="";
+        // if(obj.data.id==1){
+        //     url="/api/member/company/file/rhsqh_upload";
+        //     method="post"
+        // }
+        let that = this;
+        uploadFile(formData,url,method).then((res=>{
+          if(res && res.code=='200' && res.data){
+              successMES('上传成功');
+              that.activityForm.filePath = res.data.fullPath;
+          }
+        })).catch(error=>{
+
+        })
+    },
+    // 新建 提交或保存type:1是保存草稿，2是提交 ,
+    submitAnn(type) {
+      // type:
+      if(this.activityForm.name.trim().length == 0){
+        warnMES("请输入活动名称");
+        return;
+      } 
+      if(!this.activityForm.activityType){
+        warnMES("请选择活动类型");
+        return;
+      }
+      if(this.activityForm.actStart.length !=2){
+        warnMES("请选择正确的活动开始时间");
+        return;
+      }
+      if(this.activityForm.liveRep.length !=2){
+        warnMES("请选择正确的活动报道开始时间");
+        return;
+      }
+      if(this.activityForm.actSign.length !=2){
+        warnMES("请选择正确的活动报名开始结束时间");
+        return;
+      }
+      if(this.activityForm.address.trim().length == 0){
+        warnMES("请输入活动地点");
+        return;
+      }
+      console.log(this.activityForm.activityPersonNum)
+      if(this.activityForm.activityPersonNum == ''){
+        warnMES("请输入活动人数");
+        return;
+      }
+      if(this.activityForm.organPersonNum == ''){
+        warnMES("请输入会员单位允许报名人数");
+        return;
+      }
+      console.log(this.activityForm.filePath)
+      if(!this.activityForm.filePath || this.activityForm.filePath==''){
+        warnMES("请上传附件");
+        return;
+      }
+      // if(!this.msgParam.companyIdList || this.msgParam.companyIdList.length == 0){
+      //   warnMES("请添加会员");
+      //   return;
+      // }
       apiAct("newActive", {
         name: this.activityForm.name,
         address: this.activityForm.address,
@@ -220,12 +318,16 @@ export default {
         enrolDateEnd: this.activityForm.actSign[1],
         organPersonNum: this.activityForm.organPersonNum,
         activityPersonNum: this.activityForm.activityPersonNum,
-        filePath: "111",
-        id: this.id
+        filePath: this.activityForm.filePath,
+        id: this.id,
+        draftOrSubmit:type?type:2
       }).then(resolve => {
         window.history.back(-1);
         this.typeId = resolve;
-        this.newGet(resolve);
+        console.log(this.msgParam);
+        if(this.msgParam && this.msgParam.companyIdList.length){
+          this.newGet(resolve);
+        }
       });
     },
     // 新建 推送
@@ -257,6 +359,9 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    backWin(){
+      window.history.back(-1);
     }
   },
   components: {
@@ -294,8 +399,8 @@ export default {
     margin-bottom: 20px;
   }
   .comFormBox {
-    width: calc(100% - 160px);
-    padding: 0 20px 0 40px;
+    // width: calc(100% - 160px);
+    // padding: 0 20px 0 40px;
     .el-form-item {
       display: flex;
       -webkit-box-align: center;
@@ -376,5 +481,8 @@ export default {
 }
 .footBtn {
   padding: 20px;
+}
+.acriveAdd{
+  padding-bottom:60px;
 }
 </style>

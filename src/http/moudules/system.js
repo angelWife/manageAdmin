@@ -37,9 +37,19 @@ export const editRoleStatus = (data) => {
 }
 
 // 权限编辑
+// /admin/app/menu/modify
 export const editAuthority = (data) => {
   return axios({
-      url: '/admin/app/role/modify',
+      url: '/admin/app/menu/modify',
+      method: 'post',
+      data
+  })
+}
+
+// 获取权限菜单
+export const getMenuList = (data) => {
+  return axios({
+      url: '/admin/app/menu/load',
       method: 'post',
       data
   })
@@ -96,9 +106,10 @@ export const userPwdChange = (data) => {
       data
   })
 }
+//删除协会架构管理
 export const delDepartment = (data) => {
   return axios({
-    url: '/admin/app/user/modify_pd',
+    url: '/admin/app/department/delete_dept',
     method: 'post',
     data
   })

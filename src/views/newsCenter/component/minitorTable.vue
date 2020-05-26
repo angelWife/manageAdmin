@@ -2,11 +2,11 @@
   <div>
     <div>
       <el-table :data="tableData" style="width: 100%" class="comTable">
-        <el-table-column prop="sendObj" label="发送对象" width="300"></el-table-column>
-        <el-table-column prop="sendDate" label="发送时间">
+        <el-table-column prop="sendObj" label="发送对象"></el-table-column>
+        <el-table-column prop="sendDate" label="发送时间" width="160">
           <template slot-scope="scope">{{format(scope.row.sendDate,true)}}</template>
         </el-table-column>
-        <el-table-column prop="sendStatusVal" label="发送状态"></el-table-column>
+        <el-table-column prop="sendStatusVal" label="发送状态" width="100"></el-table-column>
         <el-table-column prop="act" fixed="right" label="操作" width="100" v-if="!!apiMinitor">
           <template slot-scope="scope">
             <el-button type="primary" size="small" @click="passOut(scope.row.id)">再次发送</el-button>

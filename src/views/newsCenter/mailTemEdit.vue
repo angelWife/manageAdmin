@@ -16,9 +16,9 @@
         </el-col>
       </el-row>
       <el-row class="m-t-20" style="padding-left: 30px;">
-        <el-col :span="14">
+        <el-col :span="20">
           <el-form-item label="模板内容：">
-            <el-card style="height: 540px;">
+            <el-card style="height: 580px;">
               <quill-editor v-model="form.noticeData" style="height: 400px;"></quill-editor>
             </el-card>
           </el-form-item>
@@ -56,7 +56,8 @@ export default {
   methods: {
     showEdit() {
       apiShow("message", "modelView", {
-        id: this.$route.query.id
+        id: this.$route.query.id,
+        modelStyle: 2
       }).then(resolve => {
         this.form = {
           modelName: resolve.modelName,
@@ -68,9 +69,11 @@ export default {
     submitForm() {
       apiShow("message", "modelAdd", {
         id: this.$route.query.id,
-        ...this.form
+        ...this.form,
+        modelStyle: 2
       }).then(resolve => {
         successMES("提交成功");
+        this.$router.go(-1);
       });
     }
   },
@@ -89,7 +92,7 @@ export default {
 .container {
   background: #fff;
   padding: 30px;
-  height: 100%;
+  height: auto;
   .input_style,
   .el-select {
     width: calc(100% - 180px);

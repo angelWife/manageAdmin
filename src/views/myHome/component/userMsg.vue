@@ -6,7 +6,7 @@
         <div class="grid-content">
           <div class='todotitle'><span>待办事项</span>
             <div class="seeMore"
-                 @click="seeMore('todo')">查看更多>></div>
+                 @click="seeMore('todo')" v-if="todoList.length>0">查看更多>></div>
           </div>
           <ul v-if="todoList.length>0"
               class='todoContent'>
@@ -68,7 +68,7 @@
           <div class='todotitle'>
             <span>通知公告</span>
             <router-link to="/member/notice"
-                         class="seeMore">
+                         class="seeMore" v-if="noticeList.length>0">
               查看更多>></router-link>
           </div>
           <ul v-for="todo in (noticeList.length > 3 ? noticeList.slice(0,3) : noticeList)"
@@ -95,15 +95,39 @@
               v-if="role.name == 'recoMember'">
         <div class="grid-content">
           <div class='todotitle'><span>会员活动</span>
-            <router-link to=""
-                         class="seeMore">查看更多>></router-link>
+          <!--  <router-link to="" class="seeMore" >查看更多>></router-link> -->
           </div>
-          <div style="padding:10px ">
+          <div v-if="memberActivity.length>0">
+            <ul v-for="item in memberActivity"
+              :key='item.id'
+              class='todoContent'>
+            <li class="todoeve">
+              <div class='todoText'>
+                <div>{{item.activityName}}</div>
+                <div class="dateText">{{item.activityDateStart}}</div>
+              </div>
+              <div class='todoButton' v-show="item.activivyEnrolStatus == 4 || item.activivyEnrolStatus == 1">
+                <ElButton type="primary"
+                          size='mini'
+                          @click="signIn(item)" v-show="item.enrolStatus == 4">报名</ElButton>
+                <ElButton type="primary"
+                          disabled
+                          size='mini' v-show="item.enrolStatus == 3">{{item.enrolStatusVal}}</ElButton>
+              </div>
+              <div class='todoButton' v-show="item.activivyEnrolStatus != 4 && item.activivyEnrolStatus != 1">
+                <ElButton type="primary"
+                          size='mini'
+                          disabled>{{item.activivyEnrolStatusVal}}</ElButton>
+              </div>
+            </li>
+          </ul>
+          </div>
+          <div v-else style="padding:10px">
             暂无会员活动
           </div>
         </div>
       </el-col>
-     
+
       <!-- <el-col :span="12"
               v-if="role.name == 'recoMember'">
         <div class="grid-content">
@@ -121,7 +145,7 @@
         <div class="grid-content">
           <div class='todotitle'><span>系统消息</span>
             <router-link to="/member/system"
-                         class="seeMore">查看更多>></router-link>
+                         class="seeMore" v-if="msgList.length>0">查看更多>></router-link>
           </div>
           <ul v-for="todo in (msgList.length > 3 ? msgList.slice(0,3) : msgList)"
               :key='todo.id'
@@ -163,13 +187,7 @@ export default {
       sysPageTen: { ...pageTen },
       todoList: [],
       noticeList: [],
-      memberActivity: [
-        {
-          id: 1,
-          desc: "保险资金股权投资第二期专题培训",
-          date: "2010-3-10"
-        }
-      ],
+      memberActivity: [],
       msgList: [
         {
           id: 1,
@@ -186,6 +204,7 @@ export default {
   },
   created() {
     this.queryNotice(pubParam.page);
+    this.getActivityList();
     this.querySysMessageList(pubParam.page);
     this.getTodoList();
   },
@@ -206,6 +225,12 @@ export default {
           this.$router.push({ path: "/member/memberInfo" });
           break;
       }
+    },
+    signIn(){
+       this.$router.push({
+        path: "/member/eventReg",
+        query: {}
+      });
     },
     seeMore(type) {
       let self = this;
@@ -243,6 +268,19 @@ export default {
           }
         }
       });
+    },
+    getActivityList(){
+      let self = this
+      let params = {
+        enrolStatus:0,
+        pageIndex: 1,
+        pageSize: 5
+      }
+      this.$api.member.activityTable(params).then(res=>{
+        if(res.success){
+          self.memberActivity = res.data.rows
+        }
+      })
     },
     querySysMessageList(data) {
       getSysMessageList(data).then(res => {
@@ -302,7 +340,7 @@ export default {
         if (rep && rep.code == "200") {
           html = `<table>
                           <tr><td  style="padding:2px;">标题</td><td  style="padding:2px;">${rep.data.title}</td></tr>
-                          
+
                           <tr><td  style="padding:2px;">状态</td><td  style="padding:2px;">${rep.data.msgStatus}</td></tr>
                           <tr><td  style="padding:2px;">内容</td><td  style="padding:2px;">${rep.data.content}</td></tr>
                           <tr><td  style="padding:2px;">更新时间</td><td  style="padding:2px;">${rep.data.updateTime}</td></tr>

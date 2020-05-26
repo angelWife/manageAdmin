@@ -92,7 +92,22 @@ export default {
         this.bus.$emit("timeEdit", this.sendOn);
       });
     }
+    this.bus.$on("sendTime", data => {
+      console.log("sendTime", data);
+      this.sendParam = data;
+    });
+
+    this.bus.$on("msgBox", data => {
+      console.log("msgBox", data);
+      this.msgParam = data;
+    });
+
+    this.bus.$on("sendObj", data => {
+      console.log("sendObj", data);
+      this.ObjParam = data;
+    });
   },
+
   methods: {
     submitForm() {
       /*if(!this.form.noticeTitle){
@@ -103,23 +118,30 @@ export default {
         this.$message.warning('请输入公告内容')
         return
       }*/
-      if(!!this.form.noticeData&&!!this.form.noticeTitle&&(this.msgParam.companyIdList.length>0||this.msgParam.groupIdList.length>0)){
+      if (
+        !!this.form.noticeData &&
+        !!this.form.noticeTitle &&
+        (this.msgParam.companyIdList.length > 0 ||
+          this.msgParam.groupIdList.length > 0)
+      ) {
         apiShow("message", "noticeAdd", {
           ...this.form,
           ...this.sendParam,
-          id: this.messageId
+          id: this.messageId,
+          memberList: this.msgParam.companyIdList.join(","),
+          memberGroupList: this.msgParam.groupIdList.join(",")
         }).then(res => {
           publicMsg(this.msgParam, res, 4, false, "", "noticePublish");
           this.$router.go(-1);
         });
-      }else{
+      } else {
         this.$message({
-          message: '请填写通知内容，标题和短信接收人！',
-          type: 'warning'
+          message: "请填写通知内容，标题和短信接收人！",
+          type: "warning"
         });
       }
     },
-    back(){
+    back() {
       this.$router.go(-1);
     }
   }

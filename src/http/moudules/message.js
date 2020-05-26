@@ -14,9 +14,16 @@ export const sysMessage = (data) => {
 }
 
 // 新建 编辑
-export const sysAdd = (data) => {
+/* export const sysAdd = (data) => {
   return axios({
     url: '/admin/message/system/add',
+    method: 'post',
+    data
+  })
+} */
+export const sysAdd = (data) => {
+  return axios({
+    url: '/admin/message/system/addOrUpdate',
     method: 'post',
     data
   })
@@ -87,9 +94,16 @@ export const noticeMessage = (data) => {
 }
 
 // 通知公告 新建 编辑
-export const noticeAdd = (data) => {
+/* export const noticeAdd = (data) => {
   return axios({
     url: '/admin/message/notice/add',
+    method: 'post',
+    data
+  })
+} */
+export const noticeAdd = (data) => {
+  return axios({
+    url: '/admin/message/notice/addOrUpdate',
     method: 'post',
     data
   })
@@ -186,9 +200,16 @@ export const smsMessage = (data) => {
 }
 
 // 短信平台 新建 编辑
-export const smsAdd = (data) => {
+/* export const smsAdd = (data) => {
   return axios({
     url: '/admin/message/sms/add',
+    method: 'post',
+    data
+  })
+} */
+export const smsAdd = (data) => {
+  return axios({
+    url: '/admin/message/sms/addOrUpdate',
     method: 'post',
     data
   })
@@ -225,7 +246,7 @@ export const smsCopy = (data) => {
 export const smsDown = (data) => {
   return axios({
     url: '/admin/message/sms/down',
-    method: 'put',
+    method: 'post',
     data
   })
 }
@@ -279,9 +300,16 @@ export const emailMessage = (data) => {
 }
 
 // 邮件平台 新建 编辑
-export const emailAdd = (data) => {
+/* export const emailAdd = (data) => {
   return axios({
     url: '/admin/message/email/add',
+    method: 'post',
+    data
+  })
+} */
+export const emailAdd = (data) => {
+  return axios({
+    url: '/admin/message/email/addOrUpdate',
     method: 'post',
     data
   })

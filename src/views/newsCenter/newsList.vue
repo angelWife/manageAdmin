@@ -1,129 +1,173 @@
 <template>
   <div class="container">
-    <el-form class="searchForm" ref="form" label-width="100px">
+    <el-form class="searchForm"
+             ref="form"
+             label-width="100px">
       <el-row>
         <el-col :span="8">
           <el-form-item label="短信内容：">
-            <el-input v-model="query.content " class="input_style" placeholder="请输入"></el-input>
+            <el-input v-model="query.content "
+                      class="input_style"
+                      placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="对象类型：">
-            <el-select v-model="query.sendObjType" placeholder="请选择">
-              <el-option
-                v-for="item in objList"
-                :label="item.val"
-                :value="item.key"
-                :key="item.key"
-              ></el-option>
+            <el-select v-model="query.sendObjType"
+                       placeholder="请选择">
+              <el-option v-for="item in objList"
+                         :label="item.val"
+                         :value="item.key"
+                         :key="item.key"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="发送对象：">
-            <el-input v-model="query.sendObj" class="input_style" placeholder="请输入"></el-input>
+            <el-input v-model="query.sendObj"
+                      class="input_style"
+                      placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item label="发送时间：">
-            <el-date-picker
-              class="input_style"
-              type="daterange"
-              v-model="query.passTime"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              value-format="timestamp"
-            ></el-date-picker>
+            <el-date-picker class="input_style"
+                            type="daterange"
+                            v-model="query.passTime"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            value-format="timestamp"></el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="状态：">
-            <el-select v-model="query.msgStatus" placeholder="请选择">
-              <el-option
-                v-for="item in approList"
-                :label="item.val"
-                :value="item.key"
-                :key="item.key"
-              ></el-option>
+            <el-select v-model="query.msgStatus"
+                       placeholder="请选择">
+              <el-option v-for="item in approList"
+                         :label="item.val"
+                         :value="item.key"
+                         :key="item.key"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="创建人：">
-            <el-input v-model="query.creator" class="input_style" placeholder="请输入"></el-input>
+            <el-input v-model="query.creator"
+                      class="input_style"
+                      placeholder="请输入"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
     <el-row class="btn_content">
       <el-col :span="12">
-        <el-button type="primary" @click="newBuild()">新建</el-button>
+        <el-button type="primary"
+                   @click="newBuild()">新建</el-button>
       </el-col>
-      <el-col :span="12" class="text_right">
-        <el-button type="primary" @click="handleQuery()">查询</el-button>
+      <el-col :span="12"
+              class="text_right">
+        <el-button type="primary"
+                   @click="handleQuery()">查询</el-button>
         <el-button @click="clear">重置</el-button>
       </el-col>
     </el-row>
-    <el-table :data="tableData" style="width: 100%" class="comTable" empty-text="没有符合条件的短信发送任务">
-      <el-table-column prop="messageContent" label="短信内容" class-name="textEllipsis"></el-table-column>
-      <el-table-column prop="sendObjectTypeVal" label="对象类型" width="100px"></el-table-column>
-      <el-table-column prop="objectNameList" label="发送对象" class-name="textEllipsis">
+    <el-table :data="tableData"
+              style="width: 100%"
+              class="comTable"
+              empty-text="没有符合条件的短信发送任务">
+      <el-table-column prop="messageContent"
+                       show-overflow-tooltip="true"
+                       label="短信内容"
+                       class-name="textEllipsis"></el-table-column>
+      <el-table-column prop="sendObjectTypeVal"
+                       label="对象类型"
+                       width="100px"></el-table-column>
+      <el-table-column prop="objectNameList"
+                       show-overflow-tooltip="true"
+                       label="发送对象"
+                       class-name="textEllipsis">
         <template slot-scope="scope">{{scope.row.objectNameList}}</template>
       </el-table-column>
-      <el-table-column prop="sendTime" label="发送时间">
+      <el-table-column prop="sendTime"
+                       label="发送时间">
         <template slot-scope="scope">{{format(scope.row.sendTime,true)}}</template>
       </el-table-column>
-      <el-table-column prop="msgStatusVal" label="状态"></el-table-column>
-      <el-table-column prop="creator" label="创建人"></el-table-column>
-      <el-table-column prop="act" fixed="right" label="操作" width="400">
+      <el-table-column prop="msgStatusVal"
+                       label="状态"></el-table-column>
+      <el-table-column prop="creator"
+                       label="创建人"></el-table-column>
+      <el-table-column prop="act"
+                       fixed="right"
+                       label="操作"
+                       width="400">
         <template slot-scope="scope">
           <span v-if="scope.row.msgStatus == 2">
-            <el-button @click="handleEdit(scope.row.id)" type="primary" size="small">编辑</el-button>
-            <el-button @click="handleDown(scope.row.id)" type="primary" size="small">下架</el-button>
-            <el-button @click="handleMonitor(scope.row)" type="primary" size="small">发送监控</el-button>
-            <el-button @click="handleCopy(scope.row.id)" size="small">复制</el-button>
-            <el-button @click="handleDelete(scope.row.id)" size="small">删除</el-button>
+            <el-button @click="handleEdit(scope.row.id)"
+                       type="primary"
+                       size="small">编辑</el-button>
+            <el-button @click="handleDown(scope.row.id)"
+                       type="primary"
+                       size="small">下架</el-button>
+            <el-button @click="handleMonitor(scope.row)"
+                       type="primary"
+                       size="small">发送监控</el-button>
+            <el-button @click="handleCopy(scope.row.id)"
+                       size="small">复制</el-button>
+            <el-button @click="handleDelete(scope.row.id)"
+                       size="small">删除</el-button>
           </span>
           <span v-if="scope.row.msgStatus == 1">
-            <el-button @click="handleEdit(scope.row.id)" type="primary" size="small">编辑</el-button>
-            <el-button @click="handlePublish(scope.row.id)" type="primary" size="small">发布</el-button>
-            <el-button @click="handleMonitor (scope.row)" type="primary" size="small">发送监控</el-button>
-            <el-button @click="handleCopy(scope.row.id)" size="small">复制</el-button>
+            <el-button @click="handleEdit(scope.row.id)"
+                       type="primary"
+                       size="small">编辑</el-button>
+            <el-button @click="handlePublish(scope.row.id)"
+                       type="primary"
+                       size="small">发布</el-button>
+            <el-button @click="handleDelete(scope.row.id)"
+                       size="small">删除</el-button>
+            <el-button @click="handleCopy(scope.row.id)"
+                       size="small">复制</el-button>
           </span>
           <span v-if="scope.row.msgStatus == 3">
-            <el-button @click="handleMonitor(scope.row)" type="primary" size="small">发送监控</el-button>
-            <el-button @click="handleCheck(scope.row.id)" size="small">查看</el-button>
-            <el-button @click="handleCopy(scope.row.id)" size="small">复制</el-button>
+            <el-button @click="handleMonitor(scope.row)"
+                       type="primary"
+                       size="small">发送监控</el-button>
+            <el-button @click="handleCheck(scope.row.id)"
+                       size="small">查看</el-button>
+            <el-button @click="handleCopy(scope.row.id)"
+                       size="small">复制</el-button>
           </span>
           <span v-if="scope.row.msgStatus == 4">
-            <el-button @click="handleEdit(scope.row.id)" type="primary" size="small">编辑</el-button>
-            <el-button @click="handleMonitor(scope.row)" type="primary" size="small">发送监控</el-button>
-            <el-button @click="handleCopy(scope.row.id)" size="small">复制</el-button>
-            <el-button @click="handleDelete(scope.row.id)" size="small">删除</el-button>
+            <el-button @click="handleEdit(scope.row.id)"
+                       type="primary"
+                       size="small">编辑</el-button>
+            <el-button @click="handleMonitor(scope.row)"
+                       type="primary"
+                       size="small">发送监控</el-button>
+            <el-button @click="handleCopy(scope.row.id)"
+                       size="small">复制</el-button>
+            <el-button @click="handleDelete(scope.row.id)"
+                       size="small">删除</el-button>
           </span>
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      background
-      style="margin-top:20px"
-      class="text_center"
-      layout="total,prev, pager, next"
-      :total="pageAll.total"
-      :page-size="pageAll.pageSize"
-      :current-page.sync="pageAll.currentPage"
-      @current-change="currentChange"
-    ></el-pagination>
-    <passMonitor
-      v-if="!!minitorId"
-      :id="minitorId"
-      :key="key"
-      :apiObj="{name:'message',fun:'smsListen'}"
-      :apiMinitor="{name:'message',fun:'smsAddListen'}"
-    ></passMonitor>
+    <el-pagination background
+                   style="margin-top:20px"
+                   class="text_center"
+                   layout="total,prev, pager, next"
+                   :total="pageAll.total"
+                   :page-size="pageAll.pageSize"
+                   :current-page.sync="pageAll.currentPage"
+                   @current-change="currentChange"></el-pagination>
+    <passMonitor v-if="!!minitorId"
+                 :id="minitorId"
+                 :key="key"
+                 :apiObj="{name:'message',fun:'smsListen'}"
+                 :apiMinitor="{name:'message',fun:'smsAddListen'}"></passMonitor>
   </div>
 </template>
 <script>
@@ -135,7 +179,7 @@ import {
   backPage,
   hasPage
 } from "../../utils/commonApi";
-import { pageTen, pubParam } from "../../utils/common";
+import { pageTwenty, pubParam } from "../../utils/common";
 import { format } from "../../utils/datetime";
 
 export default {
@@ -152,7 +196,7 @@ export default {
       approList: [],
       objList: [],
       tableData: [],
-      pageAll: { ...pageTen },
+      pageAll: { ...pageTwenty },
       pageLocation: 1, // 页数
 
       minitorId: 0, // 监控ID
@@ -214,7 +258,7 @@ export default {
       });
     },
     newBuild() {
-      this.$router.push({ path: "/newsCenter/newsAdd",query:{add:true}});
+      this.$router.push({ path: "/newsCenter/newsAdd", query: { add: true } });
     },
     handleEdit(id) {
       /*if(id){
@@ -244,16 +288,23 @@ export default {
       this.$store.commit("openMonitor");
     },
     handleDelete(id) {
-      console.log('id',id);
-      apiOperate(
-        "message",
-        "smsDelete",
-        { id:id },
-        () => {
-          this.displayQuery(this.pageLocation);
-        },
-        "删除成功"
-      );
+      this.$confirm("确认删除该短信？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          apiOperate(
+            "message",
+            "smsDelete",
+            { id: id },
+            () => {
+              this.displayQuery(this.pageLocation);
+            },
+            "删除成功"
+          );
+        })
+        .catch(() => {});
     },
     handleDown(id) {
       apiOperate(
@@ -267,25 +318,34 @@ export default {
       );
     },
     handleCopy(id) {
-      console.log(id);
-      this.$api.message.smsCopy({id:id}).then(res => {
-          if (res.success) {
-            apiOperate(
-              "message",
-              "smsPublish",
-              { messageId: res.data, publishType: 2 },
-              () => {
-                this.displayQuery();
-              },
-              "复制成功"
-            );
-          } else {
-            warnMES(res.message);
-          }
+      this.$confirm("是否复制短信发送任务？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$api.message
+            .smsCopy({ id: id })
+            .then(res => {
+              if (res.success) {
+                apiOperate(
+                  "message",
+                  "smsPublish",
+                  { messageId: res.data, publishType: 2 },
+                  () => {
+                    this.displayQuery();
+                  },
+                  "复制成功"
+                );
+              } else {
+                warnMES(res.message);
+              }
+            })
+            .catch(err => {
+              console.error(err);
+            });
         })
-        .catch(err => {
-          console.error(err);
-        });
+        .catch(() => {});
     },
     handlePublish(id) {
       apiOperate(
@@ -315,7 +375,7 @@ export default {
   height: auto;
   .input_style,
   .el-select {
-    width: calc(100% - 110px);
+    width: calc(100% - 30px);
   }
 }
 </style>

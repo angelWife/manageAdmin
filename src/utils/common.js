@@ -52,6 +52,11 @@ export let pageTen = {
     pageSize: 10,
     currentPage: 1
 }
+export let pageTwenty = {
+    total: 0,
+    pageSize: 20,
+    currentPage: 1
+}
 // 公共上传参数
 export let pubParam = {
     pageDialog: {
@@ -60,10 +65,10 @@ export let pubParam = {
     },
     page: {
         pageIndex: 1,
-        pageSize: 6,
+        pageSize: 20,
     }
 }
-/**公共接口 
+/**公共接口
  * 状态  公共推送
 */
 //工作流状态字典表

@@ -1,33 +1,22 @@
 <template>
-  <div style="width: 100%; height: 100%;">
+  <div class="container">
     <div style="width: 100%;">
-      <!-- 以MultiPart方式下载文档,设置文件处理Servelet，打开和保存都用这个Servelet处理 -->
-      <!-- <input style="color:Red;" type="button" value="MultiPart方式打开文档" v-on:click="Load" /> -->
-      <!-- URL地址打开文档，WebOpen2的参数是文件在服务器上的相对路径 -->
-      <!-- <input style="color:Red;" type="button" value="URL地址打开文档" v-on:click="LoadURL" /> -->
-      <!-- 服务端Servlet打开文档，WebOpen3的参数是文件在服务器上的相对路径 -->
       <input style="color:Red;" type="button" value="服务端Servlet打开文档" v-on:click="LoadServlet" />
       <input style="color:Red;" type="button" value="保存文档到服务器" v-on:click="SaveDocument" />
-      <!-- <input style="color:Red;" type="button" value="打开本地文档(有窗口)" v-on:click="WebOpenLocal" />
-      <input style="color:Red;" type="button" value="保存本地文档(有窗口)" v-on:click="WebSaveLocal" />
-      <input style="color:Red;" type="button" value="前后台交互信息" v-on:click="SendMessage" />-->
       <input style="color:Red;" id="StatusBar" type="text" name="StatusBar" readonly />&nbsp;|←状态信息
     </div>
     <div id="OfficeDiv" style="width: 100%; height: 100%;"></div>
   </div>
 </template>
-
- <script>
+<script>
 import global from "@/utils/global";
 import browser from "@/assets/js/iWebOffice/iWebOffice2015.js";
 import WebOffice2015 from "@/assets/js/iWebOffice/WebOffice";
 const WebOfficeObj = new WebOffice2015(); //创建WebOffice对象
-const ServerUrl = "http://localhost:8080/iWebOffice2015.JSP-V2.1"; //后台的url走接口
+const ServerUrl = "http://localhost:8090/iWebOffice2015.JSP-V2.1"; //后台的url走接口
 const mSessionID = "F6AC09A770257308438E72E06F701321";
-
 export default {
-  name: "officeDemo",
-
+  name:'Signature',
   data() {
     return {};
   },
@@ -76,7 +65,6 @@ export default {
           this.StatusMsg(WebOfficeObj.Status);
         }
       } catch (e) {
-        ConsoleOut("11111", e);
         this.StatusMsg(e.description);
       }
     },

@@ -55,7 +55,8 @@ export default {
   methods: {
     showEdit() {
       apiShow("message", "modelView", {
-        id: this.$route.query.id
+        id: this.$route.query.id,
+        modelStyle: 3
       }).then(resolve => {
         this.form = {
           modelName: resolve.modelName,
@@ -88,7 +89,7 @@ export default {
 .container {
   background: #fff;
   padding: 30px;
-  height: 100%;
+  min-height: 100%;
   .input_style,
   .el-select {
     width: calc(100% - 180px);

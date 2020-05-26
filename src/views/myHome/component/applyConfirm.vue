@@ -12,11 +12,30 @@
 
 <script>
 export default {
+  // data() {
+  //   return {
+  //     titleTxt:''
+  //   };
+  // },
   components: {},
+  
   watch: {
     $route: "handleRoute"
   },
+  // created() {
+  //   this.getInfo()
+  // },
   methods: {
+    // getInfo(){
+    //   this.$api.member.getMemberProcess().then(res=>{
+    //     if(res.success){
+    //       let val = res.data.taskDTOList
+    //       let index = Number(val.length-1) 
+    //       this.titleTxt = val[index]
+    //      console.log(res);
+    //     }
+    //   })
+    // },
     checkConfirm(){
       this.$router.push({path: '/users/progressApply'})
     },

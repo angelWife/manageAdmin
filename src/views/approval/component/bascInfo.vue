@@ -1,50 +1,50 @@
 <template>
   <div class="container">
     <div class="table_title">{{basicTitle}}</div>
-    <div class="appyVip comModal" id="manageInfo">
+    <div class="appyVip comModal"
+         id="manageInfo">
       <div class="flex">
         <div class="formMenu">
           <div class="menuBox">
-            <div
-              v-for="(item,ind) in leftMenu"
-              :key="ind"
-              class="item"
-              :class="item.active?'active':''"
-              @click="chooseMenu(ind)"
-            >
+            <div v-for="(item,ind) in leftMenu"
+                 :key="ind"
+                 class="item"
+                 :class="item.active?'active':''"
+                 @click="chooseMenu(ind)">
               <a :href="item.id">{{item.name}}</a>
             </div>
           </div>
         </div>
         <div class="flex-1 formModal">
-          <div class="formBox" id="applyBook">
+          <div class="formBox"
+               id="applyBook">
             <div class="title">
               <span class="text">入会申请书</span>
             </div>
-            <div class="formMain">
-              <el-form
-                :model="showData"
-                label-width="120px"
-                label="left"
-              >
-                <el-form-item label="入会申请书.doc" class="m-t-20">
-                  <img :src="filePath"/>
-                  <div class="float-left blue m-l-20 cur-pointer" @click="getFils()">下载</div>
+            <div class="formMain fileName">
+              {{fileName}}
+              <a :href="fileUrl">下载</a>
+             <!-- <el-form :model="showData"
+                       label-width="120px"
+                       label="left">
+                <el-form-item label="入会申请书.doc"
+                              class="m-t-20">
+
+                  <div class="float-left blue m-l-20 cur-pointer"
+                       @click="getFils()">下载</div>
                 </el-form-item>
-              </el-form>
+              </el-form> -->
             </div>
           </div>
-          <div class="formBox" id="baseInfo" v-if="showData.memberCompanyVo">
+          <div class="formBox"
+               id="baseInfo">
             <div class="title">
               <span class="text">公司基本信息</span>
             </div>
             <div class="formMain">
-              <el-form
-                label-width="140px"
-                ref="form"
-                :model="showData"
-                label="left"
-              >
+              <el-form ref="form"
+                       :model="showData"
+                       label="left">
                 <el-row class="m-t-20">
                   <el-col :span="10">
                     <el-form-item label="机构类型：">{{showData.memberCompanyVo.institutionTypeVal}}</el-form-item>
@@ -57,11 +57,11 @@
                   <el-col :span="10">
                     <el-form-item label="名称：">
                       {{showData.memberCompanyVo.companyName}}
-                      <span
-                        class="icon"
-                        v-if="!!showData.memberCompanyVo.companyName"
-                      >
-                        <el-tooltip popper-class="toolBox" effect="light" placement="right-end">
+                      <span class="icon"
+                            v-if="!!showData.memberCompanyVo.companyName">
+                        <el-tooltip popper-class="toolBox"
+                                    effect="light"
+                                    placement="right-end">
                           <div slot="content">变更前：{{showData.memberCompanyVo.companyName}}</div>
                           <i class="el-icon-warning"></i>
                         </el-tooltip>
@@ -77,7 +77,8 @@
                     <el-form-item label="公司类型：">{{showData.memberCompanyVo.companyTypeVal}}</el-form-item>
                   </el-col>
                   <el-col :span="10">
-                    <el-form-item label="成立日期：" prop="data1">{{showData.memberCompanyVo.dateBuild}}</el-form-item>
+                    <el-form-item label="成立日期："
+                                  prop="data1">{{showData.memberCompanyVo.dateBuild}}</el-form-item>
                   </el-col>
                 </el-row>
                 <el-row>
@@ -105,11 +106,11 @@
                   <el-col :span="10">
                     <el-form-item label="注册资本(万元)：">
                       {{showData.memberCompanyVo.registeredCapital}}
-                      <span
-                        class="icon"
-                        v-if="!!showData.memberCompanyVo.registeredCapital"
-                      >
-                        <el-tooltip popper-class="toolBox" effect="light" placement="right-end">
+                      <span class="icon"
+                            v-if="!!showData.memberCompanyVo.registeredCapital">
+                        <el-tooltip popper-class="toolBox"
+                                    effect="light"
+                                    placement="right-end">
                           <div slot="content">变更前：{{showData.memberCompanyVo.registeredCapital}}</div>
                           <i class="el-icon-warning"></i>
                         </el-tooltip>
@@ -120,48 +121,29 @@
                 <el-row>
                   <el-col :span="18">
                     <el-form-item label="营业执照：">
-                      <img
-                        class="avatar"
-                        v-for="(item,ind) in showData.memberCompanyVo.imgPathLicenceList"
-                        :key="ind"
-                        :src="setImgUrl(item)"
-                      />
-                      <!-- <div class="beforeChange">
-                        <span v-if="!!changeList.imageUrl">变更前：</span>
-                        <img v-if="showData.memberCompanyVo.imgPathLicenceList" :src="imageUrl" class="avatar" />
-                        <span v-if="!!changeList.imageUrl" class="icon">
-                          <i class="el-icon-warning"></i>
-                        </span>
-                      </div>
-                      <div v-if="!!changeList.imageUrl" class="beforeChange">
-                        <span>变更后：</span>
-                        <img :src="changeList.imageUrl" class="avatar" />
-                      </div>-->
+                      <img class="avatar"
+                           :src="showData.memberCompanyVo.imgPathLicence" />
+
                     </el-form-item>
                   </el-col>
                 </el-row>
                 <el-row>
                   <el-col :span="18">
                     <el-form-item label="经营业务许可证：">
-                      <img
-                        class="avatar"
-                        v-for="(item,ind) in showData.memberCompanyVo.imgPathBusinessList"
-                        :key="ind"
-                        :src="setImgUrl(item)"
-                      />
+                      <img class="avatar"
+                           v-for="(item,ind) in showData.memberCompanyVo.imgPathBusinessList"
+                           :key="ind"
+                           :src="item" />
                     </el-form-item>
                   </el-col>
                 </el-row>
-                <!-- <el-row style="text-align:right" v-if="lay=='detail'">
-                  <el-col :span="24">
-                    <el-button @click="reject()">退回初审</el-button>
-                    <el-button type="primary">审批通过</el-button>
-                  </el-col>
-                </el-row>-->
+
               </el-form>
             </div>
           </div>
-          <div class="formBox" id="userInfo" v-if="showData.memberCompanyContactListVo">
+          <div class="formBox"
+               id="userInfo"
+               v-if="showData.memberCompanyContactListVo">
             <div class="title">
               <span class="text">联系人信息</span>
               <span class="icon">
@@ -169,42 +151,7 @@
               </span>
             </div>
             <div class="formMain">
-              <!-- <div class="tableBox">
-                <div class="ctitle">变更前:</div>
-                <table class="myTable m-t-20">
-                  <thead>
-                    <tr>
-                      <th>联系人姓名</th>
-                      <th>职务</th>
-                      <th>办公电话</th>
-                      <th>手机</th>
-                      <th>传真</th>
-                      <th>邮箱</th>
-                      <th>备用邮箱</th>
-                      <th>通讯地址</th>
-                      <th>微信号</th>
-                      <th>身份证</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item,ind) in showData.memberCompanyContactListVo" :key="ind">
-                      <td>
-                        <span v-if="item.default">(默认)</span>
-                        {{item.contactName}}
-                      </td>
-                      <td>{{item.duty}}</td>
-                      <td>{{item.officePhoneNum}}</td>
-                      <td>{{item.mobileNum}}</td>
-                      <td>{{item.fax}}</td>
-                      <td>{{item.mailAddress}}</td>
-                      <td>{{item.standbyMail}}</td>
-                      <td>{{item.contactAddress}}</td>
-                      <td>{{item.weChatNum}}</td>
-                      <td>{{item.userID}}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div> -->
+
               <div class="tableBox">
                 <div class="ctitle">改动后:</div>
                 <table class="myTable m-t-20">
@@ -223,7 +170,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item,ind) in showData.memberCompanyContactListVo" :key="ind">
+                    <tr v-for="(item,ind) in showData.memberCompanyContactListVo"
+                        :key="ind">
                       <td>
                         <span v-if="item.default">(默认)</span>
                         {{item.contactName}}
@@ -243,97 +191,10 @@
               </div>
             </div>
           </div>
-          <!-- <div class="formBox" id="vipUser">
-            <div class="title">
-              <span class="text">会员代表</span>
-            </div>
-            <div class="formMain">
-              <el-form
-                :model="ruleForm"
-                :rules="rules"
-                ref="ruleForm"
-                label-width="140px"
-                label="left"
-              >
-                <el-row class="m-t-20">
-                  <el-col :span="10">
-                    <el-form-item label="证件类型：">身份证</el-form-item>
-                  </el-col>
-                  <el-col :span="10">310119112222338812</el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="签发机关：">上海市浦东新区公安局</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="有效期：">2040-1-1</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="姓名：">张小五</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="性别：">男</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="籍贯：">上海-浦东</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="出身年月：" prop="date1">1955-11-15</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="名族：">汉族</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="最高学历：">博士</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="政治面貌：">党员</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="职务：">总经理秘书</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="办公电话：">31235689</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="传真：">312312312</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="本人电话：">1888888888</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="邮箱：">12342654@qq.com</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="通讯地址：">上海市徐汇区东川路911弄109号</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="微信号：">12342654</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="代表履历：">测试履历测试履历测试履历测试履历测试履历测试履历测试履历测</el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form>
-            </div>
-          </div>-->
-          <div class="formBox" id="other" v-if="showData.memberShareHolderVo">
+
+          <div class="formBox"
+               id="other"
+               v-if="showData.memberShareHolderVo">
             <div class="title">
               <span class="text">股东与高管</span>
             </div>
@@ -349,7 +210,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item,ind) in showData.memberShareHolderVo" :key="ind">
+                    <tr v-for="(item,ind) in showData.memberShareHolderVo"
+                        :key="ind">
                       <td>{{item.shareholderName}}</td>
                       <td>{{item.shareholdingRatio}}%</td>
                       <td>{{item.chuziRatio }}%</td>
@@ -375,7 +237,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item,ind) in showData.memberSeniorVos" :key="ind">
+                    <tr v-for="(item,ind) in showData.memberSeniorVos"
+                        :key="ind">
                       <td>{{item.seniorName}}</td>
                       <td>{{item.sexVal}}</td>
                       <td>{{item.duties}}</td>
@@ -392,20 +255,22 @@
               </div>
             </div>
           </div>
-          <div class="formBox" id="msgInfo" v-if="showData.commonMemberBusinessVo">
+          <div class="formBox"
+               id="msgInfo"
+               v-if="showData.commonMemberBusinessVo">
             <div class="title">
               <span class="text">业务信息</span>
             </div>
             <div class="formMain">
-                <el-form
-                :model="showData"
-                label-width="160px"
-                label="left">
+              <el-form :model="showData"
+                       label-width="160px"
+                       label="left">
                 <div class="title">资格信息</div>
                 <el-row class="m-t-20">
                   <el-col :span="12">
                     <el-form-item label="资格信息：">
-                      <span v-for="(item,ind) in showData.commonMemberBusinessVo.qualificationTypeIds" :key="ind">
+                      <span v-for="(item,ind) in showData.commonMemberBusinessVo.qualificationTypeIds"
+                            :key="ind">
                         {{ind==0?item.qualificationTypeVal:','+item.qualificationTypeVal}}
                       </span>
                     </el-form-item>
@@ -453,7 +318,8 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item,ind) in showData.commonMemberBusinessVo.departmentInfoList" :key="ind">
+                    <tr v-for="(item,ind) in showData.commonMemberBusinessVo.departmentInfoList"
+                        :key="ind">
                       <td>{{item.departmentName}}</td>
                       <td>{{item.personNum}}</td>
                       <td>{{item.departHeader}}</td>
@@ -464,63 +330,7 @@
                   </tbody>
                 </table>
               </div>
-              <!-- <el-form
-                :model="ruleForm"
-                :rules="rules"
-                ref="ruleForm"
-                label-width="140px"
-                label="left">
-                <el-row class="m-t-20">
-                  <el-col :span="12">
-                    <el-form-item label="具备投资能力：">{{showData.commonMemberBusinessVo}}</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="12">
-                    <el-form-item label="备注：">--</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="保险资金托管业务：">--</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="是否自保监会完成备案：">--</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="净资产规模：">--</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="受托管理保险资金规模：">--</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="外部信用评级：">--</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="全球总资产规模：">--</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="外部信用评级：">--</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="全球总资产规模：">--</el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="10">
-                    <el-form-item label="外部信用评级：">--</el-form-item>
-                  </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="全球总资产规模：">--</el-form-item>
-                  </el-col>
-                </el-row>
-              </el-form> -->
+
             </div>
           </div>
         </div>
@@ -535,17 +345,17 @@ export default {
   props: {
     basicTitle: { type: String, required: true },
     fileList: [
-        {
-          name: "food.jpeg",
-          url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
-        },
-        {
-          name: "food2.jpeg",
-          url:
-            "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
-        }
-      ],
+      {
+        name: "food.jpeg",
+        url:
+          "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+      },
+      {
+        name: "food2.jpeg",
+        url:
+          "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100"
+      }
+    ],
     changeData: {
       type: Object,
       required: false,
@@ -560,15 +370,17 @@ export default {
       rejectVisible: false,
       companyId: null,
       showData: {
-        memberCompanyVo:null,
-        memberCompanyContactListVo:null,
-        memberRepInfoVo:null,
-        memberShareHolderVo:null,
-        memberSeniorVos:null,
-        commonMemberBusinessVo:null,
-        memberPayVo:null,
+        memberCompanyVo: null,
+        memberCompanyContactListVo: null,
+        memberRepInfoVo: null,
+        memberShareHolderVo: null,
+        memberSeniorVos: null,
+        commonMemberBusinessVo: null,
+        memberPayVo: null
       },
-      filePath:'',
+      filePath: "",
+      fileName:'',
+      fileUrl:'',
       leftMenu: [
         { name: "入会申请书", active: true, id: "#applyBook" },
         { name: "公司基本信息", active: false, id: "#baseInfo" },
@@ -582,6 +394,7 @@ export default {
   created() {
     this.companyId = this.$store.state.manage.passVal.companyId;
     this.getBaseInfo();
+    this.getFils()
   },
   methods: {
     chooseMenu(ind) {
@@ -598,38 +411,66 @@ export default {
       //公司信息
       this.$api.member.basicComp({ companyId: this.companyId }).then(res => {
         if (res.success) {
-          self.showData.memberCompanyVo = res.data;
+          console.log(res);
+          if (self.changeData && self.changeData.memberCompanyVo) {
+            self.showData.memberCompanyVo = self.changeData.memberCompanyVo;
+          } else {
+            self.showData.memberCompanyVo = res.data;
+          }
         }
         // console.log(self.showData.memberCompanyVo)
       });
       //联系人
       this.$api.member.basicContact({ companyId: this.companyId }).then(res => {
         if (res.success) {
-          self.showData.memberCompanyContactListVo = res.data;
+          if (self.changeData && self.changeData.memberCompanyContactListVo) {
+            self.showData.memberCompanyContactListVo =
+              self.changeData.memberCompanyContactListVo;
+          } else {
+            self.showData.memberCompanyContactListVo = res.data;
+          }
         }
       });
       // 会员代表
       this.$api.member.basicRep({ companyId: this.companyId }).then(res => {
         if (res.success) {
-          self.showData.memberRepInfoVo = res.data;
+          if (self.changeData && self.changeData.memberRepInfoVo) {
+            self.showData.memberRepInfoVo = self.changeData.memberRepInfoVo;
+          } else {
+            self.showData.memberRepInfoVo = res.data;
+          }
         }
       });
       //股东
       this.$api.member.basicShare({ companyId: this.companyId }).then(res => {
         if (res.success) {
-          self.showData.memberShareHolderVo = res.data;
+          if (self.changeData && self.changeData.memberShareHolderVo) {
+            self.showData.memberShareHolderVo =
+              self.changeData.memberShareHolderVo;
+          } else {
+            self.showData.memberShareHolderVo = res.data;
+          }
         }
       });
       //高管
       this.$api.member.basicSenior({ companyId: this.companyId }).then(res => {
         if (res.success) {
-          self.showData.memberSeniorVos = res.data;
+          if (self.changeData && self.changeData.memberSeniorVos) {
+            self.showData.memberSeniorVos = self.changeData.memberSeniorVos;
+          } else {
+            self.showData.memberSeniorVos = res.data;
+          }
         }
       });
       //业务信息
       this.$api.member.basicInfo({ companyId: this.companyId }).then(res => {
         if (res.success) {
-          self.showData.commonMemberBusinessVo = res.data;
+          if (self.changeData && self.changeData.memberSeniorVos) {
+            self.showData.commonMemberBusinessVo =
+              self.changeData.commonMemberBusinessVo;
+          } else {
+            self.showData.commonMemberBusinessVo = res.data;
+          }
         }
       });
       // //缴费信息
@@ -639,18 +480,19 @@ export default {
       //   }
       // });
     },
-    getFils(){
-        let self = this
-        this.$api.manage.getFilePath(this.companyId).then(res=>{
-            if (res.success) {
-                if(res.data.has){
-                    self.filePath = res.data.fullPath
-                }else{
-                    self.$message.warning('暂无入会申请书下载')
-                }
-                
-            }
-        })
+    getFils() {
+      let self = this;
+      this.$api.manage.getFilePath(this.companyId).then(res => {
+        if (res.success) {
+          if (res.data.has) {
+            this.fileUrl = res.data.fullPath;
+            this.fileName = res.data.name;
+            self.filePath = res.data.fullPath;
+          } else {
+            self.$message.warning("暂无入会申请书下载");
+          }
+        }
+      });
     }
   },
   components: {}
@@ -847,5 +689,17 @@ export default {
   span {
     vertical-align: top;
   }
+}
+.el-row {
+  margin-bottom: 0px;
+}
+.el-form-item {
+  margin-bottom: 0;
+}
+.fileName{
+  margin-top: 20px;
+}
+.fileName a{
+  margin-left: 20px;
 }
 </style>
