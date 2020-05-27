@@ -108,7 +108,7 @@ import sysUser from '@/views/system/user';
 import sysDictionary from '@/views/system/dictionary';
 
 import yearFee from '@/views/approval/yearFee';
-import iWebOffice from '@/views/iWebOffice/iWebOffice';
+import iWebOffice from '@/views/iWebOffice/IWebOffice';
 import officeDemo from '@/views/iWebOffice/officeDemo';
 import signature from '@/views/iWebOffice/signature';
 
