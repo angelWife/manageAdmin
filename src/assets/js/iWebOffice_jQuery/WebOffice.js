@@ -1506,8 +1506,8 @@ function WebOffice2015() {
 
 	/* 得到某文件的大小 */
 	this.WebFileSize = function (FileName) {
-		var fs = this.obj.FileSystem; // 创建file对象：
-		var fsize = fs.GetFileSize(FileName);
+		let fs = this.obj.FileSystem; // 创建file对象：
+		let fsize = fs.GetFileSize(FileName);
 		if (fsize == 0) {
 			this.Status = "请检查文件路径是否有误";
 			return 0;
@@ -1525,13 +1525,13 @@ function WebOffice2015() {
 
 	/* 禁止指定菜单项 */
 	this.DisableMenu = function (MenuName) {
-		var custommenu = this.obj.CustomMenu;
+		let custommenu = this.obj.CustomMenu;
 		return custommenu.DisableMenu(MenuFile, MenuName);
 	}
 
 	/* 允许菜单项有效 */
 	this.EnableMenu = function (MenuName) {
-		var custommenu = this.obj.CustomMenu;
+		let custommenu = this.obj.CustomMenu;
 		return custommenu.EnableMenu(MenuFile, MenuName);
 	}
 
@@ -1545,8 +1545,8 @@ function WebOffice2015() {
 	this.WebOpenKey = function (mRoot, mValue) {
 		root = mRoot;
 		rootValue = mValue;
-		var register = this.obj.Register;
-		var res = register.QueryStringValue(root, rootValue, "");
+		let register = this.obj.Register;
+		let res = register.QueryStringValue(root, rootValue, "");
 		if (!res) {
 			register.SetStringValue(root, rootValue, "", "");
 			this.Status = "建立注册对象失败，已新建注册表对象";
@@ -1558,9 +1558,9 @@ function WebOffice2015() {
 
 	/* 写入由Name指定的注册表项的值Value（字符串类型的值） */
 	this.WebWriteString = function (mKey, mValue) {
-		var register = this.obj.Register;
+		let register = this.obj.Register;
 		if (root != undefined && rootValue != undefined) {
-			var res = register.SetStringValue(root, rootValue, mKey, mValue);
+			let res = register.SetStringValue(root, rootValue, mKey, mValue);
 			this.Status = "写入注册表成功";
 			return res;
 		}
@@ -1570,9 +1570,9 @@ function WebOffice2015() {
 
 	/* 读取由Name指定的注册表项的值（字符串类型的值） */
 	this.WebReadString = function (mKey) {
-		var register = this.obj.Register;
+		let register = this.obj.Register;
 		if (root != undefined && rootValue != undefined) {
-			var res = register.QueryStringValue(root, rootValue, mKey);
+			let res = register.QueryStringValue(root, rootValue, mKey);
 			if (res != null || res != "") {
 				this.Status = "读取注册表成功";
 				return res;
@@ -1588,9 +1588,9 @@ function WebOffice2015() {
 
 	/* 写入由Name指定的注册表项的值Value */
 	this.WebWriteInteger = function (mKey, mValue) {
-		var register = this.obj.Register;
+		let register = this.obj.Register;
 		if (root != undefined && rootValue != undefined) {
-			var res = register.SetDWordValue(root, rootValue, mKey, mValue);
+			let res = register.SetDWordValue(root, rootValue, mKey, mValue);
 			this.Status = "写入注册表成功";
 			return res;
 		}
@@ -1600,9 +1600,9 @@ function WebOffice2015() {
 
 	/* 读取由Name指定的注册表项的值Value */
 	this.WebReadInteger = function (mKey) {
-		var register = this.obj.Register;
+		let register = this.obj.Register;
 		if (root != undefined && rootValue != undefined) {
-			var res = register.QueryDWORDValue(root, rootValue, mKey);
+			let res = register.QueryDWORDValue(root, rootValue, mKey);
 			if (res != null || res != "") {
 				this.Status = "读取注册表成功";
 				return res;
@@ -1662,7 +1662,7 @@ function WebOffice2015() {
 
 	/* 用于删除目录下的文件 */
 	this.WebDelTree = function (Directory) {
-		var fs = this.obj.FileSystem;
+		let fs = this.obj.FileSystem;
 		fs.ClearDirectory(Directory); //此接口无返回值
 		return true;
 	}
@@ -1681,9 +1681,9 @@ function WebOffice2015() {
 	/* 按设置的打印份数进行打印 */
 	this.PrintByCopies = function (Copies, Show) {
 		parseInt(Copies);
-		var mAPIObj;
-		var mApiName;
-		var mAppName;
+		let mAPIObj;
+		let mApiName;
+		let mAppName;
 		mAppName = this.obj.ActiveDocument.Application.Name;
 		if (mAppName == "Microsoft Word") {
 			mAPIObj = this.obj.ActiveDocument.Application.Dialogs.Item(88);
@@ -1730,8 +1730,8 @@ function WebOffice2015() {
 	/* 执行宏 */
 	this.WebRunMacro = function (MarcroName, MacroValue) {
 		try {
-			var VBAStr = MacroValue;
-			var VBCom = this.obj.ActiveDocument.VBProject.VBComponents.Add(1);
+			let VBAStr = MacroValue;
+			let VBCom = this.obj.ActiveDocument.VBProject.VBComponents.Add(1);
 			VBCom.CodeModule.AddFromString(VBAStr);
 			this.obj.ActiveDocument.Application.Run(MarcroName);
 			return true;
@@ -1744,9 +1744,9 @@ function WebOffice2015() {
 	this.WebDocumentCompare = function (FileName1, FileName2) {
 		// 与当前打开的文档进行对比
 		this.Status = '';
-		var fs = this.obj.FileSystem; // 创建file对象：
-		var filePath = this.DownFilePath(); //获取文件保存临时路劲
-		var saveFilePath = filePath + Math.round(Math.random() * 100000000)
+		let fs = this.obj.FileSystem; // 创建file对象：
+		let filePath = this.DownFilePath(); //获取文件保存临时路劲
+		let saveFilePath = filePath + Math.round(Math.random() * 100000000)
 			+ '.doc';
 		if ((FileName1 == null) || (FileName1 == '')) {
 			if ((FileName2 == null) || (FileName2 === '')) {
@@ -1758,7 +1758,7 @@ function WebOffice2015() {
 					FileName1 = this.FileName;
 					this.WebSaveLocalFile(filePath + FileName1);
 					this.WebClose();
-					var bRet = this.obj.FuncExtModule.WebDocumentCompare(
+					let bRet = this.obj.FuncExtModule.WebDocumentCompare(
 						filePath + FileName1, this.DownloadedFileTempPathName,
 						saveFilePath);
 					if (bRet == true) {
@@ -1786,7 +1786,7 @@ function WebOffice2015() {
 				if (this.WebDownloadFile_int(FileName1)) {
 					if ((this.WebDownloadFile_int(FileName2))) {
 						this.WebClose();
-						var bRet = this.obj.FuncExtModule.WebDocumentCompare(
+						let bRet = this.obj.FuncExtModule.WebDocumentCompare(
 							filePath + FileName1, filePath + FileName2,
 							saveFilePath);
 						if (bRet == true) {
@@ -1818,7 +1818,7 @@ function WebOffice2015() {
 		menuBarButtonFrameColor/* 自定义工具栏按钮边框颜色 */,
 		CustomToolbarStartColor/* 自定义工具栏开始颜色 */, TitleBarTextColor/* 控件标题栏文本颜色 */) {
 		this.Status = '';
-		var style = this.obj.Style;
+		let style = this.obj.Style;
 		try {
 			style.TitleBarColor = titleBarColor;
 			if ((TitleBarTextColor == undefined) || (TitleBarTextColor == '')) // 设置默认标题文字颜色
@@ -1916,7 +1916,7 @@ function WebOffice2015() {
 
 	/* 根据密码解除保护 */
 	this.VBAUnProtectDocument = function (docType, password) {
-		var docType = this.getDocType(this.FileType);
+	    docType = this.getDocType(this.FileType);
 		if (docType == this.DocType.WORD) // word 保护模式
 		{
 			this.obj.ActiveDocument.Unprotect(password);
@@ -1935,7 +1935,7 @@ function WebOffice2015() {
 	/* 把文档插入到指定的书签位置 */
 	this.VBAInsertFile = function (Position, FileName) {
 		try {
-			var docType = this.getDocType(this.FileType);
+			let docType = this.getDocType(this.FileType);
 			if (docType == this.DocType.WORD) {
 				this.obj.Activate(true);
 				if (this.obj.ActiveDocument.BookMarks.Exists(Position)) {
@@ -1999,14 +1999,14 @@ function WebOffice2015() {
 		if (this.FileType == ".doc" || this.FileType == ".docx") // word 保护模式
 		{
 			if (this.obj.ActiveDocument.ProtectionType == "-1") {
-				var mMarksName = BMarksName.split(",");
-				var tag = "";
-				for (var i = 0; i <= mMarksName.length; i++) {
+				let mMarksName = BMarksName.split(",");
+				let tag = "";
+				for (let i = 0; i <= mMarksName.length; i++) {
 					if (!this.obj.ActiveDocument.BookMarks.Exists(mMarksName[i])) {
 						tag += mMarksName[i];
 						continue;
 					}
-					var range = this.obj.Range;
+					let range = this.obj.Range;
 					range = this.obj.ActiveDocument.Bookmarks.Item(mMarksName[i]).Range;
 					range.Select();
 					this.obj.ActiveDocument.bookmarks.Item(mMarksName[i]).range.editors.add(-1); 	// 常量：wdeditoreveryone=-1
@@ -2035,13 +2035,13 @@ function WebOffice2015() {
 	/* 取消区域保护 */
 	this.WebAreaUnprotect = function (BMarksName) {
 		if (this.FileType == ".doc" || this.FileType == ".docx") {
-			var mMarksName = BMarksName.split(",");
-			for (var i = 0; i <= mMarksName.length; i++) {
+			let mMarksName = BMarksName.split(",");
+			for (let i = 0; i <= mMarksName.length; i++) {
 				if (this.obj.ActiveDocument.BookMarks.Exists(mMarksName[i])) 		// 判断是否存在该书签
 				{
 					try {
 						this.obj.ActiveDocument.Unprotect("123");				// 解保护
-						var range = this.obj.Range;
+						let range = this.obj.Range;
 						range = this.obj.ActiveDocument.Bookmarks.Item(mMarksName[i]).Range;
 						range.Select();											// 选定书签内容
 						this.obj.ActiveDocument.DeleteAllEditableRanges(-1); 	// 去掉突出显示
@@ -2074,19 +2074,19 @@ function WebOffice2015() {
 
 	/* 控制2015标题栏 */
 	this.ShowTitleBar = function (mValue) {
-		var style = this.obj.Style;
+		let style = this.obj.Style;
 		style.ShowTitleBar = mValue;
 	}
 
 	/* 控制2015自定义菜单栏 */
 	this.ShowCustomToolBar = function (mValue) {
-		var style = this.obj.Style;
+		let style = this.obj.Style;
 		style.ShowCustomToolbar = mValue;
 	}
 
 	/* 控制2015菜单栏 */
 	this.ShowMenuBar = function (mValue) {
-		var style = this.obj.Style;
+		let style = this.obj.Style;
 		switch (mValue) {
 			case 0:
 			case false:
@@ -2100,14 +2100,14 @@ function WebOffice2015() {
 
 	/* 控制Office工具栏 */
 	this.ShowToolBars = function (mValue) {
-		var style = this.obj.Style;
+		let style = this.obj.Style;
 		style.ShowToolBars = mValue;
 		style.ShowToolSpace = mValue;
 	}
 
 	/* 控制2015状态栏 */
 	this.ShowStatusBar = function (mValue) {
-		var style = this.obj.Style;
+		let style = this.obj.Style;
 		style.ShowStatusBar = mValue;
 	}
 
