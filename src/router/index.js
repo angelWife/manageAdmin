@@ -110,7 +110,7 @@ import sysDictionary from '@/views/system/dictionary';
 import yearFee from '@/views/approval/yearFee';
 import iWebOffice from '@/views/iWebOffice/iWebOffice';
 import officeDemo from '@/views/iWebOffice/officeDemo';
-import signature from '@/views/common/signature';
+import signature from '@/views/iWebOffice/signature';
 
 // import Generator from "@/views/Generator/Generator";
 import api from "@/http/api";
@@ -613,17 +613,6 @@ const router = new Router({
       ]
     },//iweboffice
 
-    {
-      path: "/iWebOffice/iWebOffice",
-      name: "iWebOffice",
-      component: iWebOffice
-    },
-    {
-      path: "/iWebOffice/officeDemo",
-      name: "officeDemo",
-      component: officeDemo
-    },
-
     { // 登录 注册 重置密码
       path: "/login/index",
       name: "登录",
@@ -654,10 +643,20 @@ const router = new Router({
       name: "LoginSuccess",
       component: LoginSuccess
     },
+    // {
+    //   path: "/iWebOffice/iWebOffice",
+    //   name: "iWebOffice",
+    //   component: iWebOffice
+    // },
+    // {
+    //   path: "/iWebOffice/officeDemo",
+    //   name: "officeDemo",
+    //   component: officeDemo
+    // },
     {
-      path:"/common/signature",
-      name:'Signature',
-      component:signature
+      path: "/iWebOffice/signature",
+      name: 'Signature',
+      component: signature
     }
   ],
   base: '/',

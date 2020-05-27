@@ -13,15 +13,16 @@
       <input style="color:Red;" type="button" value="前后台交互信息" v-on:click="SendMessage" />-->
       <input style="color:Red;" id="StatusBar" type="text" name="StatusBar" readonly />&nbsp;|←状态信息
     </div>
-    <div id="OfficeDiv" style="width: 100%; height: 100%;"></div>
+    <!-- <div id="OfficeDiv" style="width: 100%; height: 100%;"></div> -->
   </div>
 </template>
 
  <script>
 import global from "@/utils/global";
-import browser from "@/assets/js/iWebOffice/iWebOffice2015.js";
-import WebOffice2015 from "@/assets/js/iWebOffice/WebOffice";
-const WebOfficeObj = new WebOffice2015(); //创建WebOffice对象
+// import browser from "@/assets/js/iWebOffice/iWebOffice2015.js";
+// import WebOffice2015 from "@/assets/js/iWebOffice/WebOffice";
+// const WebOfficeObj = new WebOffice2015(); //创建WebOffice对象
+const WebOfficeObj = {};
 const ServerUrl = "http://localhost:8080/iWebOffice2015.JSP-V2.1"; //后台的url走接口
 const mSessionID = "F6AC09A770257308438E72E06F701321";
 
@@ -34,9 +35,9 @@ export default {
   created() {
     // var username=document.cookie
     var x = document.cookie;
-    //debugger;
-    WebOfficeObj.setObj(document.getElementById("WebOffice")); //给2015对象赋值
-    setTimeout(this.Load, 500); //避免页面加载完，控件还没有加载情况
+    // //debugger;
+    // WebOfficeObj.setObj(document.getElementById("WebOffice")); //给2015对象赋值
+    // setTimeout(this.Load, 500); //避免页面加载完，控件还没有加载情况
   },
   methods: {
     Load() {
@@ -90,7 +91,6 @@ export default {
     //URL地址打开文档
     LoadURL() {
       try {
-        debugger;
         this.OnUnLoad();
         WebOfficeObj.ServerUrl = ServerUrl; //服务器地址
         WebOfficeObj.ShowMenu = 0;

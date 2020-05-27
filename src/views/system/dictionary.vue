@@ -262,6 +262,18 @@ export default {
       };
     },
     handleEdit() {
+      if (this.dicRow.type == '') {
+        this.$message.error('请选择模块！')
+        return
+      }
+      if (!this.dicEdit.name) {
+        this.$message.error('请输入字典名！')
+        return
+      }
+      if (!this.dicEdit.value) {
+        this.$message.error('请输入参数！')
+        return
+      }
       this.$api.dict
         .saveDic({
           dictKey: this.dicEdit.value,

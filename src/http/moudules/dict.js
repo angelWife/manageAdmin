@@ -237,3 +237,11 @@ export const infoChangeTypes = () => {
         method: 'get',
     })
 }
+//获取机构类型  POST /api/sys/dict/table_data
+export const getTableTypes = (data) => {
+    return axios({
+        url: '/common/sys/dict/load_by_type',
+        method: 'post',
+        data
+    })
+}

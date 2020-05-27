@@ -85,7 +85,7 @@ export default {
       );
     },
     handleInform: function (row) {
-      apiOperate("active", "sendListen", { id: row.id }, "", "发送成功");
+
     }
   }
 };

@@ -99,17 +99,22 @@
         <el-col :span="10">
           <el-form-item label="附件" class="mustFill">
             <el-upload
-              class="upload-box float-left"
+              :disabled="check"
+              class="upload-box"
               :multiple="false"
               ref="uploadApplication"
               :action="global.baseUrl+global.commonFileUploadUrl"
               :http-request="uploadFile"
-              accept=".doc, .docx"
               :on-change="getWordList"
-              :limit="1">
+              :show-file-list = "false"
+              >
               <el-button size="small" icon="el-icon-upload2" :disabled="check">上传文件</el-button>
-              <span style="margin-left:10px;" v-if="activityForm.filePath">已上传</span>
+              
             </el-upload>
+            <div style="margin-left:10px;" v-if="activityForm.filePath">
+              <span style="margin-right:10px;">{{activityForm.fileName}}</span>
+              <a v-if="activityForm.fileName && activityForm.filePath" :href="activityForm.filePath" target="_blank" class="buttonText">下载</a>
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="10"></el-col>
@@ -168,6 +173,7 @@ export default {
         activityPersonNum:'',
         organPersonNum:'',
         filePath:'',//文件地址string化
+        fileName:'',//文件名
       },
       typeList: [],
       id: "",
@@ -203,7 +209,8 @@ export default {
           actSign: [new Date(resolve.enrolDateStart), new Date(resolve.enrolDateEnd)],
           organPersonNum: resolve.organPersonNum,
           activityPersonNum: resolve.activityPersonNum,
-          filePath: resolve.filePath
+          filePath: resolve.filePath,
+          fileName: resolve.fileName
         };
       });
     }
@@ -255,7 +262,10 @@ export default {
         uploadFile(formData,url,method).then((res=>{
           if(res && res.code=='200' && res.data){
               successMES('上传成功');
+              console.log(obj)
+              console.log(res)
               that.activityForm.filePath = res.data.fullPath;
+              that.activityForm.fileName = obj.file.name;
           }
         })).catch(error=>{
 
@@ -319,6 +329,7 @@ export default {
         organPersonNum: this.activityForm.organPersonNum,
         activityPersonNum: this.activityForm.activityPersonNum,
         filePath: this.activityForm.filePath,
+        fileName: this.activityForm.fileName,
         id: this.id,
         draftOrSubmit:type?type:2
       }).then(resolve => {

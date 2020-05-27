@@ -2,9 +2,7 @@
   <div class="check">
     <div class="table_title">{{basicTitle}}</div>
     <div class="formBox">
-      <el-form ref="form"
-               :model="sizeForm"
-               label-width="130px">
+      <el-form ref="form" :model="sizeForm" label-width="130px">
         <!-- <el-row>
           <el-col :span="24">
             <el-form-item label="名目">2019年费缴纳</el-form-item>
@@ -15,8 +13,7 @@
             <el-form-item label="机构类型">{{vipCost.institutionTypeVal}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="业务规模(亿元)"
-                          class="inputWidth">{{vipCost.businessScale}}</el-form-item>
+            <el-form-item label="业务规模(亿元)" class="inputWidth">{{vipCost.businessScale}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -29,8 +26,7 @@
         </el-row>
         <el-form-item label="缴费通知书（未盖章）：">
           <el-image :src="infoSrc"></el-image>
-          <el-button type="primary"
-                     class="rebuild" @click="stampFile">电子盖章</el-button>
+          <el-button type="primary" class="rebuild" @click="stampFile">电子盖章</el-button>
         </el-form-item>
         <!-- <el-form-item size="large" style="text-align:right">
           <el-button>驳回缴费初审</el-button>
@@ -65,12 +61,12 @@ export default {
     onSubmit() {
       console.log("submit!");
     },
-    stampFile(){
-     let routeData =  this.$router.resolve({
-        name:'Signature',
-        query:{type:'',filePath:''}
-      })
-      window.open(routeData.href,'_blank');
+    stampFile() {
+      let routeData = this.$router.resolve({
+        name: "Signature",
+        query: { type: "member", filePath: "" }
+      });
+      window.open(routeData.href, "_blank");
     }
   }
 };

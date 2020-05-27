@@ -26,6 +26,13 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      background
+      layout="total,prev, pager, next"
+      :page-count="params.pageTotal"
+      @current-change="currentChange_"
+      style="text-align:center;margin-top:60px"
+    ></el-pagination>
     <!-- 根据搜索新建 -->
     <el-dialog title="根据搜索添加会员" :visible.sync="searchVisible" width="75%">
       <el-row>
@@ -190,7 +197,12 @@ export default {
 
       companyIdList: [],
       detailIdList: [],
-      pageLocation: 1
+      pageLocation: 1,
+      params:{//会员组配置分页
+        pageTotal:1,
+        pageIndex:1,
+        pageSize:20,
+      }
     };
   },
   created() {
@@ -216,6 +228,7 @@ export default {
         })
         .then(res => {
           if (res.success) {
+            this.params.pageTotal = res.data.pageTotal;
             this.groupData = mapTime(res.data, "joinDate");
           } else {
             warnMES(res.message);
@@ -342,7 +355,13 @@ export default {
       this.companyType = "";
       this.joinTime = "";
     },
-    // 分页
+    currentChange_(i){
+      this.params.pageIndex = i;
+      this.params.showQuery = this.id;
+      pubParam.pageDialog.pageSize = i;
+      this.displayMember(i);
+    },
+    // 分页,弹窗分页
     currentchange(i) {
       this.pageLocation = i;
       this.showQuery({

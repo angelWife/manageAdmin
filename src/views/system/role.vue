@@ -2,7 +2,7 @@
   <div class="container">
     <el-row>
       <el-col :span="8">
-        <span>用户：</span>
+        <span>角色：</span>
         <el-input placeholder="请输入" v-model="params.nameLike"></el-input>
       </el-col>
       <el-col :span="8">
@@ -34,10 +34,10 @@
 
     <el-dialog title="新增角色" :visible.sync="roleVisible" @close = "cancelBtn" width="30%">
       <el-form :model="roleData" label-width="90px">
-        <el-form-item label="角色：" class="mustFill">
+        <el-form-item label="角色：" required>
           <el-input placeholder="请输入" v-model="roleData.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="权限组：">
+        <el-form-item label="权限组：" required>
           <el-tree
             :data="autGroup"
             show-checkbox
@@ -60,10 +60,10 @@
 
     <el-dialog title="编辑角色" :visible.sync="dicVisible" @close = "cancelBtn" width="30%">
       <el-form :model="roleData" label-width="90px">
-        <el-form-item label="角色：">
+        <el-form-item label="角色：" required>
           <el-input placeholder="请输入" v-model="roleData.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="权限组：">
+        <el-form-item label="权限组：" required>
           <el-tree
             :data="autGroup"
             show-checkbox
@@ -86,7 +86,8 @@
     <el-pagination
       background
       layout="total,prev, pager, next"
-      :total="pageTotal"
+      :page-count="params.pageTotal"
+      @current-change="changePage"
       style="text-align:center;margin-top:60px"
     ></el-pagination>
   </div>
@@ -101,7 +102,6 @@ export default {
       roleVisible: false,
       dicVisible: false,
       tableData: [],
-      pageTotal: 1,
       roleData: {
         name: "",
         menuIdList: [],
@@ -111,7 +111,10 @@ export default {
       defaultChecked: [],
       params: {
         nameLike: "",
-        menuNameLike: ""
+        menuNameLike: "",
+        pageIndex:1,
+        pageSize:20,
+        pageTotal: 1,
       },
       roleEdit: {
         role: "超级管理员",
@@ -165,14 +168,19 @@ export default {
     this.$nextTick(() => {
       this.autGroup = this.$store.state.menu;
       // this.setMenuList(this.menuList);
-      console.log(this.autGroup);
     });
   },
   methods: {
+    changePage(i){
+      this.params.pageIndex = i;
+      this.getRoleTable();
+    },
     reset(){//重置
       this.params= {
         nameLike: "",
-        menuNameLike: ""
+        menuNameLike: "",
+        pageIndex:1,
+        pageSize:20,
       }
       this.getRoleTable();
     },
@@ -182,7 +190,7 @@ export default {
       this.$api.system.getRoleList(params).then(res => {
         if (res.success) {
           let list = res.data.rows;
-          self.pageTotal = res.data.total;
+          self.params.pageTotal = res.data.pageTotal;
           list.filter((v, i) => {
             let name = "";
             if (v.menuList && v.menuList.length > 0) {
@@ -303,6 +311,10 @@ export default {
           warnMES("角色名已经存在，为避免误解，请更换角色名称");
           return false;
         }
+      }
+      if(menuIdList.length == 0){
+        warnMES("请勾选权限组！");
+        return false;
       }
       this.$api.system.editRoleInfo(this.roleData).then(res => {
         if (res.success) {

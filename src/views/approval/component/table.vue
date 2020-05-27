@@ -1,15 +1,27 @@
 <template>
   <el-table :data="approData" style="width: 100%" empty-text="没有符合条件的流程">
-    <el-table-column prop="serialNumber" label="业务流水"></el-table-column>
-    <el-table-column prop="institutionTypeVal" label="机构类型"></el-table-column>
-    <el-table-column prop="companyName" label="机构名称"></el-table-column>
-    <el-table-column prop="creditId" label="社会统一编码"></el-table-column>
-    <el-table-column prop="type" label="审批业务" width="150" :formatter="setType"></el-table-column>
-    <el-table-column prop="status" label="状态" width="100" :formatter="setStatus"></el-table-column>
+    <el-table-column min-width='120' align="center" prop="serialNumber" label="业务流水"></el-table-column>
+    <el-table-column label="机构类型" align="center">
+      <template slot-scope="props">
+         <span>{{ props.row.institutionTypeVal || '--' }}</span>
+      </template>
+    </el-table-column>
+    <el-table-column align="center" label="机构名称">
+      <template slot-scope="props">
+         <span>{{ props.row.companyName || '--' }}</span>
+      </template>
+    </el-table-column>
+    <el-table-column align="center" label="社会统一编码">
+      <template slot-scope="props">
+         <span>{{ props.row.creditId || '--' }}</span>
+      </template>
+    </el-table-column>
+    <el-table-column prop="type" align="center" label="审批业务" width="150" :formatter="setType"></el-table-column>
+    <el-table-column prop="status" align="center" label="状态" width="100" :formatter="setStatus"></el-table-column>
     <el-table-column fixed="right" label="操作" width="160">
       <template slot-scope="scope">
         <el-button
-          v-if="scope.row.isAccess"
+          v-if="scope.row.isAccess && scope.row.status ==1"
           @click="handleAct(scope.row)"
           type="primary"
           size="small"
@@ -39,7 +51,7 @@ export default {
    
   },
   methods: {
-    handleAct(row) {
+    handleAct(row) {//处理
       this.$router.push({
         path: "/approval/memberDetails",
       });
@@ -48,7 +60,7 @@ export default {
       this.$store.commit('setPassVal',_data)
       this.$store.commit('setProcessIde',row.processInstanceId)
     },
-    handleCheck(row) {
+    handleCheck(row) {//查看
        
       this.$router.push({
         path: "/approval/memberDetails",
@@ -58,11 +70,11 @@ export default {
       this.$store.commit('setPassVal',_data)
       this.$store.commit('setProcessIde',row.processInstanceId)
     },
-    setType(){
-      let val = arguments[2];
+    setType(type,column, cellValue, index){
+      let key = cellValue;
       let name=""
       this.typeVO.filter(v=>{
-        if(v.key==val){
+        if(v.key==key){
           name = v.val
         }
       })

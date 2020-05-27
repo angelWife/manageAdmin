@@ -281,6 +281,7 @@ export default {
   .iframe-container {
     height: auto;
     position: relative;
+	background: #fff;
     // transform: translateZ(0);
     .frame {
       width: 100%;

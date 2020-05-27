@@ -423,6 +423,7 @@ export default {
     },
     addMember() {
       this.addVisible = true;
+      pubParam.pageDialog.memberStatus = 1
       this.displayTable(pubParam.pageDialog);
     },
     clearTag() {

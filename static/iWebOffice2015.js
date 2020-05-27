@@ -93,7 +93,7 @@ else if (browser == "firefox") {
 	str += '>';
 }
 str += '</object>';
-// document.write(str);
+document.write(str);
 
 //alert(str);
 ////////////////////////////自定义工具栏图片编码/////////////////////////////////////////

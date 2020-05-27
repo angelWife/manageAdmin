@@ -60,7 +60,7 @@
       <el-row class="btn_content">
         <el-col :span="12">
           <el-button type="primary" @click="addJoin()">添加</el-button>
-          <el-button type="primary">导出</el-button>
+          <el-button type="primary" @click="exportExcel()">导出</el-button>
           <el-button type="primary" @click="wholeInform()">全体确认通知</el-button>
         </el-col>
         <el-col :span="12" class="text_right">
@@ -287,9 +287,16 @@ export default {
         }
       )
         .then(() => {
-          apiOperate("active", "sendAll", {id: this.activityId}, "", "发送成功");
+
         })
         .catch(() => {});
+    },
+    exportExcel: function() {
+      apiAct("exportEnrol", {activityId: this.activityId, enrolStatus: '', status: 1}).then(
+        resolve => {
+          location.href = resolve.fullPath
+        }
+      );
     },
     // 查询
     handleQuery(pageParam) {

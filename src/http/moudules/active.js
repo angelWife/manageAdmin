@@ -138,3 +138,11 @@ export const sendAll = (data) => {
   })
 }
 
+//导出参会者名单
+export function exportEnrol(data) {
+  return axios({
+    url:`/admin/activity/info/export_enrol`,
+    method: 'post',
+    data
+  })
+}

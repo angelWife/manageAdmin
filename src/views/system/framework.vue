@@ -18,7 +18,7 @@
       <el-table-column prop="remark" label="描述"></el-table-column>
       <el-table-column prop="idx" label="序号"></el-table-column>
       <el-table-column prop="updateTime" label="更改时间" :formatter="timeFormat"></el-table-column>
-      <el-table-column fixed="right" label="操作" width="400">
+      <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button @click="editDepartment(scope.row)" type="primary" size="small">编辑</el-button>
           <el-button @click="handleAct(scope.row)" type size="small">删除</el-button>
@@ -26,7 +26,7 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog class="new-depart" :title="departEdit.name?'编辑部门':'新增部门'" :visible.sync="departVisible">
+    <el-dialog class="new-depart" :title="!isAdd?'编辑部门':'新增部门'" :visible.sync="departVisible">
       <el-form :model="departEdit" label-width="100px">
         <el-form-item label="父部门：" class="mustFill">
           <el-cascader
@@ -112,7 +112,8 @@ export default {
         idx: "",
         remark: ""
       },
-      tableData: []
+      tableData: [],
+      isAdd:true,
     };
   },
   created() {
@@ -137,6 +138,7 @@ export default {
       console.log('tab',tab);
       let tableData = this.tableData;
       if (tab) {
+        this.isAdd = false;
         let parentId = tab.parentId;
         console.log(parentId)
         let arr = [];
@@ -167,6 +169,7 @@ export default {
         }
         // this.departEdit = tab;
       } else {
+        this.isAdd = true;
         this.departEdit = {
           parentId: "",
           name: "",

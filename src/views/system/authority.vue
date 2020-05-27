@@ -117,6 +117,7 @@
 <script>
 import { mapState } from "vuex";
 import {formatWithSeperator} from "../../utils/datetime";
+import { warnMES } from "../../utils/common";
 export default {
   data() {
     return {
@@ -216,6 +217,10 @@ export default {
       params.name = this.authEdit.title;
 
       params.sortNum = this.authEdit.sortNum;
+      if(params.sortNum*1<0){
+        warnMES("请输入正确的序号");
+        return ;
+      }
       this.$api.system.editAuthority(params).then(res => {
         if (res.success) {
           self.editVisible = false;

@@ -15,14 +15,22 @@
       <el-table-column prop="remark" label="备注" align="center"></el-table-column>
       <el-table-column prop="personNum" label="人数" align="center"></el-table-column>
       <el-table-column prop="dateUpdate" label="更新时间" align="center"></el-table-column>
-      <el-table-column label="操作" min-width="100">
+      <el-table-column label="操作" width="300">
         <template slot-scope="scope">
           <el-button type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
           <el-button type="primary" @click="handleManage(scope.row.id)" size="small">管理会员</el-button>
-          <el-button size="small" @click="handleDelete(scope.row.id)">删除</el-button>
+          <el-button size="small" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    
+    <el-pagination
+      background
+      layout="total,prev, pager, next"
+      :page-count="params.pageTotal"
+      @current-change="currentChange"
+      style="text-align:center;margin-top:60px"
+    ></el-pagination>
     <!-- 新增 -->
     <el-dialog title="新增会员组" :visible.sync="memberVisible" width="30%">
       <el-form :model="memberData" label-width="100px">
@@ -35,7 +43,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="memberVisible = false">取消</el-button>
-        <el-button type="primary" @click="submit(memberData)">提交</el-button>
+        <el-button type="primary" @click="submit()">提交</el-button>
       </div>
     </el-dialog>
     <!-- 编辑 -->
@@ -81,23 +89,40 @@ export default {
           value: "保险集团"
         }
       ],
-      groupData: []
+      groupData: [],
+      params:{
+        pageTotal:1,
+        pageIndex:1,
+        pageSize:20,
+      }
     };
   },
   created() {
-    this.displayGroup(pubParam);
+    console.log(pubParam)
+    this.displayGroup(this.params);
   },
   methods: {
+    
+    currentChange(i) {
+      console.log(i)
+      this.currentPage = i;
+      this.params.pageIndex=i;
+      this.displayGroup(this.params);
+    },
     displayGroup(param) {
+      this.memberEdit = {};
       this.$api.member
         .showGroup(param)
         .then(res => {
           if (res.success) {
             let rowData = [];
+            let data = res.data;
+            this.params.pageTotal = data.pageTotal;
             res.data.rows.map(v => {
               v.dateUpdate = v.dateUpdate ? format(v.dateUpdate) : "-";
               rowData.push(v);
             });
+            console.log(rowData)
             this.groupData = rowData;
           }
         })
@@ -107,6 +132,10 @@ export default {
     },
     // 新建
     submit(data) {
+      if(!this.memberData.name){
+        warnMES("请输入会员组名！");
+        return;
+      }
       this.$api.member
         .actMember({
           groupName: this.memberData.name,
@@ -120,6 +149,7 @@ export default {
               message: "创建成功",
               type: "success"
             });
+            this.memberData={};
           } else {
             this.$message.error(res.message);
           }
@@ -148,6 +178,10 @@ export default {
         });
     },
     saveEdit() {
+      if(!this.memberEdit.name){
+        warnMES("请输入会员组名！");
+        return;
+      }
       this.$api.member
         .actMember({
           id: this.memberEdit.id,
@@ -171,15 +205,15 @@ export default {
         });
     },
     // 删除
-    handleDelete(id) {
-       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+    handleDelete(item) {
+       this.$confirm('是否删除"' + item.groupName +'" 会员组', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           this.$api.member
             .groupDelete({
-              groupId: id
+              groupId: item.id
             })
             .then(res => {
               if (res.success) {
@@ -191,10 +225,10 @@ export default {
               console.log(error);
             });
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
+          // this.$message({
+          //   type: 'info',
+          //   message: '已取消删除'
+          // });          
         });
       
     },

@@ -11,10 +11,26 @@
       :header-cell-style="thStyle"
     >
       <el-table-column prop="name" label="审批节点" width="100" align="center"></el-table-column>
-      <el-table-column prop="ideal" label="处理意见" align="center"></el-table-column>
-      <el-table-column prop="operator" label="操作人" width="100" align="center"></el-table-column>
-      <el-table-column prop="createDate" label="处理时间" width="200" align="center"></el-table-column>
-      <el-table-column prop="explain" label="说明" width="400" align="center"></el-table-column>
+      <el-table-column label="处理意见" align="center">
+        <template slot-scope="props">
+          <span>{{ props.row.ideal || '--' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作人" width="100" align="center">
+        <template slot-scope="props">
+          <span>{{ props.row.operator || '--' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="处理时间" width="200" align="center">
+        <template slot-scope="props">
+          <span>{{ props.row.createDate || '--' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="说明" width="400" align="center">
+        <template slot-scope="props">
+          <span>{{ props.row.explain || '--' }}</span>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>

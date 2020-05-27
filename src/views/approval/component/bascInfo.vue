@@ -5,7 +5,7 @@
          id="manageInfo">
       <div class="flex">
         <div class="formMenu">
-          <div class="menuBox">
+          <div class="" :class="topFixed?'menuBox menuBoxFixed':'menuBox'">
             <div v-for="(item,ind) in leftMenu"
                  :key="ind"
                  class="item"
@@ -15,7 +15,7 @@
             </div>
           </div>
         </div>
-        <div class="flex-1 formModal">
+        <div class="flex-1 formModal" ref="pronbit">
           <div class="formBox"
                id="applyBook">
             <div class="title">
@@ -370,17 +370,18 @@ export default {
       rejectVisible: false,
       companyId: null,
       showData: {
-        memberCompanyVo: null,
-        memberCompanyContactListVo: null,
-        memberRepInfoVo: null,
-        memberShareHolderVo: null,
-        memberSeniorVos: null,
-        commonMemberBusinessVo: null,
-        memberPayVo: null
+        memberCompanyVo: {},
+        memberCompanyContactListVo: {},
+        memberRepInfoVo: {},
+        memberShareHolderVo: {},
+        memberSeniorVos: {},
+        commonMemberBusinessVo: {},
+        memberPayVo: {}
       },
       filePath: "",
       fileName:'',
       fileUrl:'',
+      topFixed:false,
       leftMenu: [
         { name: "入会申请书", active: true, id: "#applyBook" },
         { name: "公司基本信息", active: false, id: "#baseInfo" },
@@ -391,13 +392,33 @@ export default {
       ]
     };
   },
+
   created() {
     this.companyId = this.$store.state.manage.passVal.companyId;
     this.getBaseInfo();
     this.getFils()
   },
+  mounted () {
+    var that = this
+    window.addEventListener('scroll', that.handleScroll,true)
+  },
+  destroyed () {//离开该页面需要移除这个监听的事件
+    window.removeEventListener('scroll', this.handleScroll,false)
+  },
   methods: {
+    handleScroll () {
+      var that = this
+     
+      if(that.$refs.pronbit.getBoundingClientRect().top<1){
+        this.topFixed = true
+      }else{
+        this.topFixed = false
+      }
+     
+
+    },
     chooseMenu(ind) {
+      this.topFixed = true
       this.leftMenu.filter((v, i) => {
         if (i == ind) {
           v.active = true;
@@ -695,6 +716,10 @@ export default {
 }
 .el-form-item {
   margin-bottom: 0;
+}
+#manageInfo .formMenu .menuBoxFixed{
+  position: fixed;
+  top: 70px;
 }
 .fileName{
   margin-top: 20px;

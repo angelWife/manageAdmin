@@ -295,7 +295,7 @@
             if (params.userId) {
               self.$message.success('修改成功！')
             } else {
-              self.$message.success('修新增成功！')
+              self.$message.success('新增成功！')
             }
             self.userVisible = false;
             self.initPageList()

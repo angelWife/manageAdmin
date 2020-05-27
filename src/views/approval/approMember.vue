@@ -60,7 +60,7 @@
                 @confirmCheck="confirmCheck"></myBotton>
     </div>
     <div v-else-if="dataType == 12">
-      <activityInfo :mydata="details.newData.activityInfoVo"></activityInfo>
+      <activity-info :mydata="details.newData.activityInfoVo" :lay="''"></activity-info>
       <myBotton v-if="type == 'hasOper'"
                 btnLeft="退回初审"
                 btnRight="审批通过"

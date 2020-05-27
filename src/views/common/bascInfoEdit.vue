@@ -2,27 +2,26 @@
   <div class="appyVip comModal">
     <div class="flex">
       <div class="formMenu">
-        <div class="menuBox posit" :style="'top:'+scrollTop+'px'">
+        <div class="menuBox posit" >
           <div
             v-for="(item,ind) in leftMenu"
             :key="ind"
             class="item"
-            :class="item.active?'active':''"
+             :class="item.active?'active':''"
             @click="chooseMenu(ind)"
           >
-            <a v-if="!!item.id" :href="item.id">{{item.name}}</a>
-            <router-link v-else :to="item.path">{{item.name}}</router-link>
+         <a :href="item.id">{{item.name}}</a>
+           <!-- <a v-if="!!item.id" :href="item.id">{{item.name}}</a>
+            <router-link v-else :to="item.path">{{item.name}}</router-link> -->
           </div>
         </div>
       </div>
-      <div class="flex-1 formModal">
-       
-        
+      <!-- <router-link  to="/member/useNote">1121212121</router-link> -->
 
+      <div class="flex-1 formModal">
           <div class="formBox" id="basicInfo">
             <div class="title">
               <span class="text" name="basicInfo">会员基本信息</span>
-             
             </div>
             <div class="formMain">
               <el-form :model="memberForm" label-width="100px" label="left">
@@ -68,7 +67,7 @@
                           <el-option value="已冻结" label="已冻结"> </el-option>
                           <el-option value="已退会" label="已退会"> </el-option>
                       </el-select>
-                    
+
                     </el-form-item>
                   </el-col>
                   <el-col :span="10">
@@ -105,7 +104,6 @@
           </div>
           <div class="formBox" id="applyBook">
             <div class="title">
-
               <span class="text" name="applyBook">入会申请书</span>
             </div>
             <div class="formMain">
@@ -123,12 +121,12 @@
                     <div>
                       <a :href="applyBookUrl" target="_blank"  v-show="applyBookUrl"
                           style="display:inline-block;position:relative;">
-                            <span class="el-icon-close" 
-                                  style="position:absolute;right:-16px;top:14px;color:#ff0000; " 
+                            <span class="el-icon-close"
+                                  style="position:absolute;right:-16px;top:14px;color:#ff0000; "
                                   @click.prevent="removeFile(1)"></span>
                               {{applyBookName}}
-                     </a> 
-                   </div> 
+                     </a>
+                   </div>
                     <el-upload
                       class="upload-box float-left"
                       ref="uploadApplication"
@@ -152,10 +150,9 @@
           <div class="formBox" id="companyInfo" :class="{companyMask:companyMask && edit}">
             <div class="mask"></div>
             <div class="title">
-
               <span class="text" name="companyInfo">公司基本信息</span>
-              <el-button  size="small" type="primary" 
-                          style="float:right;margin-top:10px;" 
+              <el-button  size="small" type="primary"
+                          style="float:right;margin-top:10px;"
                           v-show="edit"
                           @click="saveCompanyInfo('companyForm',userType)">保存</el-button>
             </div>
@@ -179,18 +176,18 @@
                       </el-select>
                     </el-form-item>
                   </el-col>
-                 
+
                 </el-row>
                 <el-row class="m-t-20">
                    <el-col :span="10">
                     <el-form-item label="是否有社会统一信用代码："  prop="flagHaveCredit">
                       <span class="hideEle" :class="{editInput:!edit}">{{companyForm.flagHaveCreditVal }}</span>
-                          <el-select size="small"  class="hideEle"  v-model="companyForm.flagHaveCredit " 
+                          <el-select size="small"  class="hideEle"  v-model="companyForm.flagHaveCredit "
                                     :class="{editInput:edit}"  placeholder="请选择">
                              <el-option :value="1" label="是" key="1"></el-option>
                              <el-option :value="0" label="否" key="0"></el-option>
                           </el-select>
-                         
+
                      </el-form-item>
                    </el-col>
                     <el-col :span="10">
@@ -200,13 +197,13 @@
                          v-model="companyForm.creditId" :class="{editInput:edit}" placeholder="请输入内容"></el-input>
                       </el-form-item>
                   </el-col>
-                </el-row>  
+                </el-row>
                 <el-row>
                   <el-col :span="10">
                     <el-form-item label="名称：" prop="companyName">
                       <span class="hideEle" :class="{editInput:!edit}">{{companyForm.companyName}}</span>
 
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                         v-model="companyForm.companyName" placeholder="请输入内容"  size="small"></el-input>
                     </el-form-item>
                   </el-col>
@@ -216,7 +213,7 @@
                         class="hideEle"
                         :class="{editInput:!edit}"
                       >{{companyForm.companyNameEng}}</span>
-                      <el-input class="hideEle" 
+                      <el-input class="hideEle"
                           size="small"
                           v-model="companyForm.companyNameEng"
                            :class="{editInput:edit}" placeholder="请输入内容"></el-input>
@@ -237,7 +234,7 @@
                         :class="{editInput:edit}"
                         placeholder="请选择公司类型"
                       >
-                        <el-option  v-for="(item,index) in companyTypeData"   
+                        <el-option  v-for="(item,index) in companyTypeData"
                                     :label="item.val" :value="item.key" :key="index"></el-option>
                       </el-select>
                     </el-form-item>
@@ -274,7 +271,7 @@
                         placeholder="请选择"
                       >
                         <el-option :label="item.val" :value="item.key" :key="index" v-for="(item,index) in  listedData"></el-option>
-                        
+
                       </el-select>
                     </el-form-item>
                   </el-col>
@@ -292,7 +289,7 @@
                         class="hideEle"
                         :class="{editInput:!edit}"
                       >{{companyForm.registeredAddress}}</span>
-                      <el-input  size="small" class="hideEle" 
+                      <el-input  size="small" class="hideEle"
                       v-model="companyForm.registeredAddress"
                       :class="{editInput:edit}" placeholder="请输入内容"></el-input>
                     </el-form-item>
@@ -312,7 +309,7 @@
                   <el-col :span="18">
                     <el-form-item label="公司网址：" prop="companyWeb">
                       <span class="hideEle" :class="{editInput:!edit}">{{companyForm.companyWeb}}</span>
-                      <el-input   size="small" class="hideEle" 
+                      <el-input   size="small" class="hideEle"
                       v-model="companyForm.companyWeb"
                       :class="{editInput:edit}" placeholder="请输入内容"></el-input>
                     </el-form-item>
@@ -325,7 +322,7 @@
                         class="hideEle"
                         :class="{editInput:!edit}"
                       >{{companyForm.legalRepresentative}}</span>
-                      <el-input   size="small" class="hideEle" 
+                      <el-input   size="small" class="hideEle"
                       v-model="companyForm.legalRepresentative"
                       :class="{editInput:edit}" placeholder="请输入内容"></el-input>
                     </el-form-item>
@@ -336,7 +333,7 @@
                         class="hideEle"
                         :class="{editInput:!edit}"
                       >{{companyForm.registeredCapital}}</span>
-                      <el-input  size="small" class="hideEle" 
+                      <el-input  size="small" class="hideEle"
                        v-model="companyForm.registeredCapital"
                       :class="{editInput:edit}" placeholder="请输入内容"></el-input>
                     </el-form-item>
@@ -356,14 +353,14 @@
                         :href="companyForm.imgPathLicence"
                       />
                       <div class="hideEle" :class="{editInput:edit}">
-                         <a :href="companyForm.imgPathLicence" target="_blank" 
+                         <a :href="companyForm.imgPathLicence" target="_blank"
                             v-show="companyForm.imgPathLicence"
                           style="display:inline-block;position:relative;height:100px;">
-                            <span class="el-icon-close" 
-                                  style="position:absolute;right:5px;top:5px;color:#ff0000; " 
+                            <span class="el-icon-close"
+                                  style="position:absolute;right:5px;top:5px;color:#ff0000; "
                                   @click.prevent="removeFile(2)"></span>
                             <img :src="companyForm.imgPathLicence"  width="100"  height="100" />
-                       </a> 
+                       </a>
                        <div>
                        <el-upload
                           class="avatar-uploader f-left"
@@ -396,24 +393,24 @@
                            经营业务许可证：
                       </span>
                       <div class="hideEle" :class="{editInput:!edit}">
-                    
+
                         <template v-for="(item,index) in (companyForm.imgPathBusinessList || [])" >
-                            <a :href="item" target="_blank" 
+                            <a :href="item" target="_blank"
                                :key="index"
                                 style="display:inline-block;position:relative;height:100px;margin-right:10px;">
-                                  
+
                                   <img :src="item"  width="100"  height="100" />
                              </a>
                            </template>
-                       
+
                       </div>
                       <div class="hideEle" :class="{editInput:edit}">
                           <template v-for="(item,index) in (companyForm.imgPathBusinessList || [])" >
-                            <a :href="item" target="_blank" 
+                            <a :href="item" target="_blank"
                                :key="index"
                                 style="display:inline-block;position:relative;height:100px;margin-right:10px;">
-                                  <span class="el-icon-close" 
-                                        style="position:absolute;right:5px;top:5px;color:#ff0000; " 
+                                  <span class="el-icon-close"
+                                        style="position:absolute;right:5px;top:5px;color:#ff0000; "
                                         @click.prevent="removeFile(3,index)"></span>
                                   <img :src="item"  width="100"  height="100" />
                              </a>
@@ -443,12 +440,12 @@
               </el-form>
             </div>
           </div>
-          
+
           <div class="formBox" id="userInfo" :class="{linkManMask:linkManMask && edit}" >
             <div class="mask"></div>
             <div class="title">
               <span class="text" name="userInfo">联系人信息</span>
-              <el-button size="small"  type="primary" 
+              <el-button size="small"  type="primary"
                v-show="edit"
                @click.prevent="linkmanSave(userType)" style="float:right;">保存</el-button>
             </div>
@@ -512,7 +509,7 @@
 
                   <tbody>
                     <tr v-for="(item,ind) in editContactTable" :key="ind">
-                     
+
                       <td>
                         <span v-if="item.flagDefault==1">默认</span>
                         <ElInput style="min-width:120px;width:80%;" size="small" v-model="item.contactName"></ElInput>
@@ -557,13 +554,12 @@
               </div>
             </div>
           </div>
-       
+
         <!-- 会员代表 -->
         <div :class="{memberMask:memberMask && edit}" id="memberRep">
           <div class="mask"></div>
           <div class="formBox" id="vipUser">
             <div class="title">
-
               <span class="text" name="vipUser">会员代表</span>
                <el-button size="small"  type="primary"
                   v-show="edit"
@@ -583,17 +579,17 @@
                         :class="{editInput:edit}"
                         placeholder="请选择证件类型"
                       >
-                        <el-option  v-for="(item,index) in licenseTypeList"  
+                        <el-option  v-for="(item,index) in licenseTypeList"
                           :label="item.val" :value="item.key" :key="index">
                          </el-option>
-                        
+
                       </el-select>
                     </el-form-item>
                   </el-col>
                   <el-col :span="10">
                     <el-form-item label="证件号码：" prop="licenceNum">
                       <span class="hideEle" :class="{editInput:!edit}">{{repForm.licenceNum}}</span>
-                      <el-input class="hideEle" v-model="repForm.licenceNum"  
+                      <el-input class="hideEle" v-model="repForm.licenceNum"
                       size="small" :class="{editInput:edit}" placeholder="请输入证件号码"></el-input>
                     </el-form-item>
                   </el-col>
@@ -611,13 +607,13 @@
                         src="../../../static/userPic.png"
                       />
                       <div class="hideEle" :class="{editInput:edit}">
-                         <a href="static/pic2.png" target="_blank" 
+                         <a href="static/pic2.png" target="_blank"
                           style="display:inline-block;position:relative;height:100px;">
-                            <span class="el-icon-close" 
-                                  style="position:absolute;right:5px;top:5px;color:#ff0000; " 
+                            <span class="el-icon-close"
+                                  style="position:absolute;right:5px;top:5px;color:#ff0000; "
                                   @click.prevent="removeFile(2)"></span>
                             <img src="static/pic2.png"  width="100"  height="100" />
-                       </a> 
+                       </a>
                        <div>
                        <el-upload
                           class="avatar-uploader f-left"
@@ -632,7 +628,7 @@
                           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
 
-                       
+
                       </div>
                       </div>
                     </el-form-item>
@@ -642,7 +638,7 @@
                   <el-col :span="10">
                     <el-form-item label="签发机关：" prop="publishOrgan">
                       <span class="hideEle" :class="{editInput:!edit}">{{repForm.publishOrgan}}</span>
-                      <el-input  size="small" class="hideEle" 
+                      <el-input  size="small" class="hideEle"
                       v-model="repForm.publishOrgan"
                       :class="{editInput:edit}" placeholder="请输入签发机关"></el-input>
                     </el-form-item>
@@ -652,7 +648,7 @@
                       <span class="hideEle" :class="{editInput:!edit}">{{repForm.effectiveDate}}</span>
                       <el-date-picker
                         size="small"
-                        class="hideEle" 
+                        class="hideEle"
                         format="yyyy-MM-dd"
                         value-format  ="yyyy-MM-dd"
                         v-model="repForm.dateEffective"
@@ -661,7 +657,7 @@
                         type="date"
                         style="width: 100%;"
                       ></el-date-picker>
-                     
+
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -735,7 +731,7 @@
                         placeholder="请选择最高学历"
                       >
                         <el-option :label="item.val" :value="item.key" :key="item.key" v-for="(item,index) in  educationTypeList"></el-option>
-                       
+
                       </el-select>
                     </el-form-item>
                   </el-col>
@@ -747,7 +743,7 @@
                         class="hideEle"
                         :class="{editInput:!edit}"
                       >{{repForm.politicalAffiliation}}</span>
-                      <el-input  size="small" class="hideEle" 
+                      <el-input  size="small" class="hideEle"
                       v-model="repForm.politicalAffiliation"
                       :class="{editInput:edit}" placeholder="请输入政治面貌"></el-input>
                     </el-form-item>
@@ -784,14 +780,14 @@
                     <el-form-item label="本人电话：" prop="selfPhone">
                       <span class="hideEle" :class="{editInput:!edit}">{{repForm.selfPhone}}</span>
                       <el-input   size="small" class="hideEle"
-                       v-model="repForm.selfPhone" 
+                       v-model="repForm.selfPhone"
                        :class="{editInput:edit}" placeholder="请输入本人电话"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="10">
                     <el-form-item label="邮箱：" prop="mail">
                       <span class="hideEle" :class="{editInput:!edit}">{{repForm.mail}}</span>
-                      <el-input  size="small" class="hideEle" 
+                      <el-input  size="small" class="hideEle"
                       v-model="repForm.mail"
                       :class="{editInput:edit}" placeholder="请输入邮箱"></el-input>
                     </el-form-item>
@@ -801,7 +797,7 @@
                   <el-col :span="10">
                     <el-form-item label="通讯地址：" prop="contactAddress">
                       <span class="hideEle" :class="{editInput:!edit}">{{repForm.contactAddress}}</span>
-                      <el-input  size="small" class="hideEle" 
+                      <el-input  size="small" class="hideEle"
                         v-model="repForm.contactAddress"
                       :class="{editInput:edit}" placeholder="请输入通讯地址"></el-input>
                     </el-form-item>
@@ -809,7 +805,7 @@
                   <el-col :span="10">
                     <el-form-item label="微信号：" prop="weiChat">
                       <span class="hideEle" :class="{editInput:!edit}">{{repForm.weiChat}}</span>
-                      <el-input   size="small" class="hideEle" 
+                      <el-input   size="small" class="hideEle"
                       :class="{editInput:edit}" placeholder="请输入微信号" v-model="repForm.weiChat"></el-input>
                     </el-form-item>
                   </el-col>
@@ -833,12 +829,10 @@
             </div>
           </div>
         </div>
-        <div   id="other">
-         
+        <div id="other">
           <div class="formBox" :class="{shareholderMask:shareholderMask && edit}">
             <div class="mask"></div>
             <div class="title">
-              
               <span class="text" name="other">股东与高管</span>
                <el-button size="small"  type="primary"
                   v-show="edit"
@@ -916,22 +910,22 @@
                         <ElInput  size="small" v-model="item.shareholderName"></ElInput>
                       </td>
                       <td>
-                        <ElInput  size="small" v-model="item.shareholdingRatio" 
+                        <ElInput  size="small" v-model="item.shareholdingRatio"
                                  @keyup.native="limitTwo(item,'shareholdingRatio')"></ElInput>
                       </td>
                       <td>
-                        <ElInput  size="small" v-model="item.chuziRatio" 
+                        <ElInput  size="small" v-model="item.chuziRatio"
                                   @keyup.native="limitTwo(item,'chuziRatio')"></ElInput>
                       </td>
                       <td>
                         <el-select size="small" v-model="item.shareholderType"
                                    @change="shareholderChange(item.shareholderType,item)">
-                          <el-option v-for="item in shareholderTypeList" 
-                                     :value="item.key" 
-                                     :label="item.val" 
+                          <el-option v-for="item in shareholderTypeList"
+                                     :value="item.key"
+                                     :label="item.val"
                                      :key="item.key"></el-option>
                         </el-select>
-                        
+
                       </td>
                       <td>
                         <a class="text" @click="deleteItem(ind,2,item)">删除</a>
@@ -943,14 +937,14 @@
                   <el-button icon="el-icon-plus" size="small" @click="addTableItem(2);">新增</el-button>
                 </div>
               </div>
-              
+
             </div>
           </div>
           <div class="formBox" :class="{seniorMask:seniorMask && edit}" v-show="edit">
                <div class="mask"></div>
                <div style="height: 25px;">
-                   <el-button size="small"  
-                              type="primary" 
+                   <el-button size="small"
+                              type="primary"
                               v-show="edit"
                               @click="seniorExecutiveSave(userType)" style="float:right;">
                             保存
@@ -982,7 +976,7 @@
                         <el-select  size="small" style="min-width:100px" v-model="item.sex">
                            <el-option :label="item.val" :value="item.key" :key="index" v-for="(item,index) in  genderData"></el-option>
                         </el-select>
-                        
+
                       </td>
                       <td  >
                         <ElInput  size="small" style="min-width:80px" v-model="item.duties"></ElInput>
@@ -999,11 +993,11 @@
                           value-format  ="yyyy-MM-dd"
                           placeholder="选择日期">
                         </el-date-picker>
-                        
+
                       </td>
-                      <td> 
+                      <td>
                         <el-select
-                        
+
                         v-model="item.highestEducation"
                           style="min-width:100px"
                          size="small"
@@ -1011,7 +1005,7 @@
                       >
                          <el-option :label="item.val" :value="item.key" :key="item.key" v-for="(item,index) in  educationTypeList"></el-option>
                       </el-select>
-                       
+
                       </td>
                       <td>
                         <el-date-picker
@@ -1022,7 +1016,7 @@
                           size="small"
                           placeholder="选择日期">
                         </el-date-picker>
-                        
+
                       </td>
                       <td>
                         <ElInput  size="small" style="min-width:100px"  v-model="item.departInCharge"></ElInput>
@@ -1044,19 +1038,18 @@
                 </div>
               </div>
           </div>
-         
         </div>
          <div class="formBox" id="msgInfo" :class="{businessMask:businessMask && edit}">
              <div class="mask"></div>
             <div class="title">
               <span class="text" name="msgInfo">业务信息</span>
-                <el-button size="small"  type="primary" 
+                <el-button size="small"  type="primary"
                            v-show="edit"
                            @click="busSave(userType)" style="float:right;">保存</el-button>
             </div>
             <div class="formMain">
               <div class="msg fs12 c999 m-t-20">根据所属的机构类型， 将对应不同的业务信息需要补充填写</div>
-              <div class="tableBox hideEle" :class="{editInput:!edit}" 
+              <div class="tableBox hideEle" :class="{editInput:!edit}"
                     v-if="busType==1 || busType==2 || busType==3 ">
                 <table class="myTable m-t-20" v-if="!!busTable">
                   <thead>
@@ -1082,7 +1075,7 @@
                 </table>
               </div>
               <div class="tableBox hideEle" :class="{editInput:edit}"  v-if="busType==1 || busType==2 || busType==3 ">
-                
+
                 <table class="myTable m-t-20" v-if="!!busTable">
                   <thead>
                     <tr>
@@ -1129,25 +1122,25 @@
                 <el-row class="m-t-20" v-if="busType==1">
                   <el-col :span="24">
                     <el-form-item label="具备投资能力：">
-                      
+
                       <el-checkbox-group v-model="qualityList">
                         <el-checkbox
                           v-for="item in qualificationTypeIds"
                           :label="item.key"
                           :key="item.key"
-                          
+
                           :disabled="!edit"
                         >{{item.val}}</el-checkbox>
                       </el-checkbox-group>
-                      
+
                     </el-form-item>
                   </el-col>
                 </el-row>
-             
+
                   <div class="formBox" id="msgInfo">
                     <div class="title">
                       <span class="text">规模信息</span>
-                       
+
                     </div>
                   </div>
                 <!-- 1-->
@@ -1155,7 +1148,7 @@
                   <el-col :span="10">
                     <el-form-item label="上年度末受托管理保险资金（亿元）：" label-width="265px">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.yearInsureFund}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                       v-model="sizeInformationForm.yearInsureFund" placeholder="请输入"></el-input>
                     </el-form-item>
                   </el-col>
@@ -1165,7 +1158,7 @@
                         class="hideEle"
                         :class="{editInput:!edit}"
                       >{{sizeInformationForm.yearInsureFundNot}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                                 v-model="sizeInformationForm.yearInsureFundNot"
                                placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1175,7 +1168,7 @@
                   <el-col :span="10">
                     <el-form-item label="上年度末受托管理规模总计（亿元）：" label-width="265px">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.yearTotalFund}}</span>
-                      <el-input class="hideEle" 
+                      <el-input class="hideEle"
                                :class="{editInput:edit}" placeholder="请输入"
                                v-model="sizeInformationForm.yearTotalFund"></el-input>
                     </el-form-item>
@@ -1189,14 +1182,14 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
-                
+
                 <!-- 2 -->
                 <el-row v-if="busType==2">
                   <el-col :span="10">
                     <el-form-item label="上年度末总资产规模（亿元）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.yearTotalAssets}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
-                          v-model="sizeInformationForm.yearTotalAssets" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
+                          v-model="sizeInformationForm.yearTotalAssets"
                       placeholder="请输入"></el-input>
                     </el-form-item>
                   </el-col>
@@ -1216,7 +1209,7 @@
                   <el-col :span="10">
                     <el-form-item label="上年度末管理保险资金规模（亿元）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.yearInsureFund}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                        v-model="sizeInformationForm.yearInsureFund"
                       placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1235,7 +1228,7 @@
                   <el-col :span="10">
                     <el-form-item label="上年度末总资产规模（亿元）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.yearTotalAssets}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                          v-model="sizeInformationForm.yearTotalAssets"
                       placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1257,7 +1250,7 @@
                   <el-col :span="10">
                     <el-form-item label="上年度总资产规模（亿元）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.yearTotalAssets}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                        v-model="sizeInformationForm.yearTotalAssets"
                       placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1268,7 +1261,7 @@
                                 <el-option :value="1" label="是"></el-option>
                                 <el-option :value="2" label="否"></el-option>
                             </el-select>
-                     
+
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -1301,13 +1294,13 @@
                                 <el-option :value="1" label="是"></el-option>
                                 <el-option :value="2" label="否"></el-option>
                             </el-select>
-                      
+
                     </el-form-item>
                   </el-col>
                   <el-col :span="10">
                     <el-form-item label="上年度末总资产管理规模（亿元）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.yearTotalInvest}}</span>
-                      <el-input class="hideEle" 
+                      <el-input class="hideEle"
                        v-model="sizeInformationForm.yearTotalInvest"
                       :class="{editInput:edit}" placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1317,7 +1310,7 @@
                   <el-col :span="10">
                     <el-form-item label="上年度末公募基金规模（亿元）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.publicOfferFund}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                         v-model="sizeInformationForm.publicOfferFund"
                       placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1339,7 +1332,7 @@
                                 <el-option :value="1" label="是"></el-option>
                                 <el-option :value="2" label="否"></el-option>
                             </el-select>
-                      
+
                     </el-form-item>
                   </el-col>
                   <el-col :span="10">
@@ -1380,7 +1373,7 @@
                                 <el-option :value="1" label="是"></el-option>
                                 <el-option :value="2" label="否"></el-option>
                             </el-select>
-                      
+
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -1388,7 +1381,7 @@
                   <el-col :span="10">
                     <el-form-item label="保险资金存款规模（亿元）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.insureInvest}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                       v-model="sizeInformationForm.insureInvest"
                       placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1407,7 +1400,7 @@
                   <el-col :span="10">
                     <el-form-item label="上年度末公募基金规模（亿元）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.publicRaiseFund}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                        v-model="sizeInformationForm.publicRaiseFund"
                       placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1421,7 +1414,7 @@
                         class="hideEle"
                         :class="{editInput:!edit}"
                       >{{sizeInformationForm.yearTotalManagerInvest}}</span>
-                      <el-input class="hideEle" 
+                      <el-input class="hideEle"
                       v-model="sizeInformationForm.yearTotalManagerInvest"
                       :class="{editInput:edit}" placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1435,7 +1428,7 @@
                         class="hideEle"
                         :class="{editInput:!edit}"
                       >{{sizeInformationForm.totalManagerInvest}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                         v-model="sizeInformationForm.totalManagerInvest"
                       placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1443,7 +1436,7 @@
                   <el-col :span="10">
                     <el-form-item label="管理保险资金规模（亿元）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.insureInvest}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                          v-model="sizeInformationForm.insureInvest"
                       placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1453,7 +1446,7 @@
                   <el-col :span="10">
                     <el-form-item label="在管基金数量（只）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.managerNum}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                        v-model="sizeInformationForm.managerNum"
                       placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1461,7 +1454,7 @@
                   <el-col :span="10">
                     <el-form-item label="涉及保险资金基金数量（只）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.insureNum}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                       v-model="sizeInformationForm.insureNum"
                       placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1482,7 +1475,7 @@
                   <el-col :span="10">
                     <el-form-item label="上年度末总资产规模（亿元）：">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.yearTotalInvest}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                        v-model="sizeInformationForm.yearTotalInvest"
                       placeholder="请输入"></el-input>
                     </el-form-item>
@@ -1511,20 +1504,20 @@
                   <el-col :span="24">
                     <el-form-item label="">
                       <span class="hideEle" :class="{editInput:!edit}">{{sizeInformationForm.info}}</span>
-                      <el-input class="hideEle" :class="{editInput:edit}" 
+                      <el-input class="hideEle" :class="{editInput:edit}"
                                 type="textarea"
                                 style="width:100%;"
-                                placeholder="请输入请简述机构业务情况、与险资合作情况等" 
+                                placeholder="请输入请简述机构业务情况、与险资合作情况等"
                                  v-model="sizeInformationForm.info" rows="5"></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
-                <el-row  v-if="busType && busType!==12"> 
+                <el-row  v-if="busType && busType!==12">
                        <el-col :span="11" >
                            <el-form-item  label="备注：">
                                    <span class="hideEle" :class="{editInput:!edit}">
                              {{sizeInformationForm.remark}}</span>
-                                 <el-input v-model="sizeInformationForm.remark" 
+                                 <el-input v-model="sizeInformationForm.remark"
                                  size="small" placeholder="请输入备注"
                                   type="textarea" rows="5"
                                   class="hideEle" :class="{editInput:edit}"></el-input>
@@ -1532,9 +1525,119 @@
                       </el-col>
                 </el-row>
               </el-form>
-              
+
             </div>
           </div>
+
+
+     <!-- 会员证书 -->
+    <!-- <div  id="vipCertificate">
+       <div class="mask"></div>
+       <div class="formBox" id="vipUser">
+         <div class="title">
+           <span class="text" name="vipUser">会员证书</span>
+            <el-button size="small"  type="primary"
+               v-show="edit"
+               @click="memberRepresentativeSave('repForm',userType)" style="float:right;">保存</el-button>
+         </div>
+         <div class="formMain">
+            <div class="">
+              <div class="desc-txt">以下为协会认定的会员证书，所有证书拥有唯一会员代码，请慎重保管</div>
+              <div class="btn">
+                <el-button type="primary" @click="downLoadTemp">下载</el-button>
+             
+                <el-button type="primary" @click="printFile">打印</el-button>
+              </div>
+              <div class="" style="margin-top: 20px;">
+                  <el-image src="../../../static/certificate.png"></el-image>
+              </div>
+            </div>
+         </div>
+       </div>
+     </div> -->
+
+
+
+    <!-- 变更记录 -->
+    <div  id="changeRecord">
+      <div class="mask"></div>
+      <div class="formBox" id="vipUser">
+        <div class="title">
+          <span class="text" name="vipUser">变更记录</span>
+           <el-button size="small"  type="primary"
+              v-show="edit"
+              @click="memberRepresentativeSave('repForm',userType)" style="float:right;">保存</el-button>
+        </div>
+        <div class="formMain">
+           <el-table :data="tableData" style="width: 100%">
+             <el-table-column prop="serialNumber" label="业务流水"></el-table-column>
+             <el-table-column prop="typeVal" label="业务类型"></el-table-column>
+             <el-table-column prop="submitDate" label="提交时间">
+               <template slot-scope="scope">{{format(scope.row.submitDate)}}</template>
+             </el-table-column>
+             <el-table-column prop="statusVal" label="状态"></el-table-column>
+             <el-table-column prop="act" label="操作">
+               <template slot-scope="scope">
+                 <el-button @click="handleCheck(scope.row)" type="text" size="mini">查看</el-button>
+               </template>
+             </el-table-column>
+           </el-table>
+           <el-pagination
+             class="pageCSS"
+             background
+             layout="total,prev, pager, next"
+             :total="pageAll.total"
+             :page-size="pageAll.pageSize"
+             :current-page.sync="pageAll.currentPage"
+             @current-change="pageChange"
+           ></el-pagination>
+        </div>
+      </div>
+    </div>
+
+    <!-- 缴费记录 -->
+    <div  id="paymentRecord">
+      <div class="mask"></div>
+      <div class="formBox" id="vipUser">
+        <div class="title">
+          <span class="text" name="vipUser">缴费记录</span>
+           <el-button size="small"  type="primary"
+              v-show="edit"
+              @click="memberRepresentativeSave('repForm',userType)" style="float:right;">保存</el-button>
+        </div>
+        <div class="formMain">
+         <!-- <iframe src="../../memberManage/useNote" ></iframe> -->
+
+         <el-table :data="tableData2" style="width: 100%">
+           <el-table-column prop="businessFlow" label="业务流水"></el-table-column>
+           <el-table-column prop="busName" label="名目"></el-table-column>
+           <el-table-column prop="fund" label="金额"></el-table-column>
+           <el-table-column prop="submitDate" label="提交时间">
+             <template slot-scope="scope">{{format(scope.row.submitDate)}}</template>
+           </el-table-column>
+           <el-table-column prop="checkStatusVal" label="状态"></el-table-column>
+           <el-table-column prop="invoiceStatusVal" label="发票寄送状态"></el-table-column>
+           <el-table-column prop="act" label="操作">
+             <template slot-scope="scope">
+               <el-button @click="handleCheck2(scope.row)" type="text" size="mini">查看</el-button>
+             </template>
+           </el-table-column>
+         </el-table>
+         <el-pagination
+           class="pageCSS"
+           background
+           layout="total,prev, pager, next"
+           :total="pageAll2.total"
+           :page-size="pageAll2.pageSize"
+           :current-page.sync="pageAll2.currentPage"
+           @current-change="pageChange2"
+         ></el-pagination>
+
+        </div>
+      </div>
+    </div>
+
+
       </div>
     </div>
     <el-dialog title="上传证明" :visible.sync="upVisible">
@@ -1566,11 +1669,11 @@ import global from '@/utils/global'
 import footNote from "./component/footNote";
 import footNoteDisable from "./component/footNoteDisable";
 import { mapState } from "vuex";
-import { apiBasicMember, apiDic,saveCompanyBasicInfo ,successMES,warnMES} from "../../utils/commonApi";
+import { apiBasicMember, apiDic,saveCompanyBasicInfo ,successMES,warnMES,apiShow, backPage } from "../../utils/commonApi";
 import { format } from "../../utils/datetime";
 import  {linkManAdd,shareholdersAdd,saveMemberRepresentative,saveShareholder,saveSeniorExecutive,saveBus,deleteLinkMan,deleteShareholder,deleteSeniorExecute,setDefaultLinkMan,getQualities,loadLicenceTypeCommon,workflowAdmin ,workflowAPI,queryMembership,queryMembershipAdmin} from "./../../http/moudules/member"
  import { memberUploadFile,formSubmit,blobDownloadFile } from "./../../http/moudules/common"
-import {apiSelect,companyTypeList,educationType,genderList,getListed,shareholderType} from "@/utils/common";
+import {apiSelect,companyTypeList,educationType,genderList,getListed,shareholderType,pubParam,pageTen} from "@/utils/common";
 export default {
   props: {
     isEdit: { type: Boolean, required: false },
@@ -1597,6 +1700,14 @@ export default {
            }
       }
     return {
+      tableData: [],
+      pageAll: {},
+
+      tableData2: [],
+      pageAll2: { ...pageTen },
+
+
+
        listedData:[],
        shareholderTypeList:[],
        sizeInformationForm:{
@@ -1608,11 +1719,11 @@ export default {
             id:"",
           },
           genderData:[],
-      licenseTypeList:[],    
-      linkmanRules:['contactName','duty','officePhoneNum','mobileNum', 'mailAddress'], 
-      shareholdersRules:['shareholderName','shareholdingRatio','chuziRatio','shareholderType' ], 
+      licenseTypeList:[],
+      linkmanRules:['contactName','duty','officePhoneNum','mobileNum', 'mailAddress'],
+      shareholdersRules:['shareholderName','shareholdingRatio','chuziRatio','shareholderType' ],
       seniorExecutiveRules:['seniorName','sex','duties','nation','birth','highestEducation','appointTime',
-                       'departInCharge','officerPhone','mail'], 
+                       'departInCharge','officerPhone','mail'],
       busTableRules:[ 'fordepartmentName',"personNum","departHeader", "officePhone",  "mobilePhone", "email"],
       leftMenu: [
         { name: "会员基本信息", active: true, id: "#basicInfo" },
@@ -1622,14 +1733,14 @@ export default {
         { name: "会员代表", active: false, id: "#vipUser" },
         { name: "股东与高管", active: false, id: "#other" },
         { name: "业务信息", active: false, id: "#msgInfo" },
-        {
-          name: "会员证书",
-          active: false,
-          id: "",
-          path: "/member/memberPaper"
-        },
-        { name: "变更记录", active: false, id: "", path: "/member/alterNote" },
-        { name: "缴费记录", active: false, id: "", path: "/member/useNote" }
+        // {name: "会员证书",active: false,id: "#vipCertificate"},
+        { name: "变更记录", active: false, id: "#changeRecord"},
+        { name: "缴费记录", active: false, id: "#paymentRecord"}
+
+
+        // {name: "会员证书",active: false,id: "",path: "/member/memberPaper"},
+        // { name: "变更记录", active: false, id: "", path: "/member/alterNote" },
+        // { name: "缴费记录", active: false, id: "", path: "/member/useNote" }
       ],
 
       ruleFormRules:{
@@ -1743,7 +1854,6 @@ export default {
 
       quality: [],
       busType: 0,
-      sizeInformationForm: {},
       storesizeInformationForm:{},
       msgCK: true,
       memCK: true,
@@ -1764,8 +1874,7 @@ export default {
          {value:2,label:'法人股东'},
          {value:3,label:'国家股东'},
          {value:4,label:'国有法人股东'},
-        
-      ], 
+      ],
       qualificationTypeIds:[],
       upVisible: false,
       upform: {
@@ -1780,7 +1889,7 @@ export default {
       },
       orgList:[],
       imgPathBusinessList:[],
-      scrollTop: 25,
+      scrollTop: 15,
       userType:100,
       educationTypeList:[],
       businessMask:false,
@@ -1820,7 +1929,6 @@ export default {
   watch:{
     edit(newValue,oldValue){
           if(newValue===true){
-
               this.editContactTable=[...this.storeContactTable]
               this.editShareTable=[...this.storeShareTable]
               this.editSeniorTable=[...this.storeSeniorTable]
@@ -1833,32 +1941,35 @@ export default {
         },
     isSubmit(newValue,oldValue){
          if(newValue===true){
-
              this.submitAllForms()
          }
     },
     isCancel(newValue,oldValue){
         if(newValue===true){
 
-             
+
          }
-    }    
+    }
   },
   created() {
+
+    this.displayNote(pubParam.page);
+    this.displayNote2(pubParam.page);
+
     /**
      * 展示会员信息
      */
-    
-     apiSelect({ type: 1 }, this.orgList);
+
+    apiSelect({ type: 1 }, this.orgList);
     this.showInfo();
     this.userType=sessionStorage.getItem("userType");
      this.getWorlFlowStatus()
     // apiDic("qualityType", {}).then(resolve => {
     //   this.quality = resolve;
     // });
-   
 
-   
+
+
     if (this.isEdit) {
       this.$store.commit("openEdit");
     } else {
@@ -1877,94 +1988,173 @@ export default {
     }
   },
   mounted() {
-    const scrollBox = document.getElementById("iframeContainer");
-    this.$store.state.app.hasFoot = true;
-    scrollBox.addEventListener("scroll", this.handleScroll, true);
-     this.scrollDocument();
+    // const scrollBox = document.getElementById("iframeContainer");
+    // this.$store.state.app.hasFoot = true;
+    // scrollBox.addEventListener("scroll", this.handleScroll, true);
+     // this.scrollDocument();
   },
   methods: {
-         calcHeight(){
-              let container = document.getElementById("iframeContainer");  //找对象
-              let basicInfo=document.getElementById('basicInfo')
-              let applyBook=document.getElementById('applyBook')
-              let companyInfo=document.getElementById('companyInfo')
-              let userInfo=document.getElementById('userInfo')
-              let memberRep=document.getElementById('memberRep')
-              let other=document.getElementById('other')
-              let self=this;
-             let containerHeight= container.scrollTop;
-             let basicInfoHeight=basicInfo.offsetHeight+20;
-             let applyBookHeight=applyBook.offsetHeight+20;
-             let companyInfoHeight=companyInfo.offsetHeight+20;
-             let memberRepHeight=memberRep.offsetHeight;
-             let userInfoHeight=userInfo.offsetHeight
-             let otherHeight=other.offsetHeight+20;
-             if(containerHeight<applyBookHeight){
-                  self.leftMenu.forEach((item,index)=>{
-                       if(index==0){
-                          item.active=true;
-                       }else{
-                          item.active=false;
-                       }
-                   })
-                }else if(containerHeight<applyBookHeight+basicInfoHeight){
-                      self.leftMenu.forEach((item,index)=>{
-                         if(index==1){
-                            item.active=true;
-                         }else{
-                            item.active=false;
-                         }
-                     })
-                }else if(containerHeight<applyBookHeight+basicInfoHeight+companyInfoHeight){
-                    self.leftMenu.forEach((item,index)=>{
-                       if(index==2){
-                          item.active=true;
-                       }else{
-                          item.active=false;
-                       }
-                    })
-                }else if(containerHeight<applyBookHeight+basicInfoHeight+companyInfoHeight+userInfoHeight){
-                        self.leftMenu.forEach((item,index)=>{
-                         if(index==3){
-                            item.active=true;
-                         }else{
-                            item.active=false;
-                         }
-                     })
-                }else if(containerHeight < applyBookHeight+basicInfoHeight+companyInfoHeight+userInfoHeight+memberRepHeight ){
-                        self.leftMenu.forEach((item,index)=>{
-                         if(index==4){
-                            item.active=true;
-                         }else{
-                            item.active=false;
-                         }
-                        })
-                }else if(containerHeight < applyBookHeight+basicInfoHeight+companyInfoHeight+userInfoHeight+memberRepHeight + otherHeight){
-                        self.leftMenu.forEach((item,index)=>{
-                         if(index==5){
-                            item.active=true;
-                         }else{
-                            item.active=false;
-                         }
-                        })
-                }else if(containerHeight >= applyBookHeight+basicInfoHeight+companyInfoHeight+userInfoHeight+memberRepHeight + otherHeight){
-                        self.leftMenu.forEach((item,index)=>{
-                         if(index==6){
-                            item.active=true;
-                         }else{
-                            item.active=false;
-                         }
-                        })
-                }
-        },
-         scrollDocument(){
-            let container = document.getElementById("iframeContainer");  //找对象
-            if(window.addEventListener){
-               container.addEventListener('scroll',this.calcHeight,false)
-                
-           }else{
-               container.attachEvent("onscroll",this.calcHeight,false,false);
-           }
+
+    format,
+    handleCheck(row) {
+      this.$router.push({
+        path: "/member/alterDetail",
+        query: {
+          id: row.companyId
+        }
+      });
+    },
+    displayNote(param) {
+      let idObj = {};
+      let urlFun = "serviceChangeNote";
+      if (sessionStorage.getItem("userType") == 1) {
+        idObj = {
+          companyId: sessionStorage.getItem("compid")
+        };
+        urlFun = "changeNote";
+        // this.leftMenu.push({
+        //   name: "拜访记录",
+        //   active: false,
+        //   id: "",
+        //   path: "/member/visitNote"
+        // });
+      }
+      apiShow("member", urlFun, { ...idObj, ...param }).then(reslove => {
+        this.tableData = reslove.rows;
+        this.pageAll = backPage(reslove);
+        console.log(this.pageAll);
+      });
+    },
+    pageChange(i) {
+      this.displayNote({
+        pageIndex: i,
+        pageSize: pubParam.page.pageSize
+      });
+    },
+
+
+    //缴费记录
+    handleCheck2(row) {
+      this.$router.push({
+        path: "/member/payDetails",
+        query: {
+          rowId: row.companyId
+        }
+      });
+    },
+    displayNote2(param) {
+      let idObj = {};
+      let urlFun = "servicePayNote";
+      if (sessionStorage.getItem("userType") == 1) {
+        idObj = {
+          id: sessionStorage.getItem("compid")
+        };
+        urlFun = "payNote";
+
+      }
+      apiShow("member", urlFun, { ...idObj, ...param }).then(reslove => {
+        this.tableData2 = reslove.rows;
+        this.pageAll2 = backPage(reslove);
+      });
+    },
+    pageChange2(i) {
+      this.displayNote2({
+        pageIndex: i,
+        pageSize: pubParam.page.pageSize
+      });
+    },
+
+
+        //  calcHeight(){
+        //       let container = document.getElementById("iframeContainer");  //找对象
+        //       let basicInfo=document.getElementById('basicInfo')
+        //       let applyBook=document.getElementById('applyBook')
+        //       let companyInfo=document.getElementById('companyInfo')
+        //       let userInfo=document.getElementById('userInfo')
+        //       let memberRep=document.getElementById('memberRep')
+        //       let other=document.getElementById('other')
+        //       let self=this;
+        //      let containerHeight= container.scrollTop;
+        //      let basicInfoHeight=basicInfo.offsetHeight+20;
+        //      let applyBookHeight=applyBook.offsetHeight+20;
+        //      let companyInfoHeight=companyInfo.offsetHeight+20;
+        //      let memberRepHeight=memberRep.offsetHeight;
+        //      let userInfoHeight=userInfo.offsetHeight
+        //      let otherHeight=other.offsetHeight+20;
+        //      if(containerHeight<applyBookHeight){
+        //           self.leftMenu.forEach((item,index)=>{
+        //                if(index==0){
+        //                   item.active=true;
+        //                }else{
+        //                   item.active=false;
+        //                }
+        //            })
+        //         }else if(containerHeight<applyBookHeight+basicInfoHeight){
+        //               self.leftMenu.forEach((item,index)=>{
+        //                  if(index==1){
+        //                     item.active=true;
+        //                  }else{
+        //                     item.active=false;
+        //                  }
+        //              })
+        //         }else if(containerHeight<applyBookHeight+basicInfoHeight+companyInfoHeight){
+        //             self.leftMenu.forEach((item,index)=>{
+        //                if(index==2){
+        //                   item.active=true;
+        //                }else{
+        //                   item.active=false;
+        //                }
+        //             })
+        //         }else if(containerHeight<applyBookHeight+basicInfoHeight+companyInfoHeight+userInfoHeight){
+        //                 self.leftMenu.forEach((item,index)=>{
+        //                  if(index==3){
+        //                     item.active=true;
+        //                  }else{
+        //                     item.active=false;
+        //                  }
+        //              })
+        //         }else if(containerHeight < applyBookHeight+basicInfoHeight+companyInfoHeight+userInfoHeight+memberRepHeight ){
+        //                 self.leftMenu.forEach((item,index)=>{
+        //                  if(index==4){
+        //                     item.active=true;
+        //                  }else{
+        //                     item.active=false;
+        //                  }
+        //                 })
+        //         }else if(containerHeight < applyBookHeight+basicInfoHeight+companyInfoHeight+userInfoHeight+memberRepHeight + otherHeight){
+        //                 self.leftMenu.forEach((item,index)=>{
+        //                  if(index==5){
+        //                     item.active=true;
+        //                  }else{
+        //                     item.active=false;
+        //                  }
+        //                 })
+        //         }else if(containerHeight >= applyBookHeight+basicInfoHeight+companyInfoHeight+userInfoHeight+memberRepHeight + otherHeight){
+        //                 self.leftMenu.forEach((item,index)=>{
+        //                  if(index==6){
+        //                     item.active=true;
+        //                  }else{
+        //                     item.active=false;
+        //                  }
+        //                 })
+        //         }
+        // },
+         // scrollDocument(){
+         //    let container = document.getElementById("iframeContainer");  //找对象
+         //    if(window.addEventListener){
+         //       container.addEventListener('scroll',this.calcHeight,false)
+
+         //   }else{
+         //       container.attachEvent("onscroll",this.calcHeight,false,false);
+         //   }
+         // },
+         printFile(){
+           document.getElementById('printIframe').contentWindow.print();
+         },
+         downLoadTemp(){
+           memberDownloadTemplate('/api/file/templet/hyzs',{type:'download'}).then(rep=>{
+              blobDownloadFile(rep)
+           })
          },
         downloadTemplate(){
             memberDownloadTemplate('/common/file/templet/rhsqs',{type:'download'}).then(rep=>{
@@ -1977,7 +2167,7 @@ export default {
                  fun=workflowAdmin
                  params={companyId:this.$route.query.companyId}
               }else{
-                fun=workflowAPI 
+                fun=workflowAPI
                 params={}
               }
               fun(params).then(rep=>{
@@ -1998,10 +2188,10 @@ export default {
                       }
                    }
                 })
-             
+
         },
         uploadFile(obj){
-        
+
           if( Math.floor( obj.file.size/(1024*1024) ) > 10 ){
               warnMES('最多上传10M')
               return
@@ -2016,7 +2206,7 @@ export default {
                   url="/api/member/company/file/rhsqh_upload";
                   method="post"
               }
-             
+
           }
           memberUploadFile(formData,url,method).then((res=>{
                if(res && res.code=='200' && res.data){
@@ -2033,7 +2223,7 @@ export default {
                    }
                }
           })).catch(error=>{
-             
+
           })
       },
       removeFile(type,index){
@@ -2096,7 +2286,7 @@ export default {
                       }
                    }
                 }
-               
+
             })
             if(flag){
               let filed="";
@@ -2108,7 +2298,7 @@ export default {
                    case 'mailAddress': filed="邮箱";break;
                    default : filed="";break;
                }
-               
+
                warnMES("第" +(index+1)+"行--"+filed+'--必填');
                // this.$store.commit("closeEdit",false);
                return false;
@@ -2150,7 +2340,7 @@ export default {
                         }
                      }
                   }
-                 
+
               })
               if(flag){
                 let filed="";
@@ -2161,7 +2351,7 @@ export default {
                      case 'shareholderType': filed="股东类型";break;
                      default : filed="";break;
                  }
-                 
+
                  warnMES("第" +(index+1)+"行--"+filed+'--必填');
                  // this.$store.commit("closeEdit",false);
                  return false;
@@ -2199,7 +2389,7 @@ export default {
 
                          }
                       }
-                     
+
                 })
                  if(emailValid){
                     warnMES("第" +(index+1)+"行--邮箱格式不正确");
@@ -2220,13 +2410,13 @@ export default {
                        case 'officerPhone': filed="办公电话";break;
                        case 'mail': filed="邮箱";break;
                        default : filed="";break;
-                       
+
                    }
                    warnMES("第" +(index+1)+"行--"+filed+'--必填');
                    // this.$store.commit("closeEdit",false);
                    return false;
                  }
-                 return true 
+                 return true
            }else{
                 return false
            }
@@ -2247,9 +2437,9 @@ export default {
                                  emailValid=true;
                                  break;
                             }
-                          }  
+                          }
                       }
-                     
+
                 })
                 if(emailValid){
                     warnMES("第" +(index+1)+"行--邮箱格式不正确");
@@ -2273,13 +2463,13 @@ export default {
 
            console.log(error);
         })
-        
-    }, 
+
+    },
     seniorExecutiveSave(type,resolve,reject){
            if( this.editSeniorTable.length < 1 ){
              warnMES('至少填写一位高管');
              return
-           } 
+           }
           let flag=false;
           let keyFiled="";
           let index=-1;
@@ -2307,7 +2497,7 @@ export default {
 
                    }
                 }
-               
+
           })
            if(emailValid){
               warnMES("第" +(index+1)+"行--邮箱格式不正确");
@@ -2328,14 +2518,14 @@ export default {
                  case 'officerPhone': filed="办公电话";break;
                  case 'mail': filed="邮箱";break;
                  default : filed="";break;
-                 
+
              }
              warnMES("第" +(index+1)+"行--"+filed+'--必填');
              // this.$store.commit("closeEdit",false);
              return;
-           }  
+           }
 
-             
+
              let url="";
              if(type==1){
                url=`/admin/member/archives/senior/addOrUpdateBatch?companyId=${this.$route.query.companyId}`;
@@ -2350,11 +2540,11 @@ export default {
                         this.seniorTable = res;
                         this.storeSeniorTable=[...res]
                         this.editSeniorTable=[...res]
-                      }); 
+                      });
                      if(resolve){
                        resolve(true)
                      }
-                      
+
                   }else{
                      if(resolve){
                         resolve(false)
@@ -2364,14 +2554,14 @@ export default {
              }).catch(error=>{
                  // this.$store.commit("closeEdit",false);
              })
-        
+
     },
     busSave(type,resolve,reject){
           if(this.busType==1 || this.busType==2 || this.busType==3){
               let keyFiled="";
               let index=-1;
               let emailValid=false;
-             
+
               let reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
               this.editBusTable.forEach((item,ind)=>{
                     if(emailValid){
@@ -2384,9 +2574,9 @@ export default {
                                emailValid=true;
                                break;
                           }
-                        }  
+                        }
                     }
-                   
+
               })
               if(emailValid){
                   warnMES("第" +(index+1)+"行--邮箱格式不正确");
@@ -2394,7 +2584,7 @@ export default {
                   return;
               }
           }
-          
+
           let url=this.getUrl(type);
           if(this.qualityList.length==0 && this.qualificationTypeIds.length > 0 && this.busType==1 ) {
                warnMES("资格信息必填");
@@ -2424,8 +2614,8 @@ export default {
                          this.qualityList=(rep.qualificationTypeIds || [] ).map(item=>{
                             return item.qualificationType
                          })
-                         
-                       
+
+
                     });
                   }else{
                      if(resolve){
@@ -2433,9 +2623,9 @@ export default {
                      }
                   }
              }).catch(error=>{
-                 
+
          })
-          
+
     },
     getUrl(type){
           let url="";
@@ -2560,7 +2750,7 @@ export default {
             this.memberForm = resolve;
            this.storeMemberForm={...this.resolve}
          }
-        
+
       });
       apiBasicMember(`${urlFront}Comp`, upParm).then(resolve => {
          if(resolve){
@@ -2568,7 +2758,7 @@ export default {
             this.storeCompanyForm={...this.companyForm,...resolve}
             this.imgPathBusinessList=this.companyForm.imgPathBusinessList
          }
-        
+
       });
       apiBasicMember(`${urlFront}Contact`, upParm).then(resolve => {
          if(resolve){
@@ -2576,14 +2766,14 @@ export default {
             this.storeContactTable=[...resolve];
             this.editContactTable=[...resolve];
          }
-        
+
 
       });
       apiBasicMember(`${urlFront}Rep`,upParm).then(resolve => {
            if(resolve){
              this.repForm = resolve;
            }
-           
+
       });
       apiBasicMember(`${urlFront}Share`, upParm).then(resolve => {
          if(resolve){
@@ -2591,7 +2781,7 @@ export default {
             this.storeShareTable=[...resolve];
             this.editShareTable=[...resolve]
          }
-       
+
       });
       apiBasicMember(`${urlFront}Senior`, upParm).then(resolve => {
         if(resolve){
@@ -2599,20 +2789,20 @@ export default {
             this.storeSeniorTable=[...resolve]
             this.editSeniorTable=[...resolve]
         }
-       
+
       });
       apiBasicMember(`${urlFront}Info`, upParm).then(rep => {
            if(rep){
-              
+
                this.editBusTable = this.storeBusTable=  this.busTable=rep.departmentInfoList || [];
                this.qualityList=(rep.qualificationTypeIds || [] ).map(item=>{
                   return item.qualificationType
                })
               this.sizeInformationForm=rep;
               this.storesizeInformationForm=rep;
-             
+
            }
-            
+
       });
       apiBasicMember(`${urlFront}Type`, upParm).then(rep=>{
           this.busType = rep
@@ -2634,11 +2824,11 @@ export default {
            let url="";
 
             if(type==2){
-               url="/api/member/info/company-info/add";//member  
+               url="/api/member/info/company-info/add";//member
             }else if(type==1){
                url="/admin/member/archives/company-info/add";
             }
-           
+
             saveCompanyBasicInfo(this.companyForm,url).then(rep=>{
                 if(rep && rep.code=='200'){
                      successMES('保存成功');
@@ -2679,7 +2869,7 @@ export default {
                       }
                    }
                 }
-               
+
             })
             if(flag){
               let filed="";
@@ -2690,7 +2880,7 @@ export default {
                    case 'shareholderType': filed="股东类型";break;
                    default : filed="";break;
                }
-               
+
                warnMES("第" +(index+1)+"行--"+filed+'--必填');
                // this.$store.commit("closeEdit",false);
                return;
@@ -2714,7 +2904,7 @@ export default {
                      if(resolve){
                        resolve(true)
                      }
-                      
+
                   }else{
                      if(resolve){
                         resolve(false)
@@ -2728,11 +2918,11 @@ export default {
     },
     limitTwo(obj,key){
         let value=obj[key];
-        value = value.replace(/[^\d.]/g,"");  //清除“数字”和“.”以外的字符   
-        value = value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的   
-        value = value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");  
-        obj[key] = value = value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');//只能输入两个小数   
-        if(value > 100 || value < 0 ){//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于   
+        value = value.replace(/[^\d.]/g,"");  //清除“数字”和“.”以外的字符
+        value = value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的
+        value = value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        obj[key] = value = value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');//只能输入两个小数
+        if(value > 100 || value < 0 ){//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于
             obj[key]= 0;
         }
         if(/^0/.test(value)){
@@ -2741,7 +2931,7 @@ export default {
 
     },
     linkmanSave(type,resolve,reject){
-            
+
             if(this.editContactTable.length <2 ){
                warnMES('至少2个联系人');
                return;
@@ -2763,7 +2953,7 @@ export default {
                       }
                    }
                 }
-               
+
             })
             if(flag){
               let filed="";
@@ -2775,7 +2965,7 @@ export default {
                    case 'mailAddress': filed="邮箱";break;
                    default : filed="";break;
                }
-               
+
                warnMES("第" +(index+1)+"行--"+filed+'--必填');
                // this.$store.commit("closeEdit",false);
                return;
@@ -2791,7 +2981,7 @@ export default {
                   if(rep && rep.code=='200'){
                       successMES('保存成功');
                       this.getWorlFlowStatus();
-                      apiBasicMember(`${this.urlFront}Contact`, 
+                      apiBasicMember(`${this.urlFront}Contact`,
                         {companyId:this.$route.query.companyId}).then(resolve => {
                         this.contactTable = resolve;
                         this.storeContactTable=[...resolve];
@@ -2801,7 +2991,7 @@ export default {
                      if(resolve){
                        resolve(true)
                      }
-                      
+
                   }else{
                      if(resolve){
                         resolve(false)
@@ -2814,9 +3004,9 @@ export default {
                 }
                // this.$store.commit("closeEdit",false);
             })
-          
-        
-    }, 
+
+
+    },
     memberRepresentativeSave(formName,type,resolve){
 
       let url="";
@@ -2836,7 +3026,7 @@ export default {
                     if(resolve){
                        resolve(true)
                     }
-                   
+
                   }else{
                       if(resolve){
                          resolve(false)
@@ -2857,7 +3047,7 @@ export default {
         })
 
     },
-   
+
     chooseMenu(ind) {
       this.leftMenu.filter((v, i) => {
         if (i == ind) {
@@ -2867,20 +3057,20 @@ export default {
         }
       });
     },
-    handleScroll(e) {
-      let scrollTop = e.target.scrollTop;
-      let scrollHeight = e.target.scrollHeight;
-      let h = document.getElementsByClassName("menuBox")[0]
-        ? document.getElementsByClassName("menuBox")[0].offsetHeight
-        : 0;
-      if (scrollTop < 25) {
-        this.scrollTop = 25;
-      } else if (scrollTop > scrollHeight - h) {
-        this.scrollTop = scrollHeight - h;
-      } else {
-        this.scrollTop = scrollTop;
-      }
-    },
+    // handleScroll(e) {
+    //   let scrollTop = e.target.scrollTop;
+    //   let scrollHeight = e.target.scrollHeight;
+    //   let h = document.getElementsByClassName("menuBox")[0]
+    //     ? document.getElementsByClassName("menuBox")[0].offsetHeight
+    //     : 0;
+    //   if (scrollTop < 25) {
+    //     this.scrollTop = 25;
+    //   } else if (scrollTop > scrollHeight - h) {
+    //     this.scrollTop = scrollHeight - h;
+    //   } else {
+    //     this.scrollTop = scrollTop;
+    //   }
+    // },
     addTableItem(type) {
      if(type==1){
        this.editContactTable.push(
@@ -2929,13 +3119,13 @@ export default {
                  'fordepartmentName':"",
                  "personNum":"",
                  "departHeader":"",
-                  "officePhone":"", 
-                  "mobilePhone":"", 
+                  "officePhone":"",
+                  "mobilePhone":"",
                   "email":""
                }
              )
      }
-     
+
     },
     deleteItem(ind,type,item) {
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -2948,7 +3138,7 @@ export default {
                     warnMES("至少保留2条信息")
                     return ;
 
-                } 
+                }
                 if(!item.id){
                    this.editContactTable.splice(ind,1);
                 }else{
@@ -2956,7 +3146,7 @@ export default {
                    if(this.userType==1){
                      url=`/admin/member/archives/contact/delete?contactId=${item.id}`;
                    }else if(this.userType==2){
-                     url=`/api/member/info/contact/delete?contactId=${item.id}`; 
+                     url=`/api/member/info/contact/delete?contactId=${item.id}`;
                    }
                    deleteLinkMan(url).then(rep=>{
                       if(rep && rep.code=='200'){
@@ -2970,16 +3160,16 @@ export default {
                       }
                    })
                 }
-                
+
              }else if(type==2){
                 if(!item.id){
-                   this.editShareTable.splice(ind,1) 
+                   this.editShareTable.splice(ind,1)
                 }else{
                    let url="";
                    if(this.userType==1){
                      url=`/admin/member/archives/shareholder/delete?id=${item.id}`;
                    }else if(this.userType==2){
-                     url=`/api/member/info/shareholder/delete?id=${item.id}`; 
+                     url=`/api/member/info/shareholder/delete?id=${item.id}`;
                    }
                    deleteShareholder(url).then(rep=>{
                         if(rep && rep.code=='200'){
@@ -2992,17 +3182,17 @@ export default {
                         }
                    })
                 }
-               
+
 
              }else if(type==3){
                 if(!item.id){
-                   this.editSeniorTable.splice(ind,1) 
+                   this.editSeniorTable.splice(ind,1)
                 }else{
                     let url="";
                    if(this.userType==1){
                      url=`/admin/member/archives/senior/delete?id=${item.id}`;
                    }else if(this.userType==2){
-                     url=`/api/member/info/senior/delete?id=${item.id}`; 
+                     url=`/api/member/info/senior/delete?id=${item.id}`;
                    }
                    deleteSeniorExecute(url).then(rep=>{
                        if(rep && rep.code=='200'){
@@ -3015,17 +3205,17 @@ export default {
                    })
                 }
              }else if(type==4){
-                  this.editBusTable.splice(ind,1) 
-                
+                  this.editBusTable.splice(ind,1)
+
              }
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
-       
-       
+
+
     },
     setItemDefault(item) {
         this.$confirm('将此人设为默认联系人?, 是否继续?', '提示', {
@@ -3046,7 +3236,7 @@ export default {
                     apiBasicMember(`${this.urlFront}Contact`, {companyId: this.$route.query.companyId}).then(resolve => {
                       this.contactTable = resolve;
                       this.storeContactTable=[...resolve];
-                      this.editContactTable=[...resolve] 
+                      this.editContactTable=[...resolve]
                     });
 
                }
@@ -3055,10 +3245,10 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
-     
-     
+
+
     },
     certUp() {
       this.upVisible = true;
@@ -3087,10 +3277,10 @@ export default {
       border-right: 1px solid #d6d6d6;
     }
     .posit {
-      position: absolute;
+      position: fixed;
       width: 160px;
-      left: 0;
-      top: 25px;
+      // left: 0;
+      top: 85px;
     }
     .item {
       height: 50px;
@@ -3162,7 +3352,7 @@ export default {
       .el-form-item {
         //display: flex;
         //-webkit-box-align: center;
-        //align-items: center; 
+        //align-items: center;
         .el-form-item__label {
           line-height: 100% !important;
           text-align: left;
@@ -3264,7 +3454,7 @@ export default {
         .el-button {
           border-style: dashed !important;
           width: 40%;
-          
+
         }
       }
     }
@@ -3319,5 +3509,8 @@ export default {
       margin-right: 4px;
     }
   }
+}
+.desc-txt{
+  padding: 20px 0;
 }
 </style>

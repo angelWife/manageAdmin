@@ -1,8 +1,8 @@
 <template></template>
 
 <script>
-/* import "static/iWebOffice/iWebOffice2015.js";
-import "static/iWebOffice/WebOffice.js";*/
+// import "@/assets/js/iWebOffice/iWebOffice2015.js";
+// import "@/assets/js/iWebOffice/WebOffice";
 
 export default {
   name: "iWebOffice"
