@@ -964,21 +964,14 @@ export function yearCostProjectDown(params){
        method: 'put',
        params
    })
-} 
-// 会员管理 年费计算
-export function yearCostAutoCalc(data){
-     return axios({
-       url:"/admin/member/pay/auto-calc",
-       method: 'post',
-       data
-   })
 }
+
 //会员管理 新建年费回显
 export function viewYearCost(){
      return axios({
        url:"/admin/member/pay/view_annual",
        method: 'get',
-      
+
    })
 }
 //会员认定总的提交
@@ -1054,4 +1047,58 @@ export function memberCheckCost(data){
       method: 'post',
       data
    })
+}
+
+//导出发票
+export function exportInvoice(data) {
+  return axios({
+    url:`/admin/member/pay/export_invoice`,
+    method: 'post',
+    data
+  })
+}
+
+//导入发票
+export function importInvoice(data) {
+  return axios({
+    url:`/admin/member/pay/import_invoice`,
+    method: 'post',
+    data
+  })
+}
+
+//导出年费模板
+export function exportYearCostTemplate(data) {
+  return axios({
+    url:`/admin/member/pay/export_year_cost`,
+    method: 'post',
+    data
+  })
+}
+
+//导入年费模板
+export function importYearCost(data) {
+  return axios({
+    url:`/admin/member/pay/import_year_cost`,
+    method: 'post',
+    data
+  })
+}
+
+//计算会费
+export function calcYearCost(data) {
+  return axios({
+    url:`/admin/member/pay/calc_year_cost`,
+    method: 'post',
+    data
+  })
+}
+
+//年费提交审批
+export function yearCostSubmitAudit(data) {
+  return axios({
+    url:`/admin/member/pay/year_cost_submit_audit`,
+    method: 'post',
+    data
+  })
 }

@@ -16,10 +16,12 @@
           :http-request="uploadFile"
           :on-remove="removeFile"
           accept=".doc, .docx"
+          :on-preview='downLoadSqs'
+          :file-list="fileList"
           :limit="1">
           <el-button size="small" type="primary">点击上传</el-button>
-          
         </el-upload>
+
         <span class="down" style="cursor:pointer" @click.prevent="downLoadTemplate">退会申请书模板下载</span>
       </div>
     </div>
@@ -40,8 +42,9 @@ export default {
   data() {
     return {
       Apply: false, // 是否提交申请
-    
-      uploadUrl:global.baseUrl+'/api/member/leave/upload'
+      filePath:'',
+      uploadUrl:global.baseUrl+'/api/member/leave/upload',
+      fileList:['/api/member/leave/upload']
     };
   },
   mounted() {
@@ -66,9 +69,10 @@ export default {
            if(res && res.code=='200' && res.data){
                 successMES('上传成功');
                 this.filePath=res.data
+                console.log(res);
            }
       })).catch(error=>{
-         
+
       })
     },
     removeFile(){
@@ -79,13 +83,17 @@ export default {
                blobDownloadFile(rep)
             })
     },
+    downLoadSqs(){
+      window.location.href= this.filePath.fullPath
+    },
+
     getFilePath(response, file, fileList){
       console.log(response)
     },
     sureSubmit(){
        if(!this.filePath){
            warnMES("请选择文件");
-           return  
+           return
        }
        this.$api.member.memberOut({filePath:this.filePath}).then((res=>{
         if(res.success){
@@ -132,5 +140,8 @@ export default {
     margin-top: 60px;
     margin-left: 60px;
   }
+}
+.el-upload-list__item:hover{
+  cursor: pointer;
 }
 </style>

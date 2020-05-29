@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <h1>参与名单</h1>
-    <div>
-      <el-table :data="joinData" style="width: 100%">
+    <div style="width:100%;">
+      <el-table :data="joinData" border style="width: 100%">
         <el-table-column prop="peopleName" label="姓名">
           <template slot-scope="scope">
             <el-input v-if="scope.row.isEdit" v-model="scope.row.peopleName" placeholder="请输入内容"></el-input>
@@ -21,7 +21,7 @@
             <span v-else>{{scope.row.mobileNum}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="email" label="电子邮件">
+        <el-table-column prop="email" width="300" label="电子邮件">
           <template slot-scope="scope">
             <el-input v-if="scope.row.isEdit" v-model="scope.row.email" placeholder="请输入内容"></el-input>
             <span v-else>{{scope.row.email}}</span>
@@ -46,13 +46,13 @@
   </div>
 </template>
 <script>
-import {
-  apiDic,
-  apiShow,
-  apiOperate,
-  backPage,
-  hasPage
-} from "../../utils/commonApi";
+  import {
+    apiDic,
+    apiShow,
+    apiOperate,
+    backPage,
+    hasPage, tipMES
+  } from "../../utils/commonApi";
 import { warnMES } from "../../utils/common";
 export default {
   props: {
@@ -127,15 +127,15 @@ export default {
     },
     save(scope) {
       scope.row.isEdit = false;
-      apiOperate(
-        "member",
-        "joinAdd",
-        { ...scope.row, ...this.idList },
-        () => {
+      this.$api['member']['joinAdd']({ ...scope.row, ...this.idList }).then(res => {
+        if (res.success) {
           this.showReg();
-        },
-        "保存成功"
-      );
+        } else {
+          this.joinData.splice(scope.row.index,1)
+        }
+      }).catch(err => {
+        console.error(err)
+      })
     },
     edit(scope) {
       scope.row.isEdit = true;

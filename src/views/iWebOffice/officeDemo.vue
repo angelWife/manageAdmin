@@ -43,6 +43,7 @@ export default {
     Load() {
       try {
         this.OnUnLoad();
+        debugger;
         WebOfficeObj.ServerUrl = ServerUrl; //注意这是后台接口触发/officeJava注意跨越问题。
         // alert(ServerUrl);
         WebOfficeObj.UserName = "演示人";

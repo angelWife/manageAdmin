@@ -1,6 +1,6 @@
 import axios from '../axios'
 
-/* 
+/*
  * 字典管理模块
  */
 
@@ -184,7 +184,14 @@ export const modelStatus = () => {
 // 对象类型
 export const objType = () => {
     return axios({
-        url: '/dict/message/sendType',
+        url: '/dict/message/smsSendType',
+        method: 'get',
+    })
+}
+// 邮件对象类型
+export const emailType = () => {
+    return axios({
+        url: '/dict/message/emailSendType',
         method: 'get',
     })
 }
@@ -214,7 +221,7 @@ export const feeName = (data) => {
     })
 }
 
-//业务流水状态 
+//业务流水状态
 export const workStatus = () => {
     return axios({
         url: '/dict/workflow/wkstatus',
@@ -236,12 +243,5 @@ export const infoChangeTypes = () => {
         url: '/dict/workflow/wk_change_type',
         method: 'get',
     })
-}
-//获取机构类型  POST /api/sys/dict/table_data
-export const getTableTypes = (data) => {
-    return axios({
-        url: '/common/sys/dict/load_by_type',
-        method: 'post',
-        data
-    })
+
 }

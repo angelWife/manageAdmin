@@ -18,7 +18,7 @@
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="memberCode" label="会员代码" width align="center"></el-table-column>
       <el-table-column prop="companyName" label="会员" align="center"></el-table-column>
-      <el-table-column prop="institutionType" label="机构类型" align="center"></el-table-column>
+      <el-table-column prop="institutionTypeVal" label="机构类型" align="center"></el-table-column>
       <el-table-column prop="joinDate" label="入会时间" align="center"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -29,9 +29,11 @@
     <el-pagination
       background
       layout="total,prev, pager, next"
-      :page-count="params.pageTotal"
+      :total="pageTwenty.total"
+      :page-size="pageTwenty.pageSize"
+      :current-page.sync="pageTwenty.currentPage"
       @current-change="currentChange_"
-      style="text-align:center;margin-top:60px"
+      style="text-align:center;"
     ></el-pagination>
     <!-- 根据搜索新建 -->
     <el-dialog title="根据搜索添加会员" :visible.sync="searchVisible" width="75%">
@@ -62,24 +64,25 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8">
+        <el-col :span="7">
           <div>
             <span>统一社会信用编码：</span>
-            <el-input v-model="creditId" placeholder="请输入" class="input_style"></el-input>
+            <el-input v-model="creditId" style="min-width:150px;" placeholder="请输入" class="input_style"></el-input>
           </div>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="7">
           <div>
             <span>公司性质：</span>
-            <el-select v-model="companyType" placeholder="请选择">
+            <el-select v-model="companyType" style="min-width:150px;" placeholder="请选择">
               <el-option v-for="item in busList" :key="item.id" :value="item.dictKey" :label="item.dictVal"></el-option>
             </el-select>
           </div>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="9">
           <div>
             <span>入会时间：</span>
             <el-date-picker
+              style="min-width:250px"
               v-model="joinTime"
               type="daterange"
               range-separator="至"
@@ -99,9 +102,12 @@
           empty-text="没有符合条件的会员"
           :data="memberData"
           style="width: 100%"
+          ref="multipleTable"
+          row-key="companyId"
           @selection-change="handleSelectQuery"
         >
-          <el-table-column type="selection" width="55"></el-table-column>
+          <!-- @selection-change="handleSelectQuery" -->
+          <el-table-column type="selection" :reserve-selection="true" width="55"></el-table-column>
           <el-table-column prop="memberCode" label="会员代码"></el-table-column>
           <el-table-column prop="memberTypeVal" label="会员类型"></el-table-column>
           <el-table-column prop="institutionTypeVal" label="机构类型"></el-table-column>
@@ -123,9 +129,9 @@
         style="margin-top:20px"
         background
         layout="total,prev, pager, next"
-        :total="pageFive.total"
-        :page-size="pageFive.pageSize"
-        :current-page.sync="pageFive.currentPage"
+        :total="pageTen.total"
+        :page-size="pageTen.pageSize"
+        :current-page.sync="pageTen.currentPage"
         @current-change="currentchange"
       ></el-pagination>
       <span slot="footer" class="dialog-footer">
@@ -157,7 +163,7 @@ import {
   warnMES,
   successMES,
   tipMES,
-  pageFive,
+  pageTen,
   pubParam,
   apiSelect,
   queryResp,
@@ -193,16 +199,21 @@ export default {
       busList: [],
       admiTime: "",
       kindData: [],
-      pageFive,
-
-      companyIdList: [],
-      detailIdList: [],
+      pageTen:{
+        total: 0,
+        pageSize: 10,
+        currentPage: 1
+      },
+      pageTwenty:{
+        total: 0,
+        pageSize: 20,
+        currentPage: 1
+      },
+      companyIdList: [],//选中的id
+      selectList:[],//选中的列表
+      detailIdList: [],//
       pageLocation: 1,
-      params:{//会员组配置分页
-        pageTotal:1,
-        pageIndex:1,
-        pageSize:20,
-      }
+      
     };
   },
   created() {
@@ -228,7 +239,8 @@ export default {
         })
         .then(res => {
           if (res.success) {
-            this.params.pageTotal = res.data.pageTotal;
+            this.pageTwenty.total = res.data.total;
+            this.pageTwenty.currentPage = res.data.pageIndexCurrent;
             this.groupData = mapTime(res.data, "joinDate");
           } else {
             warnMES(res.message);
@@ -279,7 +291,11 @@ export default {
     },
     // 批量删除
     batchDelete() {
-         this.$confirm('此操作将永久删除这些文件, 是否继续?', '提示', {
+        if(this.detailIdList.length==0){
+          warnMES('请勾选要删除的会员！');
+          return false;
+        }
+         this.$confirm('确认批量删除所选会员?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -301,10 +317,10 @@ export default {
               console.log(error);
             });
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
+          // this.$message({
+          //   type: 'info',
+          //   message: '已取消删除'
+          // });          
         });
      
     },
@@ -317,7 +333,7 @@ export default {
             let data = res.data;
             queryResp(
               this.memberData,
-              this.pageFive,
+              this.pageTen,
               res.data,
               "buildDate",
               "dateJoin"
@@ -332,7 +348,7 @@ export default {
     },
     // 搜索添加
     handlequery() {
-      this.clear();
+      // this.clear();
       this.searchVisible = true;
       apiSelect({ type: 1 }, this.orgList);
       apiSelect({ type: 2 }, this.memberList);
@@ -342,7 +358,7 @@ export default {
           {
             groupId: this.id
           },
-          pubParam.pageDialog
+          pageTen
         )
       );
     },
@@ -354,11 +370,9 @@ export default {
       this.companyName = "";
       this.companyType = "";
       this.joinTime = "";
+      this.handlequery();
     },
     currentChange_(i){
-      this.params.pageIndex = i;
-      this.params.showQuery = this.id;
-      pubParam.pageDialog.pageSize = i;
       this.displayMember(i);
     },
     // 分页,弹窗分页
@@ -367,7 +381,7 @@ export default {
       this.showQuery({
         groupId: this.id,
         pageIndex: i,
-        pageSize: pubParam.pageDialog.pageSize,
+        pageSize: this.pageTen.pageSize,
         ...this.queryIF()
       });
     },
@@ -404,7 +418,8 @@ export default {
     },
     // 搜索查询
     clickQuery() {
-      console.log("query", this.queryIF());
+      // console.log(this.companyIdList)
+      // console.log("query", this.queryIF());
       this.showQuery(
         Object.assign({
           groupId: this.id,
@@ -412,14 +427,23 @@ export default {
           ...pubParam.pageDialog
         })
       );
+      this.$refs.multipleTable.toggleRowSelection(this.selectList);
     },
-    handleSelectQuery(checkVal) {
+    handleSelectQuery(checkVal) {//选中
+      this.selectList = checkVal;
       this.companyIdList = [];
-      checkVal.map(v => {
-        this.companyIdList.push(v.companyId);
+      checkVal.map((v,i) => {
+        if(v.companyId){
+          this.companyIdList.push(v.companyId);
+        }
       });
+      // console.log(this.companyIdList)
     },
     submitMember() {
+      if(this.companyIdList.length==0){
+        warnMES('请勾选会员！');
+        return;
+      }
       this.searchVisible = false;
       this.$api.member
         .addMember({
@@ -455,7 +479,6 @@ export default {
         });
     },
     submitTree() {
-      this.kindVisible = false;
       let keys = this.$refs.tree.getCheckedKeys();
       let companyIdList = [];
       keys.map(v => {
@@ -463,6 +486,11 @@ export default {
           companyIdList.push(v);
         }
       });
+      if(companyIdList.length==0){
+        warnMES('请勾选会员！');
+        return;
+      }
+      this.kindVisible = false;
       this.$api.member
         .addMember({
           groupId: this.id,

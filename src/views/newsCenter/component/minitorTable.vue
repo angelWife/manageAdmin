@@ -9,7 +9,7 @@
         <el-table-column prop="sendStatusVal" label="发送状态" width="100"></el-table-column>
         <el-table-column prop="act" fixed="right" label="操作" width="100" v-if="!!apiMinitor">
           <template slot-scope="scope">
-            <el-button type="primary" size="small" @click="passOut(scope.row.id)">再次发送</el-button>
+            <el-button v-if="tableData.sendStatus==3" type="primary" size="small" @click="passOut(scope.row.id)" >再次发送</el-button>
           </template>
         </el-table-column>
       </el-table>

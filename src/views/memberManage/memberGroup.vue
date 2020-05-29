@@ -29,7 +29,7 @@
       layout="total,prev, pager, next"
       :page-count="params.pageTotal"
       @current-change="currentChange"
-      style="text-align:center;margin-top:60px"
+      style="text-align:center;"
     ></el-pagination>
     <!-- 新增 -->
     <el-dialog title="新增会员组" :visible.sync="memberVisible" width="30%">
@@ -38,7 +38,7 @@
           <el-input v-model="memberData.name" placeholder="请输入" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注：">
-          <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model="memberData.remark"></el-input>
+          <el-input type="textarea" maxlength="40" :rows="3" placeholder="请输入内容" v-model="memberData.remark"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -53,7 +53,7 @@
           <el-input v-model="memberEdit.name" placeholder="请输入" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注：">
-          <el-input type="textarea" :rows="3" placeholder="请输入内容" v-model="memberEdit.remark"></el-input>
+          <el-input type="textarea" maxlength="40" :rows="3" placeholder="请输入内容" v-model="memberEdit.remark"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

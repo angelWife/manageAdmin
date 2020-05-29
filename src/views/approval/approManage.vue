@@ -157,12 +157,12 @@ export default {
         // console.log(res.data);
       }
     });
-    // this.$api.dict.getTableTypes({type:1}).then(res=>{
-    //   if(res.success){
-    //     self.typeList = res.data
-    //     // console.log(res.data);
-    //   }
-    // })
+    this.$api.dict.sysType({type:1}).then(res=>{
+      if(res.success){
+        self.typeList = res.data
+        // console.log(res.data);
+      }
+    })
     this.$api.dict.workStatus().then(res => {
       if (res.success) {
         self.tabs = res.data;

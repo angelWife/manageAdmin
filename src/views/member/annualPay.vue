@@ -13,7 +13,7 @@
             <el-image :src="infoSrc"></el-image>
           </el-form-item>
           <el-form-item label="周期：">{{form.dateStart}}至{{form.dateEnd}}</el-form-item>
-          <el-form-item label="会费金额：">{{form.annualFee}}</el-form-item>
+          <el-form-item label="会费金额：">{{form.annualFee}} 元</el-form-item>
           <el-form-item label="缴费凭证：">
             <el-image :src="url" :preview-src-list="srcList"></el-image>
             <div>完成转账后请上传银行转账凭据用于审批：</div>
@@ -148,7 +148,7 @@ export default {
      }
       let tempArr=[];
       tempArr =this.nameList.filter(item=>{
-         
+
           return v==item.memberPayId
       })
       if(tempArr.length){
@@ -157,7 +157,7 @@ export default {
         this.form.dateCycleStart=tempArr[0].dateStart;
         this.form.dateCycleEnd=tempArr[0].dateEnd;
       }
-      
+
       // apiShow("member", "servicePayDetail", { id: v }).then(reslove => {
       //    this.form.show=true;
       //    this.form={...this.form,...reslove}
@@ -199,7 +199,7 @@ export default {
               }
            apiDic("feeName", {}).then(reslove => {
               this.nameList = reslove;
-            });   
+            });
 
         },
         "提交成功"

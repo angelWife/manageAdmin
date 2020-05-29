@@ -258,10 +258,28 @@ export const smsListen = (data) => {
     data
   })
 }
+
+// 短信平台 导入
+export const leadingIn = (data) => {
+  return axios({
+    url: '/admin/message/sms/importData',
+    method: 'post',
+    data
+  })
+}
+// 短信平台 下载手机名单
+// export const downPhoneModel = (params) => {
+//   return axios({
+//     url: '/admin/message/sms/downTemplate',
+//     method: 'get',
+//     params
+//   })
+// }
+
 // 短信平台 发送监控
 export const smsAddListen = (data) => {
   return axios({
-    url: '/admin/message/sms/add_listen',
+    url: '/admin/message/sms/resend',
     method: 'post',
     data
   })

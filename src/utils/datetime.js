@@ -23,6 +23,9 @@ export function format(datetime, second) {
  */
 export function formatWithSeperator(datetime, dateSeprator, timeSeprator) {
   if (datetime != null) {
+    if((datetime+'').indexOf('-')>-1){
+      datetime = datetime.replace(/-/g, '/');
+    }
     const dateMat = new Date(datetime);
     const year = dateMat.getFullYear();
     const month = dateMat.getMonth() + 1 < 10 ? "0" + (dateMat.getMonth() + 1) : dateMat.getMonth() + 1;

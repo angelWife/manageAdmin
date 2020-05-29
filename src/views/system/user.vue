@@ -267,8 +267,10 @@
       sureBtn() {
         let self = this;
         let params = {...this.formData};
-        // console.log(params)
         params.departmentId = params.departmentId[params.departmentId.length - 1];
+        if(params.flagSuper){//如果是超级管理员，把角色都去掉
+          params.roleIdList = [];
+        }
         params.flagSuper = params.flagSuper ? 1 : 2;
         if (params.userName.trim().length==0) {
           this.$message.error('请输入用户名！')

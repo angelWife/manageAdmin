@@ -179,7 +179,7 @@ export default {
     apiDic("msgStatus", {}).then(reslove => {
       this.approList = reslove;
     });
-    apiDic("objType", {}).then(reslove => {
+    apiDic("emailType", {}).then(reslove => {
       this.objList = reslove;
     });
 

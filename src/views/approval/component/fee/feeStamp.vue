@@ -62,11 +62,8 @@ export default {
       console.log("submit!");
     },
     stampFile() {
-      let routeData = this.$router.resolve({
-        name: "Signature",
-        query: { type: "member", filePath: "" }
-      });
-      window.open(routeData.href, "_blank");
+      let myData = { type: "", filePath: "", show: true };
+      this.$emit("openStamp", myData);
     }
   }
 };

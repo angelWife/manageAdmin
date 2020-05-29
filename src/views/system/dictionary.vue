@@ -287,7 +287,7 @@ export default {
         .then(res => {
           if (res.success) {
             this.editVisible = false;
-            this.displayList(pubParam.page);
+            this.queryDic();
             successMES("编辑成功");
           } else {
             warnMES(res.message);

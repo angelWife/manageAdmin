@@ -43,7 +43,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="附件：">
-              <span>说明.pdf</span>
+              <span>{{form.fileName}}</span>
               <a class="blue m-l-20 cur-pointer" :href="form.filePath">下载文件</a>
             </el-form-item>
           </el-col>
@@ -93,7 +93,7 @@ export default {
       console.log("submit!");
     },
     submitForm(){
-
+      this.$router.push("/member/registerInfo");
     }
   }
 };

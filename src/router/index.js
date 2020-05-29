@@ -108,9 +108,9 @@ import sysUser from '@/views/system/user';
 import sysDictionary from '@/views/system/dictionary';
 
 import yearFee from '@/views/approval/yearFee';
-import iWebOffice from '@/views/iWebOffice/IWebOffice';
-import officeDemo from '@/views/iWebOffice/officeDemo';
-import signature from '@/views/iWebOffice/signature';
+// import iWebOffice from '@/views/iWebOffice/iWebOffice';
+// import officeDemo from '@/views/iWebOffice/officeDemo';
+// import signature from '@/views/iWebOffice/signature';
 
 // import Generator from "@/views/Generator/Generator";
 import api from "@/http/api";
@@ -653,11 +653,11 @@ const router = new Router({
     //   name: "officeDemo",
     //   component: officeDemo
     // },
-    {
-      path: "/iWebOffice/signature",
-      name: 'Signature',
-      component: signature
-    }
+    // {
+    //   path: "/iWebOffice/signature",
+    //   name: 'Signature',
+    //   component: signature
+    // }
   ],
   base: '/',
   mode: "hash",

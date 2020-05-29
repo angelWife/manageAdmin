@@ -5,7 +5,7 @@
       <el-table-column prop="name" label="名目"></el-table-column>
       <el-table-column prop="companyName" label="机构名称"></el-table-column>
       <el-table-column prop="fund" label="金额"></el-table-column>
-      <el-table-column prop="invoiceTypeVal" label="发票类型"></el-table-column>
+      <el-table-column prop="invoiceType" label="发票类型"></el-table-column>
       <el-table-column prop="mobileNum" label="收件人手机"></el-table-column>
       <el-table-column prop="address" label="收件地址" width="250"></el-table-column>
       <el-table-column prop="sendStatusVal" label="状态"></el-table-column>
@@ -16,8 +16,7 @@
             @click="handleClick(scope.row)"
             type="primary"
             size="small"
-          >寄送</el-button>
-          <el-button v-else size="small" type="primary">{{scope.row.sendStatusVal}}</el-button>
+          >已寄送</el-button>
         </template>
       </el-table-column>
     </el-table>

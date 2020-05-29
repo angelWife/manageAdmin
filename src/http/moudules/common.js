@@ -69,15 +69,15 @@ export function blobDownloadFile(rep,fileName){
       while ((currentResult = regex.exec(strValue)) !== null) {
           results.push(currentResult[1]);
       }
-           // name=results[0];
-            name= '入会申请书.docx';
+            name=results[0];
+            //name= '入会申请书.docx';
            if(name==undefined){
               name=strValue.split('=')[1];
            }
 
    }else{
-     //name = fileName
-      name= '入会申请书.docx';
+     name = fileName
+      // name= '入会申请书.docx';
    }
 
      let fileReader = new FileReader();

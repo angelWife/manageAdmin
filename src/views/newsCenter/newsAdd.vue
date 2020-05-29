@@ -70,14 +70,17 @@ export default {
       add: false,
       id: "",
       sendOn: {},
-      msgUpData: {}
+      msgUpData: {},
+      flagSend:'',
     };
   },
   watch: {
     form:{
       handler(obj){
-        let val = obj.messageContent;
-        let _arr = val.split('');
+          let val = obj.messageContent;
+         if(val){
+          let _arr = val.split('');
+        }
         let res1 =  /^[0-9a-zA-Z]*$/g
         let res2 = /[\u4E00-\u9FA5\uF900-\uFA2D]/;
       },
@@ -85,17 +88,21 @@ export default {
     },
   },
   created() {
-    if (!!this.$route.query.rowId) {
-       this.$store.commit('setHeadTitle','编辑短信');
+    // if(this.$route.query.edit){
+
+    // }
+
+    var rowId = this.$route.query.rowId
+    if (this.$route.query.rowId) {
+      this.$store.commit('setHeadTitle','编辑短信');
       this.messageId = this.$route.query.rowId.toString();
       this.check = this.$route.query.check ? true : false;
-      apiShow("message", "smsEdit", {
-        id: this.messageId
-      }).then(resolve => {
-        debugger
-        this.form = {
-          messageContent: resolve.content
-        };
+      apiShow("message", "smsEdit", {id: rowId}).then(resolve => {
+       console.log(resolve);
+      this.form = resolve
+        // this.form = {
+        //   messageContent: resolve.content
+        // };
         if (resolve.flagSendDelay == 1) {
           this.sendOn = {
             flagSendDelay: resolve.flagSendDelay,
@@ -107,11 +114,10 @@ export default {
             sendTime: resolve.sendTime
           };
         }
-
-        console.log("sendOn", this.sendOn);
+        // console.log("sendOn", this.sendOn);
         this.bus.$emit("timeEdit", this.sendOn);
         this.bus.$emit("sendObject", resolve.sendObjectType);
-        /*  this.bus.$emit("sendParam", this.sendParam); */
+        // this.bus.$emit("sendParam", this.sendParam);
       });
     }else{
       this.$store.commit('setHeadTitle','新增短信');
@@ -122,7 +128,6 @@ export default {
     });
 
     this.bus.$on("msgBox", data => {
-      console.log("msgBox", data);
       this.msgParam = data;
     });
 
@@ -130,12 +135,15 @@ export default {
       console.log("sendObj", data);
       this.ObjParam = data;
     });
+    this.bus.$on("flagSend", data => {
+      this.flagSend = data
+    });
   },
   methods: {
     submitForm() {
+      console.log(this.sendParam);
       let _now = new Date().getTime();
       if(this.sendParam.flagSendDelay==2){
-        
         if(!this.sendParam.sendTime){
             this.$message.error('延迟的时间不能小于当前时间');
           return false;
@@ -147,7 +155,7 @@ export default {
         }
       }
       if (
-        !!this.form.messageContent &&
+        this.form.messageContent &&
         (this.msgParam.companyIdList.length > 0 ||
           this.msgParam.groupIdList.length > 0)
       ) {
@@ -157,7 +165,8 @@ export default {
           id: this.messageId,
           memberList: this.msgParam.companyIdList.join(","),
           memberGroupList: this.msgParam.groupIdList.join(","),
-          sendObjectType: this.ObjParam
+          sendObjectType: this.ObjParam,
+
         }).then(resolve => {
           publicMsg(this.msgParam, resolve, 6, false, "sms", "smsPublish");
           this.$router.go(-1);
@@ -177,7 +186,7 @@ export default {
       }).then(() => {
           this.$router.go(-1);
         }).catch(() => {});
-     
+
     },
     sendTest() {
       let reg = /^1[345789]\d{9}$/;

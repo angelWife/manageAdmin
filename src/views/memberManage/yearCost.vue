@@ -57,7 +57,7 @@
         <template slot-scope="scope">{{scope.row.dateStart}}到{{scope.row.dateEnd}}</template>
       </el-table-column>
       <el-table-column prop="publishStatusVal" label="发布状态" align="center"></el-table-column>
-      <el-table-column prop="creatorName" label="创建人" align="center"></el-table-column>
+      <el-table-column prop="creator" label="创建人" align="center"></el-table-column>
       <el-table-column label="操作" prop="act" min-width="140">
         <template slot-scope="scope">
           <span v-if="scope.row.publishStatus == 1">
@@ -103,16 +103,16 @@
           <el-date-picker
             v-model="projectData.dateStart"
             placeholder="开始日期"
-            
-            
+
+
           ></el-date-picker>
 
            <el-date-picker
             style="margin-top:10px;"
             v-model="projectData.dateEnd"
             placeholder="结束日期"
-            
-            
+
+
           ></el-date-picker>
         </el-form-item>
       </el-form>
@@ -187,7 +187,7 @@ export default {
       this.$router.push({ path: "/member/mintorPay" });
     },
     handleDelte(id) {
-       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+       this.$confirm('是否删除年费缴纳项目？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -211,9 +211,9 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
-      
+
     },
     queryIF() {
       const query = {
@@ -226,7 +226,7 @@ export default {
       return query;
     },
     puslishYear(id){
-         this.$confirm('确定发布?, 是否继续?', '提示', {
+         this.$confirm('是否发布年费缴纳项目？注意发布后仍需单独发送通知', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -241,12 +241,12 @@ export default {
             this.$message({
               type: 'info',
               message: '已取消删除'
-            });          
+            });
           });
-       
+
     },
     downProject(id){
-       this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+       this.$confirm('是否下架？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -261,9 +261,9 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });          
+          });
         });
-     
+
     },
     handleQuery(pageIn) {
       if (!!pageIn) {
@@ -278,7 +278,7 @@ export default {
     },
     clear() {
       this.project = "";
-      this.creator = "";
+      this.builder = "";
       this.dateInterval = "";
       this.publish = "";
     },
@@ -319,7 +319,7 @@ export default {
                 this.proVisible = true;
           }
       })
-      
+
     },
     submitFee() {
       this.proVisible = false;

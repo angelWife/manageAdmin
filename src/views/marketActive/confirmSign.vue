@@ -76,6 +76,7 @@
             :pageChange="allChange"
             :activityId="activityId"
             :handleQuery="handleQuery"
+            @getBackFun = "getBackFun"
           ></signTable>
         </el-tab-pane>
         <el-tab-pane label="待确认" name="wait">
@@ -85,6 +86,7 @@
             :pageChange="allChange"
             :activityId="activityId"
             :handleQuery="handleQuery"
+            @getBackFun = "getBackFun"
           ></signTable>
         </el-tab-pane>
         <el-tab-pane label="已确认" name="pass">
@@ -94,6 +96,7 @@
             :pageChange="allChange"
             :activityId="activityId"
             :handleQuery="handleQuery"
+            @getBackFun = "getBackFun"
           ></signTable>
         </el-tab-pane>
         <el-tab-pane label="已退出" name="exit">
@@ -103,6 +106,7 @@
             :pageChange="allChange"
             :activityId="activityId"
             :handleQuery="handleQuery"
+            @getBackFun = "getBackFun"
           ></signTable>
         </el-tab-pane>
       </el-tabs>
@@ -120,7 +124,7 @@
             <el-input v-model="addform.duty" placeholder="请输入" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="手机：" class="mustFill">
-            <el-input v-model="addform.mobileNum" placeholder="请输入" autocomplete="off"></el-input>
+            <el-input v-model="addform.mobileNum" maxlength="11" placeholder="请输入" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="邮箱：" class="mustFill">
             <el-input v-model="addform.email" placeholder="请输入" autocomplete="off"></el-input>
@@ -153,6 +157,7 @@ import {
   getDateTime,
   firstUpperCase
 } from "../../utils/common";
+import {isMobile, isEmail} from '../../utils/validate'
 import {
   apiAct,
   apiDic,
@@ -216,6 +221,14 @@ export default {
     }
   },
   methods: {
+    getBackFun(data){
+      console.log(data)
+      if (this.$route.query.confirmId) {
+        apiAct("activityData", { id: this.activityId }).then(resolve => {
+          this.statis = resolve;
+        });
+      }
+    },
     handleClick(tab) {
       this.tableAll = [];
       this.pageAll = {};
@@ -249,12 +262,40 @@ export default {
       };
     },
     submitPerson() {
-      this.addVisible = false;
+      if(this.addform.companyName ==''){
+        warnMES("请输入机构名称！");
+        return;
+      }
+      if(this.addform.peopleName ==''){
+        warnMES("请输入姓名！");
+        return;
+      }
+      if(this.addform.duty ==''){
+        warnMES("请输入职务！");
+        return;
+      }
+      if(this.addform.mobileNum ==''){
+        warnMES("请输入手机！");
+        return;
+      }
+      if (!isMobile(this.addform.mobileNum)) {
+        warnMES('请输入正确的手机号码！')
+        return
+      }
+      if(this.addform.email ==''){
+        warnMES("请输入邮箱！");
+        return;
+      }
+      if (!isEmail(this.addform.email)) {
+        warnMES('请输入正确的邮箱地址！')
+        return
+      }
       apiOperate(
         "active",
         "addJoin",
         { ...this.addform, activityId: this.activityId },
         () => {
+          this.addVisible = false;
           this.activeName = "all";
           this.clear();
           this.showTable(pubParam.page);
@@ -292,7 +333,14 @@ export default {
         .catch(() => {});
     },
     exportExcel: function() {
-      apiAct("exportEnrol", {activityId: this.activityId, enrolStatus: '', status: 1}).then(
+      let param = Object.assign(
+        {
+          enrolStatus: this.signStatus
+        },
+        this.query,
+        {activityId: this.activityId}
+      )
+      apiAct("exportEnrol", param).then(
         resolve => {
           location.href = resolve.fullPath
         }

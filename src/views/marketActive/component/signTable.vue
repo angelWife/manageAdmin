@@ -45,7 +45,7 @@ export default {
     pageTab: { type: Object, required: true },
     pageChange: { type: Function, required: true },
     handleQuery: { type: Function, required: true },
-    activityId: { type: Number, required: true }
+    activityId: { type: Number, required: true },
   },
   data() {
     return {};
@@ -67,6 +67,7 @@ export default {
         },
         () => {
           this.handleQuery(this.pageTab.currentPage);
+          this.$emit("getBackFun",'2');
         },
         "确认成功"
       );
@@ -80,11 +81,13 @@ export default {
         },
         () => {
           this.handleQuery(this.pageTab.currentPage);
+          this.$emit("getBackFun",'1');
         },
         "退出成功"
       );
     },
     handleInform: function (row) {
+      this.$emit("getBackFun",'3');
 
     }
   }

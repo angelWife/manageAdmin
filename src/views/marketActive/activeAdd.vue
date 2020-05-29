@@ -114,6 +114,8 @@
             <div style="margin-left:10px;" v-if="activityForm.filePath">
               <span style="margin-right:10px;">{{activityForm.fileName}}</span>
               <a v-if="activityForm.fileName && activityForm.filePath" :href="activityForm.filePath" target="_blank" class="buttonText">下载</a>
+              <!-- <a v-if="activityForm.fileName && activityForm.filePath" href="javascript：void(0)"  class="buttonText">删除</a> -->
+              <span v-if="activityForm.fileName && activityForm.filePath" @click="onClearW" class="buttonText" :style="!check?{color:'#f56c6c',cursor:'pointer',marginLeft:'10px'}:'margin-left:10px;'">删除</span>
             </div>
           </el-form-item>
         </el-col>
@@ -188,7 +190,7 @@ export default {
     
     this.bus.$on("msgBox", data => {
       this.msgParam = data;
-      console.log(data)
+      // console.log(data)
     });
     if (this.$route.query.rowId) {
       this.id = this.$route.query.rowId + '';
@@ -220,6 +222,26 @@ export default {
     
   },
   methods: {
+    onClearW(){
+      if(this.check){
+        return;
+      }
+      this.$confirm(
+        "确认删除此文件?",
+        "",
+        {
+          confirmButtonText: "继续",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      ).then(() => {
+        this.activityForm.filePath = '';
+        this.activityForm.fileName = '';
+      })
+      .catch(() => {
+        // tipMES("已取消");
+      });
+    },
     queryBtn(){//取消按钮点击
       this.$router.go(-1);
     },
@@ -227,6 +249,49 @@ export default {
       this.submitAnn(1);
     },
     submitForm() {
+      // 验证
+      if(this.activityForm.name.trim().length == 0){
+        warnMES("请输入活动名称");
+        return;
+      } 
+      if(!this.activityForm.activityType){
+        warnMES("请选择活动类型");
+        return;
+      }
+      if(this.activityForm.actStart.length !=2){
+        warnMES("请选择正确的活动开始时间");
+        return;
+      }
+      if(this.activityForm.liveRep.length !=2){
+        warnMES("请选择正确的活动报道开始时间");
+        return;
+      }
+      if(this.activityForm.actSign.length !=2){
+        warnMES("请选择正确的活动报名开始结束时间");
+        return;
+      }
+      if(this.activityForm.address.trim().length == 0){
+        warnMES("请输入活动地点");
+        return;
+      }
+      console.log(this.activityForm.activityPersonNum)
+      if(this.activityForm.activityPersonNum == ''){
+        warnMES("请输入活动人数");
+        return;
+      }
+      if(this.activityForm.organPersonNum == ''){
+        warnMES("请输入会员单位允许报名人数");
+        return;
+      }
+      console.log(this.activityForm.filePath)
+      if(!this.activityForm.filePath || this.activityForm.filePath==''){
+        warnMES("请上传附件");
+        return;
+      }
+      // if(!this.msgParam.companyIdList || this.msgParam.companyIdList.length == 0){
+      //   warnMES("请添加会员");
+      //   return;
+      // }
       this.$confirm(
         "请注意，活动提交后将需要经过审批流程，审批期间及审批后无法再对活动进行编辑",
         "",
@@ -274,48 +339,7 @@ export default {
     // 新建 提交或保存type:1是保存草稿，2是提交 ,
     submitAnn(type) {
       // type:
-      if(this.activityForm.name.trim().length == 0){
-        warnMES("请输入活动名称");
-        return;
-      } 
-      if(!this.activityForm.activityType){
-        warnMES("请选择活动类型");
-        return;
-      }
-      if(this.activityForm.actStart.length !=2){
-        warnMES("请选择正确的活动开始时间");
-        return;
-      }
-      if(this.activityForm.liveRep.length !=2){
-        warnMES("请选择正确的活动报道开始时间");
-        return;
-      }
-      if(this.activityForm.actSign.length !=2){
-        warnMES("请选择正确的活动报名开始结束时间");
-        return;
-      }
-      if(this.activityForm.address.trim().length == 0){
-        warnMES("请输入活动地点");
-        return;
-      }
-      console.log(this.activityForm.activityPersonNum)
-      if(this.activityForm.activityPersonNum == ''){
-        warnMES("请输入活动人数");
-        return;
-      }
-      if(this.activityForm.organPersonNum == ''){
-        warnMES("请输入会员单位允许报名人数");
-        return;
-      }
-      console.log(this.activityForm.filePath)
-      if(!this.activityForm.filePath || this.activityForm.filePath==''){
-        warnMES("请上传附件");
-        return;
-      }
-      // if(!this.msgParam.companyIdList || this.msgParam.companyIdList.length == 0){
-      //   warnMES("请添加会员");
-      //   return;
-      // }
+      
       apiAct("newActive", {
         name: this.activityForm.name,
         address: this.activityForm.address,

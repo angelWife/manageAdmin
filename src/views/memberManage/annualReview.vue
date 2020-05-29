@@ -64,7 +64,6 @@
     </el-table>
     <el-pagination
       class="text_center"
-      style="margin-top:20px"
       background
       layout="total,prev, pager, next"
       :total="pageTen.total"

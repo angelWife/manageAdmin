@@ -75,7 +75,7 @@
           ></el-tree>
         </el-form-item>
         <el-form-item label="备注：">
-          <el-input placeholder="请输入" maxlength="40" v-model="roleData.remark" type="textarea" autocomplete="off"></el-input>
+          <el-input placeholder="请输入" maxlength="40" v-model="roleData.remark" type="textarea"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -214,6 +214,12 @@ export default {
       if (rowdata.menuList && rowdata.menuList.length > 0) {
         this.setCheckMenu(rowdata.menuList);
       }
+      this.roleData={
+        name:'',
+        id:'',
+        remark:'',
+      }
+      console.log(rowdata)
       this.roleData.name = rowdata.name;
       this.roleData.id = rowdata.id;
       this.roleData.remark = rowdata.remark;
@@ -293,6 +299,7 @@ export default {
       this.roleVisible = false;
       this.dicVisible = false;
       // console.log(this.$refs.roleKeys)
+      this.defaultChecked = [];
       if (this.$refs.roleKeys) {
           this.$refs.roleKeys.setCheckedKeys([]);
       } else { 

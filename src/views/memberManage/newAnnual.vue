@@ -5,7 +5,9 @@
         <el-input v-model="name" :disabled="annualCheck" style="width:300px"></el-input>
         <el-button @click="$router.go(-1)" v-if="annualCheck" style="float:right;"> 返回</el-button>
       </el-form-item>
-      <el-form-item label="邀请对象：" lass="mustFill">
+      <msgPush title="邀请对象：" :bus="bus" :id="id" :check="annualCheck" :pushType="2" style="padding:0;"></msgPush>
+
+      <!-- <el-form-item label="邀请对象：" lass="mustFill">
         <div class="flex" style="justify-content:space-between;width:320px">
           <span>会员:</span>
           <div v-if="!annualCheck">
@@ -39,14 +41,14 @@
           <el-checkbox v-model="boolist.msgck" :disabled="annualCheck" @change="msgChange">短信提醒</el-checkbox>
         </div>
         <div style="color:#666">如果年审对象有变更，且非首次发布，重新发布后将不会主动发送提醒，可选择人工沟通，或者年审监控中全体发送提醒完成该操作</div>
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
     <div style="text-align:right;width:600px" v-if="!annualCheck">
       <el-button @click="$router.go(-1)">取消</el-button>
       <el-button type="primary" @click="submitAnn()">提交</el-button>
     </div>
     <!-- 添加会员 -->
-    <el-dialog title="添加会员" :visible.sync="addVisible" width="75%">
+    <!-- <el-dialog title="添加会员" :visible.sync="addVisible" width="75%">
       <el-row>
         <el-col :span="8">
           <div>
@@ -146,10 +148,11 @@
         <el-button @click="addVisible = false">取消</el-button>
         <el-button type="primary" @click="submitSele()">提交</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 <script>
+import msgPush from "@/views/common/msgPush";
 import {
   warnMES,
   successMES,
@@ -165,9 +168,11 @@ import {
   flagList,
   deleteDuplic
 } from "../../utils/common";
+import Vue from "vue";
 export default {
   data() {
     return {
+      bus: new Vue(),
       annualCheck: false,
       id: "",
       name: "",
@@ -199,30 +204,38 @@ export default {
       companyIdList: [],
       groupIdList: [],
       flagMessageRemind: 2,
-      flagEmailRemind: 2
+      flagEmailRemind: 2,
+      msgParam:{}
     };
   },
   created() {
-    apiSelect({ type: 1 }, this.orgList); //机构类型
-    apiSelect({ type: 2 }, this.memberList); // 会员类型
-    apiSelect({ type: 4 }, this.proList); // 性质
-
+    // apiSelect({ type: 1 }, this.orgList); //机构类型
+    // apiSelect({ type: 2 }, this.memberList); // 会员类型
+    // apiSelect({ type: 4 }, this.proList); // 性质
+    this.bus.$on("msgBox", data => {
+      this.msgParam = data;
+    });
     // 编辑状态
     if (!!this.$route.query.edit) {
       this.name = this.$route.query.annualName;
-      this.id = this.$route.query.annualID;
-      this.apiMsgMember({ type: 2, typeId: this.$route.query.annualID });
+      this.id = this.$route.query.annualID + '';
+      // this.apiMsgMember({ type: 2, typeId: this.$route.query.annualID });
       // 查看
+      this.$store.commit('setHeadTitle','编辑年审');
     } else if (this.$route.query.check) {
       this.annualCheck = true;
       this.name = this.$route.query.annualName;
-      this.id = this.$route.query.annualID;
-      this.apiMsgMember({ type: 2, typeId: this.$route.query.annualID });
+      this.id = this.$route.query.annualID +'';
+      // this.apiMsgMember({ type: 2, typeId: this.$route.query.annualID });
       // 新建
+      this.$store.commit('setHeadTitle','查看年审');
     } else {
-      console.log(this.$route);
-      this.apiMsgMember({}); // 显示会员组
+      // console.log(this.$route);
+      // this.apiMsgMember({}); // 显示会员组
     }
+  },
+  components: {
+    msgPush
   },
   methods: {
     // 编辑 展示 数据
@@ -294,7 +307,7 @@ export default {
     currentchange(i) {
       this.displayTable({
         pageIndex: i,
-        pageSize: pubParam.page.pageSize,
+        pageSize: pubParam.pageDialog.pageSize,
         ...this.queryIF()
       });
     },
@@ -361,17 +374,23 @@ export default {
          warnMES("年审名称必填");
          return
       } 
-      if(this.groupIdList.length==0 && this.companyIdList.length==0){
-         warnMES("邀请对象至少选一个");
-         return
+      if(this.msgParam && this.msgParam.companyIdList.length == 0){
+        warnMES("邀请对象至少选一个");
+        return
       }
+      // if(this.groupIdList.length==0 && this.companyIdList.length==0){
+      //    warnMES("邀请对象至少选一个");
+      //    return
+      // }
       
       this.$api.member
         .newAnnual({
           name: this.name,
           id: this.id,
-          memberGroupList:this.groupIdList.join(','),
-          memberList:this.companyIdList.join(',')
+          // memberGroupList:this.groupIdList.join(','),
+          // memberList:this.companyIdList.join(','),
+          memberGroupList:this.msgParam.groupIdList.join(','),
+          memberList:this.msgParam.companyIdList.join(',')
         })
         .then(res => {
           if (res.success) {
@@ -388,12 +407,25 @@ export default {
       
       this.$api.member
         .publicMsg({
-          companyIdList: this.companyIdList ? this.companyIdList : [],
-          flagMessageRemind: this.flagMessageRemind
-            ? this.flagMessageRemind
+          // companyIdList: this.companyIdList ? this.companyIdList : [],
+          // flagMessageRemind: this.flagMessageRemind
+          //   ? this.flagMessageRemind
+          //   : 2,
+          // flagEmailRemind: this.flagEmailRemind ? this.flagEmailRemind : 2,
+          // groupIdList: this.groupIdList ? this.groupIdList : [],
+          
+          companyIdList: this.msgParam.companyIdList
+            ? this.msgParam.companyIdList
+            : [],
+          flagMessageRemind: this.msgParam.flagMessageRemind
+            ? this.msgParam.flagMessageRemind
             : 2,
-          flagEmailRemind: this.flagEmailRemind ? this.flagEmailRemind : 2,
-          groupIdList: this.groupIdList ? this.groupIdList : [],
+          flagEmailRemind: this.msgParam.flagEmailRemind
+            ? this.msgParam.flagEmailRemind
+            : 2,
+          groupIdList: this.msgParam.groupIdList
+            ? this.msgParam.groupIdList
+            : [],
           typeId: id,
           type: 2
         })

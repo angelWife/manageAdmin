@@ -6,7 +6,6 @@ console.log("process")
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
@@ -14,7 +13,8 @@ module.exports = {
       '/': {
         // target: 'http://192.168.4.39:7778',李云山
         // target:"http://192.168.43.96:7778",
-        target:"http://47.97.18.42:7778",
+       target:"http://47.97.18.42:7778", //测试服务器
+       //target:"http://192.168.0.5:7778",//赵云本地
         ws: false,
         changeOrigin: true,
         pathRewrite: {

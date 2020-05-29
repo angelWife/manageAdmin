@@ -51,19 +51,22 @@
         </div>
         <!-- 手机名单 -->
         <div v-if="sendObjectType == 3">
-          <div class="flex" style="justify-content:space-between;width:320px" v-if="!check">
-            <span class="float-left">
-              <el-button size="mini">导入</el-button>
-              <span class="blue m-l-20 cur-pointer">手机名单模板下载</span>
-            </span>
-            <span class="float-right">
-              <el-button size="mini" @click="clearName">清空</el-button>
-            </span>
+          <div class="flex " style="min-width: 700px;" v-if="!check">
+            <div class="fileDown">
+              导入
+              <input ref="uploadFile" type="file"  @change="uploadFlie" class="fileIpt"/>
+            </div>
+            <div class="m-l-20">
+              <span class="blue cur-pointer" @click="downPhone">手机名单模板下载</span>
+            </div>
+            <div class="m-l-20">
+              <el-button size="mini " @click="clearName">清空</el-button>
+            </div>
           </div>
           <el-input
             :disabled="check"
             class="phoneText"
-            v-model="mobileList"
+            v-model="phoneList"
             type="textarea"
             :rows="10"
             @input="nameChange"
@@ -78,9 +81,9 @@
               <el-button size="mini">导入</el-button>
               <span class="blue m-l-20 cur-pointer">邮件名单模板下载</span>
             </span>
-            <span class="float-right">
+            <div class="float-right">
               <el-button size="mini" @click="clearName">清空</el-button>
-            </span>
+            </div>
           </div>
           <el-input
             :disabled="check"
@@ -251,6 +254,8 @@ import {
   flagList,
   deleteDuplic
 } from "../../utils/common";
+import {memberDownloadTemplate,blobDownloadFile } from "./../../http/moudules/common"
+import {apiShow} from "../../utils/commonApi";
 export default {
   props: {
     title: { type: String, required: true },
@@ -264,6 +269,7 @@ export default {
   },
   data() {
     return {
+      phoneList:'',
       msgForm: {
         msgContent: "",
         phone: ""
@@ -284,7 +290,11 @@ export default {
         msgck: false
       },
 
-      pageTen,
+      pageTen:{
+        total: 0,
+        pageSize: 10,
+        currentPage: 1
+      },
 
       orgList: [],
       proList: [],
@@ -293,13 +303,10 @@ export default {
       memberData: [],
       memberType: "",
       orgType: "",
-      name: "",
       scoialcode: "",
       busPro: "",
       admiTime: "",
-
       MsgMember: [],
-
       mobileList: "",
       mailList: "",
       msgUp: {
@@ -310,7 +317,6 @@ export default {
         mobileNumList: [],
         emailAddressList: []
       },
-
       platArr: [],
       mailArr: []
     };
@@ -324,7 +330,6 @@ export default {
   },
   mounted() {
     // 编辑
-    console.log(this.id)
     if (!!this.id) {
       this.apiMsgMember({ type: this.pushType, typeId: Number(this.id) });
       this.bus.$on("timeEdit", data => {
@@ -349,11 +354,32 @@ export default {
     }
   },
   methods: {
+
+    uploadFlie(event){
+      let params = new FormData();
+      params.append('file', event.target.files[0]);
+      this.leadingIn(params)
+      this.$refs.uploadFile.value = null; // 移除文件，可以保证上传同样的文件时，也会触发change事件
+    },
+
+    //导入
+    leadingIn(params){
+        apiShow("message", "leadingIn", params).then(res => {
+          this.phoneList = res
+        })
+    },
+    //手机名单下载
+    downPhone(){
+      memberDownloadTemplate('/admin/message/sms/downTemplate',{type:'download'}).then(rep=>{
+         blobDownloadFile(rep)
+      })
+    },
     passData() {
       this.bus.$emit("msgBox", this.msgUp);
     },
     timeData() {
-      this.bus.$emit("sendTime", this.send.sendTime);
+      console.log( this.send);
+      this.bus.$emit("sendTime", this.send);
     },
     objData() {
       this.bus.$emit("sendObj", this.sendObjectType);
@@ -377,6 +403,10 @@ export default {
               this.tags.map(v => {
                 this.msgUp.companyIdList.push(v.companyId);
               });
+              if(this.pushType ==2){//如果是年审管理进来邮箱和短信提醒都为勾选
+                data.flagMessage = data.flagMessage? data.flagMessage : 1;
+                data.flagEmail = data.flagEmail? data.flagEmail : 1;
+              }
               this.boolist = {
                 mailck: data.flagEmail == 1,
                 msgck: data.flagMessage == 1
@@ -418,20 +448,17 @@ export default {
       });
       this.checkArr = this.tags;
       this.passData();
-      console.log("删除后的companyId:", this.msgUp.companyIdList);
-      /*this.pMsgUp();*/
     },
     addMember() {
       this.addVisible = true;
-      pubParam.pageDialog.memberStatus = 1
-      this.displayTable(pubParam.pageDialog);
+      this.displayTable({ ...this.pageTen, memberStatus:1 });
     },
     clearTag() {
       this.checkArr = [];
       this.tags = [];
     },
     clearName() {
-      this.mailList = "";
+      this.phoneList = "";
       this.mobileList = "";
     },
     displayTable(params) {
@@ -457,7 +484,7 @@ export default {
     currentchange(i) {
       this.displayTable({
         pageIndex: i,
-        pageSize: pubParam.page.pageSize,
+        pageSize: this.pageTen.pageSize,
         ...this.queryIF()
       });
     },
@@ -475,7 +502,7 @@ export default {
       return query;
     },
     handleQuery() {
-      this.displayTable({ ...pubParam.pageDialog, ...this.queryIF() });
+      this.displayTable({ ...this.pageTen, ...this.queryIF() });
     },
     clear() {
       this.memberType = "";
@@ -529,7 +556,8 @@ export default {
     radioChange(label) {
       this.send.flagSendDelay = label;
       this.timeData();
-      console.log(label);
+      this.bus.$emit("flagSend", label);
+
     },
     memberChange(label) {
       this.sendObjectType = label;
@@ -586,5 +614,26 @@ export default {
   .el-select {
     width: calc(100% - 140px);
   }
+}
+
+.fileDown{
+  position: relative;
+  text-align: center;
+  color: #FFF;
+    background-color: #409EFF;
+    padding: 0;
+    font-size: 12px;
+    height: 30px;
+    width: 60px;
+    line-height: 30px;
+    border-radius: 3px;
+    margin-top: 5px;
+}
+.fileIpt{
+      position: absolute;
+      width: 100%;
+      left: 0;
+      height: 100%;
+      opacity: 0;
 }
 </style>

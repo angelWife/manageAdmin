@@ -13,11 +13,9 @@
             <el-button size="small" @click="handleEdit(scope.row,1)">查看</el-button>
           </span>
           <span v-else>
-            <el-button type="primary" size="small">提交</el-button>
+            <el-button type="primary" size="small" @click="singleYearCostSubmitAudit(scope.row)">提交</el-button>
             <el-button type="primary" size="small" @click="handleEdit(scope.row,2)">编辑标准</el-button>
-            <router-link to="/member/yearCost">
-                 <el-button size="small" >查看</el-button>
-            </router-link>
+            <el-button size="small" @click="handleEdit(scope.row,1)" >查看</el-button>
             <el-button size="small" @click="handleDelte(scope.row.orgId)">删除</el-button>
           </span>
         </template>
@@ -27,7 +25,7 @@
     <el-dialog title="编辑年费" :visible.sync="feeVisible" width="55%">
       <el-form :model="feeData" label-width="160px" :rules="feeDataRules" ref="feeDataForm">
         <el-form-item label="机构类型：" prop="type">
-          
+
           <el-select v-model="feeData.type"  placeholder="请选择">
             <el-option v-for="item in orgList" :key="item.id" :value="item.dictKey" :label="item.dictVal"></el-option>
           </el-select>
@@ -53,17 +51,17 @@
           ></el-date-picker>
         </el-form-item>`
         <el-form-item label="年费标准：" prop="standard">
-          <el-input
+          <el-input :change="zeroFee"
             v-model="feeData.standard"
             placeholder="请输入"
             autocomplete="off"
             style="width:80%"
           ></el-input>
-          <el-button type="primary" @click="autoCalc">自动计算</el-button>
+          <el-button type="primary" @click="autoCalc" :disabled="feeData.standard == 0">自动计算</el-button>
         </el-form-item>
         <el-form-item label="缴费通知书(未盖章)：">
           <img src="../../../../../static/smallCer.png" />
-          <el-button type="primary" style="vertical-align: top;">重新生成</el-button>
+          <el-button type="primary" style="vertical-align: top;" :disabled="feeData.standard == 0">重新生成</el-button>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -75,13 +73,13 @@
     <el-dialog title="查看年费" :visible.sync="lookfeeVisible" width="55%">
       <el-form :model="feeData" label-width="160px"  ref="feeDataForm">
         <el-form-item label="机构类型："  prop="type">
-          <el-select v-model="feeData.type"  disabled placeholder="请选择">
+          <el-select v-model="feeData.type" disabled placeholder="请选择">
             <el-option v-for="item in orgList" :key="item.id" :value="item.dictKey" :label="item.dictVal"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="业务规模(亿元)：" prop="dimension">
           <el-input
-            disabled
+            :disabled="true"
             v-model="feeData.dimension"
             placeholder="请输入"
             style="width:80%"
@@ -101,13 +99,13 @@
         </el-form-item>`
         <el-form-item label="年费标准：" prop="standard">
           <el-input
-            disabled
+            :disabled="true"
             v-model="feeData.standard"
             placeholder="请输入"
             autocomplete="off"
             style="width:80%"
           ></el-input>
-          
+
         </el-form-item>
         <el-form-item label="缴费通知书(未盖章)：">
           <img src="../../../../../static/smallCer.png" />
@@ -115,7 +113,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="lookfeeVisible = false">关闭</el-button>
-        
+
       </div>
     </el-dialog>
   </div>
@@ -130,7 +128,7 @@ import {
   selectType,
   dataTime
 } from "@/utils/common";
-import { yearCostAutoCalc } from "@/http/moudules/member";
+import { calcYearCost } from "@/http/moudules/member";
 import { format } from "@/utils/datetime";
 export default {
   props: {
@@ -172,10 +170,9 @@ export default {
         warnMES("请输入业务规模");
         return;
       }
-      yearCostAutoCalc({
+      calcYearCost({
         businessScale: this.feeData.dimension,
-        companyId: this.feeData.companyId,
-        year: this.feeData.year
+        memberId: this.feeData.companyId
       }).then(rep => {
         if (rep && rep.code == "200") {
           this.feeData.standard = rep.data || 0;
@@ -298,6 +295,36 @@ export default {
           return false;
         }
       });
+    },
+    zeroFee: function () {
+      console.log(this.feeData.standard)
+      if (this.feeData.standard == '0') {
+        warnMES('会费为0将不会生成缴费通知书');
+      }
+    },
+    singleYearCostSubmitAudit: function (row) {
+      this.$api.member
+        .yearCostSubmitAudit({
+          orgId: row.orgId
+        })
+        .then(res => {
+          if (res.success) {
+            successMES("提交成功");
+            this.displayCal(
+              {
+                ...pubParam.page,
+                checkStatus: this.status,
+                payFeeId: Number(this.$route.query.payFeeId)
+              },
+              this.approData
+            );
+          } else {
+            warnMES(res.message);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
     }
   }
 };

@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <el-form :model="query"  label-position="top"> 
+    <el-form :model="query"  label-position="top">
       <el-row style="margin-bottom:0px;">
         <el-col :span="8">
           <el-form-item label="活动名称：">
                 <el-input v-model="query.activityName" placeholder="请输入" size="small" class="input_style"></el-input>
           </el-form-item>
-         
+
         </el-col>
         <el-col :span="8">
            <el-form-item label="类型：">
@@ -19,21 +19,21 @@
               ></el-option>
             </el-select>
           </el-form-item>
-          
+
         </el-col>
         <el-col :span="8">
            <el-form-item label="活动起止日期：">
                 <el-date-picker
                   v-model="query.activityDate"
                   type="daterange"
-                   size="small" 
+                   size="small"
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   value-format="yyyy-MM-dd"
                 ></el-date-picker>
           </el-form-item>
-          
+
         </el-col>
       </el-row>
       <el-row style="margin-bottom:0px;">
@@ -41,14 +41,14 @@
            <el-form-item label="活动地点：">
                 <el-input v-model="query.address" placeholder="请输入"  size="small"  class="input_style"></el-input>
           </el-form-item>
-         
-      
+
+
         </el-col>
         <el-col :span="8">
             <el-form-item label="报名截止日期：">
               <el-date-picker
                 v-model="query.enrolDate"
-                 size="small" 
+                 size="small"
                 type="daterange"
                 range-separator="至"
                 start-placeholder="开始日期"
@@ -56,7 +56,7 @@
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
-       
+
         </el-col>
         <el-col :span="8">
            <el-form-item label="报名状态：">
@@ -69,7 +69,7 @@
               ></el-option>
             </el-select>
             </el-form-item>
-         
+
         </el-col>
       </el-row>
     </el-form>
@@ -80,7 +80,7 @@
     <el-table :data="tableData" style="width: 100%;margin-top:20px" empty-text="没有符合条件的活动报名">
       <el-table-column prop="activityName" label="活动名称" max-width="350">
         <template slot-scope="scope">
-          <span class="tt-name" @click="getMore(scope.row.activityId)">{{scope.row.activityName}}</span>
+          <span class="tt-name" @click="getMore(scope.row)">{{scope.row.activityName}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="activityTypeVal" label="类型"></el-table-column>
@@ -175,7 +175,7 @@ export default {
         activityName: this.query.activityName,
         activityType: this.query.activityType,
         activityDateFrom:   this.query.activityDate && this.query.activityDate.length > 0 ? this.query.activityDate[0] : '' ,
-        activityDateTo:this.query.activityDate &&  this.query.activityDate.length > 0 ? this.query.activityDate[1] : '' , 
+        activityDateTo:this.query.activityDate &&  this.query.activityDate.length > 0 ? this.query.activityDate[1] : '' ,
         address: this.query.address,
         enrolDateFrom:this.query.enrolDate && this.query.enrolDate.length > 0 ? this.query.enrolDate[0] : '' ,
         enrolDateTo: this.query.enrolDate && this.query.enrolDate.length > 0 ? this.query.enrolDate[1] : '' ,
@@ -208,16 +208,16 @@ export default {
     },
 
     handleReg(row) {
-      this.$router.push("/member/registerInfo");
       sessionStorage.setItem("activityInfo", JSON.stringify(row));
+      this.$router.push("/member/registerInfo");
     },
     handleCheck(row) {
-      this.$router.push("/member/registerInfo?actType=check");
       sessionStorage.setItem("activityInfo", JSON.stringify(row));
+      this.$router.push("/member/registerInfo?actType=check");
     },
-    getMore(id) {
-      console.log(id);
-      this.$router.push({ path: "/member/eventPreview", query: { rowId: id } });
+    getMore(row) {
+      sessionStorage.setItem("activityInfo", JSON.stringify(row));
+      this.$router.push({ path: "/member/eventPreview", query: { rowId: row.activityId } });
     }
   },
   components: {}

@@ -18,9 +18,9 @@
     </el-row>
     <el-row class="btn_content">
       <el-col :span="12">
-        <el-button type="primary">导出模板</el-button>
-        <el-button type="primary">导入</el-button>
-        <el-button type="primary">批量提交</el-button>
+        <el-button type="primary" @click="exportTemplate">导出模板</el-button>
+        <el-button type="primary" @click="importInvoice = true">导入</el-button>
+        <el-button type="primary" @click="batchYearCostSubmitAudit">批量提交</el-button>
       </el-col>
       <el-col :span="12" class="text_right">
         <el-button type="primary" @click="handleQuery()">查询</el-button>
@@ -69,6 +69,26 @@
         ></calcTable>
       </el-tab-pane>
     </el-tabs>
+    <el-dialog :visible.sync="importInvoice" width="450px" title="导入数据">
+      <div class="content">
+        <el-upload
+          class="upload-box"
+          :multiple="false"
+          ref="uploadApplication"
+          :action="global.baseUrl+global.commonFileUploadUrl"
+          :http-request="uploadFile"
+          :show-file-list = "false">
+          <el-button size="small" icon="el-icon-upload2" :disabled="check">上传文件</el-button>
+        </el-upload>
+        <div style="margin-left:10px; margin-top: 10px;" v-if="filePath">
+          <span style="margin-right:10px;">{{fileName}}</span>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+            <el-button @click="importInvoice = false">取 消</el-button>
+            <el-button type="primary" :disabled="!filePath" @click="importOkay">开始导入</el-button>
+        </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -87,10 +107,15 @@ import {
   mapTime,
   getDateTime
 } from "../../utils/common";
+import {apiShow} from "../../utils/commonApi";
+import {uploadFile} from "../../http/moudules/common";
 
 export default {
   data() {
     return {
+      importInvoice: false,
+      filePath: '',
+      fileName: '',
       activeName: "all",
       tabName: "",
       orgnize: "",
@@ -222,6 +247,56 @@ export default {
     clear() {
       this.orgnize = "";
       this.orgType = "";
+    },
+    exportTemplate: function () {
+      apiShow("member", "exportYearCostTemplate", {}).then(resolve => {
+        location.href = resolve.fullPath
+      });
+    },
+    uploadFile(obj){//上传文件
+      if( Math.floor( obj.file.size/(1024*1024) ) > 10 ){
+        warnMES('最多上传10M')
+        return
+      }
+      let formData = new FormData();
+      formData.append('file',obj.file);
+      let url="",method="";
+      let that = this;
+      uploadFile(formData,url,method).then((res=>{
+        if(res && res.code=='200' && res.data){
+          successMES('上传成功');
+          that.filePath = res.data.path;
+          that.fileName = obj.file.name;
+        }
+      })).catch(error=>{
+
+      })
+    },
+    importOkay: function () {
+      let that = this
+      this.$api.member.importYearCost({filePath: this.filePath, payFeeId: Number(this.$route.query.payFeeId)}).then(res => {
+        if (res.success) {
+          that.filePath = ''
+          that.fileName = ''
+          that.importInvoice = false
+          successMES('导入成功');
+          that.handleQuery()
+        }
+      }).catch(err => {
+        console.error(err)
+      })
+    },
+    batchYearCostSubmitAudit: function () {
+      let that = this
+      //orgId，多个,隔开
+      this.$api.member.yearCostSubmitAudit({orgId: ''}).then(res => {
+        if (res.success) {
+          successMES('批量提交成功');
+          that.handleQuery()
+        }
+      }).catch(err => {
+        console.error(err)
+      })
     }
   },
   components: {

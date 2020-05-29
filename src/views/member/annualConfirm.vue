@@ -3,7 +3,7 @@
     <div class="annualName">
       <span>年审名目：</span>
       <div class="confirm">
-        <el-select v-model="name" placeholder="请选择" size="medium">
+        <el-select v-model="name" size="medium">
           <el-option
             v-for="item in nameList"
             :key="item.id"
@@ -32,7 +32,7 @@ import {yearApproval,yearApprovalSubmit} from "../../http/moudules/member"
 import {
   warnMES,
   successMES,
-  
+
 } from "../../utils/common";
 export default {
   data() {
@@ -52,7 +52,9 @@ export default {
     // }
     yearApproval().then(rep=>{
         if(rep && rep.code=='200'){
+          console.log(res);
            this.nameList=rep.data || []
+           this.name =  this.nameList[0]
         }
     })
   },
@@ -60,7 +62,7 @@ export default {
       onSubmit(){
           if(!this.name){
             warnMES("请选择年审项目");
-            return    
+            return
           }
           yearApprovalSubmit({id:this.name}).then(rep=>{
                if(rep && rep.code=='200'){

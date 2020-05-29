@@ -79,14 +79,14 @@
               class="comTable"
               empty-text="没有符合条件的短信发送任务">
       <el-table-column prop="messageContent"
-                       show-overflow-tooltip="true"
+
                        label="短信内容"
                        class-name="textEllipsis"></el-table-column>
       <el-table-column prop="sendObjectTypeVal"
                        label="对象类型"
                        width="100px"></el-table-column>
       <el-table-column prop="objectNameList"
-                       show-overflow-tooltip="true"
+
                        label="发送对象"
                        class-name="textEllipsis">
         <template slot-scope="scope">{{scope.row.objectNameList}}</template>
@@ -126,10 +126,11 @@
             <el-button @click="handlePublish(scope.row.id)"
                        type="primary"
                        size="small">发布</el-button>
+            <el-button @click="handleCopy(scope.row.id)"
+                                  size="small">复制</el-button>
             <el-button @click="handleDelete(scope.row.id)"
                        size="small">删除</el-button>
-            <el-button @click="handleCopy(scope.row.id)"
-                       size="small">复制</el-button>
+
           </span>
           <span v-if="scope.row.msgStatus == 3">
             <el-button @click="handleMonitor(scope.row)"
@@ -144,9 +145,7 @@
             <el-button @click="handleEdit(scope.row.id)"
                        type="primary"
                        size="small">编辑</el-button>
-            <el-button @click="handleMonitor(scope.row)"
-                       type="primary"
-                       size="small">发送监控</el-button>
+
             <el-button @click="handleCopy(scope.row.id)"
                        size="small">复制</el-button>
             <el-button @click="handleDelete(scope.row.id)"
@@ -198,7 +197,6 @@ export default {
       tableData: [],
       pageAll: { ...pageTwenty },
       pageLocation: 1, // 页数
-
       minitorId: 0, // 监控ID
 
       key: 0
@@ -211,7 +209,6 @@ export default {
     apiDic("objType", {}).then(reslove => {
       this.objList = reslove;
     });
-
     this.displayQuery();
   },
   methods: {
@@ -235,6 +232,7 @@ export default {
         sendObjType: this.query.sendObjType
       };
       apiShow("message", "smsMessage", { ...param, ...query }).then(reslove => {
+        console.log(reslove);
         this.tableData = reslove.rows;
         this.pageAll = backPage(reslove);
       });
@@ -261,9 +259,6 @@ export default {
       this.$router.push({ path: "/newsCenter/newsAdd", query: { add: true } });
     },
     handleEdit(id) {
-      /*if(id){
-
-      }*/
       this.$router.push({
         path: "/newsCenter/newsAdd",
         query: {
@@ -317,33 +312,34 @@ export default {
         "下架成功"
       );
     },
+
+    //复制
     handleCopy(id) {
       this.$confirm("是否复制短信发送任务？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          this.$api.message
-            .smsCopy({ id: id })
-            .then(res => {
-              if (res.success) {
+      }).then(() => {
+          // this.$api.message
+          //   .smsCopy({ id: id })
+          //   .then(res => {
+          //     if (res.success) {
                 apiOperate(
                   "message",
-                  "smsPublish",
-                  { messageId: res.data, publishType: 2 },
+                   "smsCopy",
+                  { id: id },
                   () => {
                     this.displayQuery();
                   },
                   "复制成功"
                 );
-              } else {
-                warnMES(res.message);
-              }
-            })
-            .catch(err => {
-              console.error(err);
-            });
+            //   } else {
+            //     warnMES(res.message);
+            //   }
+            // })
+            // .catch(err => {
+            //   console.error(err);
+            // });
         })
         .catch(() => {});
     },

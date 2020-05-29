@@ -3,18 +3,24 @@
     <progSchedule :proData="proData"></progSchedule>
     <div v-if="dataType == 9 && details.newData">
       <feeCheck v-if="processName=='会员缴费'" :vipCost="vipCost"></feeCheck>
-      <feeStamp v-if="processName=='确认书盖章'" basicTitle="会费盖章" :vipCost="vipCost"></feeStamp>
-      <bascInfo basicTitle="会员信息"
-                :changeData="details.newData.memberVo"
-                :changeTypes="changeTypes"></bascInfo>
-      <feeInfo v-if="processName=='缴费确认'" basicTitle="缴费信息" :vipCost="vipCost"></feeInfo>          
-      <myBotton v-if="type == 'hasOper'"
-                btnLeft="退回初审"
-                btnRight="审批通过"
-                @rejectCheck="rejectCheck"
-                @confirmCheck="confirmCheck"></myBotton>
+      <feeStamp
+        v-if="processName=='确认书盖章'"
+        basicTitle="会费盖章"
+        :vipCost="vipCost"
+        @openStamp="openStamp"
+      ></feeStamp>
+      <bascInfo basicTitle="会员信息" :changeData="details.newData.memberVo" :changeTypes="changeTypes"></bascInfo>
+      <feeInfo v-if="processName=='缴费确认'" basicTitle="缴费信息" :vipCost="vipCost"></feeInfo>
+      <myBotton
+        v-if="type == 'hasOper'"
+        btnLeft="退回初审"
+        btnRight="审批通过"
+        @rejectCheck="rejectCheck"
+        @confirmCheck="confirmCheck"
+      ></myBotton>
     </div>
-    <div v-else-if="
+    <div
+      v-else-if="
         dataType == 1 ||
           dataType == 2 ||
           dataType == 3 ||
@@ -25,56 +31,62 @@
           dataType == 8 ||
           dataType == 15 ||
           dataType == 16
-      ">
-      <isChange v-if="dataType == 4"
-                :change="true"></isChange>
-      <bascInfo basicTitle="变更情况"
-                :changeData="details.newData.memberVo"
-                :changeTypes="changeTypes"></bascInfo>
+      "
+    >
+      <isChange v-if="dataType == 4" :change="true"></isChange>
+      <bascInfo basicTitle="变更情况" :changeData="details.newData.memberVo" :changeTypes="changeTypes"></bascInfo>
       <explain></explain>
-      <myBotton v-if="type == 'hasOper'" btnLeft="退回初审"
-                btnRight="审批通过"></myBotton>
+      <myBotton v-if="type == 'hasOper'" btnLeft="退回初审" btnRight="审批通过"></myBotton>
     </div>
     <div v-else-if="dataType == 10 || dataType == 11">
       <!-- <isChange v-if="dataType==7" :change="true"></isChange> -->
-      <memberChange v-if="details.newData"
-                    :newData="details.newData.memberRepInfoVo"
-                    :oldData="details.oldData.memberRepInfoVo"></memberChange>
-      <footNote v-if="type == 'hasOper'"
-                :note.sync="formVO.note"></footNote>
+      <memberChange
+        v-if="details.newData"
+        :newData="details.newData.memberRepInfoVo"
+        :oldData="details.oldData.memberRepInfoVo"
+      ></memberChange>
+      <footNote v-if="type == 'hasOper'" :note.sync="formVO.note"></footNote>
       <explain v-else></explain>
-      <myBotton v-if="type == 'hasOper'"
-                btnLeft="退回初审"
-                btnRight="审批通过"
-                @rejectCheck="rejectCheck"
-                @confirmCheck="confirmCheck"></myBotton>
+      <myBotton
+        v-if="type == 'hasOper'"
+        btnLeft="退回初审"
+        btnRight="审批通过"
+        @rejectCheck="rejectCheck"
+        @confirmCheck="confirmCheck"
+      ></myBotton>
     </div>
     <div v-else-if="dataType == 13">
-     
       <feeStamp basicTitle="年费盖章" v-if="processName=='缴费签章'" :vipCost="vipCost"></feeStamp>
-       <feeInfo basicTitle="缴费信息" v-else :vipCost="vipCost"></feeInfo>
-       <myBotton v-if="type == 'hasOper'"
-                btnLeft="退回初审"
-                btnRight="审批通过"
-                @rejectCheck="rejectCheck"
-                @confirmCheck="confirmCheck"></myBotton>
+      <feeInfo basicTitle="缴费信息" v-else :vipCost="vipCost"></feeInfo>
+      <myBotton
+        v-if="type == 'hasOper'"
+        btnLeft="退回初审"
+        btnRight="审批通过"
+        @rejectCheck="rejectCheck"
+        @confirmCheck="confirmCheck"
+      ></myBotton>
     </div>
     <div v-else-if="dataType == 12">
       <activity-info :mydata="details.newData.activityInfoVo" :lay="''"></activity-info>
-      <myBotton v-if="type == 'hasOper'"
-                btnLeft="退回初审"
-                btnRight="审批通过"
-                @confirmCheck="confirmCheck"></myBotton>
+      <myBotton
+        v-if="type == 'hasOper'"
+        btnLeft="退回初审"
+        btnRight="审批通过"
+        @confirmCheck="confirmCheck"
+      ></myBotton>
     </div>
     <div v-else-if="dataType == 14">
       <footNote v-if="type == 'hasOper'"></footNote>
       <exitPaper></exitPaper>
       <footNoteCheck v-if="type != 'hasOper'"></footNoteCheck>
-      <myBotton v-if="type == 'hasOper'"
-                btnLeft="退回初审"
-                btnRight="审批通过"
-                @confirmCheck="confirmCheck"></myBotton>
+      <myBotton
+        v-if="type == 'hasOper'"
+        btnLeft="退回初审"
+        btnRight="审批通过"
+        @confirmCheck="confirmCheck"
+      ></myBotton>
     </div>
+    <stampDialog :diaologVO="diaologVO" @close="closeDialog"></stampDialog>
   </div>
 </template>
 <script>
@@ -92,7 +104,8 @@ import feeCheck from "./component/fee/feeCheck";
 import feeStamp from "./component/fee/feeStamp";
 import isChange from "./component/isChange";
 import myBotton from "./component/Botton";
-import {formatWithSeperator as formatTime} from '@/utils/datetime.js'
+import stampDialog from "@/components/stampSgin/signature";
+import { formatWithSeperator as formatTime } from "@/utils/datetime.js";
 export default {
   props: {},
   data() {
@@ -109,15 +122,20 @@ export default {
       type: "",
       number: "",
       taskId: "",
-      companyId:'',
-      proData:[],//流程
-      processName:'',
-      vipCost:{}
+      companyId: "",
+      proData: [], //流程
+      processName: "",
+      vipCost: {},
+      diaologVO: {
+        type: "",
+        filePath: "",
+        show: false
+      }
     };
   },
   created() {
     this.dataType = this.$store.state.manage.passVal.dataType;
-    console.log(this.dataType)
+    console.log(this.dataType);
     this.type = this.$store.state.manage.passVal.type;
     this.number = this.$store.state.manage.passVal.number;
     this.taskId = this.$store.state.manage.passVal.taskId;
@@ -129,7 +147,10 @@ export default {
         this.$store.commit("setContainerFoot", true);
       }
       this.getProcessList();
-      this.$store.commit('setHeadTitle',this.$store.state.manage.passVal.title)
+      this.$store.commit(
+        "setHeadTitle",
+        this.$store.state.manage.passVal.title
+      );
       // this.initPageInfo();
     });
 
@@ -146,26 +167,45 @@ export default {
         }
       });
     },
-    getProcessList(){
-      let self = this
-      this.$api.manage.manageProcessList({serialNumber:self.number}).then(res=>{
-        if(res.success){
-          let list =  res.data;
-          self.processName= list[list.length-1].name;
-          if(self.processName=='年费核对'||self.processName=='缴费签章'||self.processName=='年费缴纳'||self.processName=='缴纳确认'||self.processName=='会员缴费'||self.processName=='确认书盖章'||self.processName=='缴费确认'||self.processName=='认定通过'){
-             this.$api.manage.getVipCost({companyId:self.companyId}).then(res2=>{
-               if(res2.success){
-                 let vipCost = res2.data
-                 vipCost.dateCycleStart=formatTime(vipCost.dateCycleStart,'-')
-                 vipCost.dateCycleEnd=formatTime(vipCost.dateCycleEnd,'-')
-                 self.vipCost = vipCost
-               }
-             })
+    getProcessList() {
+      let self = this;
+      this.$api.manage
+        .manageProcessList({ serialNumber: self.number })
+        .then(res => {
+          if (res.success) {
+            let list = res.data;
+            self.processName = list[list.length - 1].name;
+            if (
+              self.processName == "年费核对" ||
+              self.processName == "缴费签章" ||
+              self.processName == "年费缴纳" ||
+              self.processName == "缴纳确认" ||
+              self.processName == "会员缴费" ||
+              self.processName == "确认书盖章" ||
+              self.processName == "缴费确认" ||
+              self.processName == "认定通过"
+            ) {
+              this.$api.manage
+                .getVipCost({ companyId: self.companyId })
+                .then(res2 => {
+                  if (res2.success) {
+                    let vipCost = res2.data;
+                    vipCost.dateCycleStart = formatTime(
+                      vipCost.dateCycleStart,
+                      "-"
+                    );
+                    vipCost.dateCycleEnd = formatTime(
+                      vipCost.dateCycleEnd,
+                      "-"
+                    );
+                    self.vipCost = vipCost;
+                  }
+                });
+            }
+            self.proData = list;
+            self.initPageInfo();
           }
-          self.proData = list;
-          self.initPageInfo();
-        }
-      })
+        });
     },
     confirmCheck(res) {
       let self = this;
@@ -218,6 +258,12 @@ export default {
           self.changeTypes = changeTypes;
         }
       });
+    },
+    openStamp(obj) {
+      this.diaologVO = obj;
+    },
+    closeDialog(){
+        this.diaologVO.show = false
     }
   },
   components: {
@@ -233,7 +279,8 @@ export default {
     feeInfo,
     isChange,
     activityInfo,
-    myBotton
+    myBotton,
+    stampDialog
   }
 };
 </script>

@@ -75,14 +75,16 @@
       ref="com"
       empty-text="没有符合条件的活动"
     >
-      <el-table-column prop="name" label="活动名称" max-width="300"></el-table-column>
+      <el-table-column prop="name" show-overflow-tooltip label="活动名称" min-width="200">
+        <template slot-scope="scope" >{{scope.row.name}}</template>
+      </el-table-column>
       <el-table-column prop="activityTypeVal" label="类型"></el-table-column>
       <el-table-column label="活动起止日期" width="200">
         <template
           slot-scope="scope"
         >{{format(scope.row.activityDateStart)}}到{{format(scope.row.activityDateEnd)}}</template>
       </el-table-column>
-      <el-table-column prop="address" label="活动地点"></el-table-column>
+      <el-table-column prop="address" label="活动地点" min-width="150"></el-table-column>
       <el-table-column label="报名截止日期" width="200">
         <template
           slot-scope="scope"
@@ -114,6 +116,7 @@
             <el-button @click="handleMonitor(scope.row.id)" type="primary" size="small">发送监控</el-button>
             <el-button @click="handleCheck(scope.row)" size="small">查看</el-button>
             <el-button @click="handleCopy(scope.row)" size="small">复制</el-button>
+            <el-button @click="handleDelete(scope.row)" size="small">删除</el-button>
           </span>
           <!-- 如果是已审批状态并且上架 -->
           <span v-if="scope.row.checkStatus==4 && scope.row.publishStatus==2">
@@ -122,6 +125,7 @@
             <el-button @click="handleMonitor(scope.row.id)" type="primary" size="small">发送监控</el-button>
             <el-button @click="handleCheck(scope.row)" size="small">查看</el-button>
             <el-button @click="handleCopy(scope.row)" size="small">复制</el-button>
+            <el-button @click="handleDelete(scope.row)" size="small">删除</el-button>
           </span>
           <!-- <span v-if="scope.row.publishStatus==1">
             <el-button type="primary" size="small" @click="handlePublish(scope.row)">发布</el-button>
@@ -546,4 +550,9 @@ export default {
   //   width: calc(100% - 20px);
   // }
 }
+</style>
+<style lang="less">
+  .el-tooltip__popper.is-dark{
+    width:300px;
+  }
 </style>

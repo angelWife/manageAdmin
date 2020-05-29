@@ -80,8 +80,8 @@ function WebOffice2015() {
 	// *****************************************************************************************************************************
 	// 对外公共属性
 	this.WebUrl = ""; 						// 服务器应用程序Url路径 				
-	this.RecordID = ""; 					// 文档的纪录号					
-	this.Template = ""; 					// 模板编号					
+	this.RecordID = "324923100"; 					// 文档的纪录号					
+	this.Template = "10214563698"; 					// 模板编号					
 	this.SingleFileName = "";
 	this.FileName = ""; 					// 文档名称					
 	this.UserName = ""; 					// 操作文档用户名				
@@ -110,7 +110,9 @@ function WebOffice2015() {
 	this.DelFileAfterSave = true;			// 保存文档后删除该目录中的文档   true：删除  false：不删除  默认：true
 	this.Charset = true;					//后台数据编码,true为utf-8编码,false为gb2312编码
 	// ******************************************************************************************************************************
-
+    this.BizData={};
+    this.TOKEN='';
+    this.CHANNEL='Management';
 	// ******************************************************************************************************************************//
 	// ---------------------------------------------------对外接口-------------------------------------------------------------------//
 
@@ -146,7 +148,7 @@ function WebOffice2015() {
 		let httpclient = this.obj.Http; // 设置http对象
 
 
-		this.FileName = downloadLink;
+		// this.FileName = downloadLink;
 		this.GetFileType(downloadLink);
 		this.GetSingleFileName(downloadLink);
 		if (httpclient.Open(this.HttpMethod.Get, this.ServerUrl + downloadLink, false)) {
@@ -226,12 +228,10 @@ function WebOffice2015() {
 	this.WebOpen3 = function (downloadLink) {
 		this.Status = "成功";
 		const httpclient = this.obj.Http; // 设置http对象
-
+		console.log(httpclient)
 		this.ShowMenuBar(this.ShowMenu);  //控制菜单栏是否可以显示
 		this.NewShowToolBar(this.ShowToolBar); //控制Office工具栏和自定义工具栏
-
-
-		this.GetFileType(this.FileName);
+		this.GetFileType(this.FileType);
 		this.GetSingleFileName(this.FileName);
 		//alert("want to download: " + downloadLink);
 		if (httpclient.Open(this.HttpMethod.Get, downloadLink, false)) {
@@ -458,7 +458,7 @@ function WebOffice2015() {
 	}
 
 	this.WebSaveBase64 = function () {
-		//alert("this.FileName = " + this.FileName);
+        //alert("this.FileName = " + this.FileName);
 		const rands = Math.round(Math.random() * 1000000);
 		const fileUpPathName = this.getFilePath() + rands + this.FileName;
 
@@ -511,9 +511,9 @@ function WebOffice2015() {
 			return false;
 		}
 
-		// var jsWebOffice = this;
-		// var officeobj = this.obj;
-		// var filename = this.FileName;
+		// let jsWebOffice = this;
+		// let officeobj = this.obj;
+		// let filename = this.FileName;
 
 		//	    xmlhttp.onreadystatechange = function()
 		//	    {  
@@ -531,7 +531,7 @@ function WebOffice2015() {
 		const postdata = "OPTION=SAVEFILE&FILENAME=" + this.FileName + "&FILETYPE=" + this.FileType + "&RECORDID=" + this.RecordID + "&EDITTYPE=" + this.EditType
 			+ "&TEMPLATE=" + this.Template + "&SUBJECT=" + this.Subject + "&AUTHOR=" + this.Author + "&BASE64FILE=" + newBase64;
 		//alert("aaa.length = " +  aaa.length);
-		xmlhttp.open("POST", "../../AJAXServer?name=", false);   // false 是同步
+		xmlhttp.open("POST", "http://192.168.31.86:7778/common1/signature/upload?name=", false);   // false 是同步
 		//xmlhttp.setRequestHeader("Content-Length",aaa.length);
 		xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");   //POST 必须要写这句，GET不用写
 		//发送数据，开始和服务器进行交互。  
@@ -546,7 +546,8 @@ function WebOffice2015() {
 
 	/* 保存文件 */		//（该功能已完整实现）
 	this.WebSave = function () {
-		this.Status = "";
+        this.Status = "";
+        let mSavePath = ''
 		const httpclient = this.obj.Http; // 设置http对象
 		httpclient.Clear();
 		this.WebSetMsgByName("USERNAME", this.UserName);
@@ -561,7 +562,7 @@ function WebOffice2015() {
 		this.WebSetMsgByName("FILENAME", this.FileName); // 加载FileName
 		if (this.WebSetAllowEmpty()) {
 			this.GetSingleFileName(this.FileName);
-			let mSavePath = this.getFilePath() + Math.random() * 100000 + this.SingleFileName;
+			mSavePath = this.getFilePath() + Math.random() * 100000 + this.SingleFileName;
 			let mSaveResult = this.WebSaveLocalFile(mSavePath);
 			if (!(mSaveResult == 0)) {
 				this.Status = "保存本地文档失败！错误代码为：" + mSaveResult;
@@ -1064,13 +1065,26 @@ function WebOffice2015() {
 	}
 
 	/* 将本地文件上传到服务器上，并保存为远程文件  */
-	this.WebPutFile = function (LocalFile, RemoteFile) {
-		let httpclient = this.obj.Http; 					//设置http对象 
-		httpclient.Clear();
-		this.WebSetMsgByName("REMOTEFILE", RemoteFile); 	//取得远程文件名称
-		this.WebSetMsgByName("OPTION", "PUTFILE");     		//发送请求LOADFILE
+    this.WebPutFile = function (LocalFile, RemoteFile) {
+        let httpclient = this.obj.Http; 					//设置http对象 
+        let mSavePath = ''
+        httpclient.Clear();
+        if (this.WebSetAllowEmpty()) {
+			this.GetSingleFileName(this.FileName);
+			mSavePath = this.getFilePath() + Math.random() * 100000 + this.SingleFileName;
+            this.WebDelLocalFile(mSavePath);
+            let SaveFalg = this.obj.Save(mSavePath, eval("this.DocTypeValue." + this.FileType.substring(1).toUpperCase()),true);
+            
+		}else{
+            
+        }
+        this.WebSetMsgByName("REMOTEFILE", this.SingleFileName); 	//取得远程文件名称
+        this.WebSetMsgByName("OPTION", "PUTFILE");     		//发送请求LOADFILE   PUTFILE
+        this.WebSetMsgByName("BizData", JSON.stringify(this.BizData));
+        this.WebSetMsgByName("TOKEN", this.TOKEN);
+        this.WebSetMsgByName("CHANNEL", this.CHANNEL);
 		httpclient.AddForm("FormData", this.GetMessageString());
-		httpclient.AddFile("FileData", LocalFile);    		//需要上传的文件 无法判断本地文档是否存在，导致上传时找不到文档情况下会生成空白文档)
+        httpclient.AddFile("FileData", mSavePath);    		//需要上传的文件 无法判断本地文档是否存在，导致上传时找不到文档情况下会生成空白文档)
 		this.WebClearMessage();
 		httpclient.ShowProgressUI = false;           		//隐藏进度条
 		if (httpclient.Open(this.HttpMethod.Post, this.WebUrl, false)) //true 异步方式 false同步
@@ -1179,14 +1193,15 @@ function WebOffice2015() {
 		}*/
 
 	this.WebSaveLocal = function () {
-		let fileNamePath;
+        let fileNamePath;
+        let exts = ''
 		if (this.FileType == ".doc" || this.FileType == ".docx") {
-			let exts = "所有支持的文件格式(*.docx;*.doc)|*.docx;*.doc";
+			exts = "所有支持的文件格式(*.docx;*.doc)|*.docx;*.doc";
 			exts += "|Word 文档(*.docx)|*.docx";
 			exts += "|Word 97-2003文档(*.doc)|*.doc";
 			exts += "||";
 		} else if (this.FileType == ".xls" || this.FileType == ".xlsx") {
-			let exts = "所有支持的文件格式(*.xlsx;*.xls)|*.xlsx;*.xls";
+			exts = "所有支持的文件格式(*.xlsx;*.xls)|*.xlsx;*.xls";
 			exts += "|Excel 工作簿(*.xlsx)|*.xlsx";
 			exts += "|Excel 97-2003工作簿(*.xls)|*.xls";
 			exts += "||";
@@ -1219,14 +1234,15 @@ function WebOffice2015() {
 	/* 文档保存到本地 */
 	this.WebSaveLocalFile = function (FileName) {
 		try {
-			this.WebDelLocalFile(FileName);
+            this.WebDelLocalFile(FileName);
+            let saveState = ''
 			if (this.FileType != ".pdf") {
-				let saveState = this.Save(FileName, this.getOfficeVersion(), this.FileType.substring(1).toUpperCase());
+				saveState = this.Save(FileName, this.getOfficeVersion(), this.FileType.substring(1).toUpperCase());
 			} else {
-				let saveState = this.Save(FileName, 0, this.FileType.substring(1).toUpperCase());
-			}
+				saveState = this.Save(FileName, 0, this.FileType.substring(1).toUpperCase());
+            }
+            this.Status = "保存本地文件成功";
 			return saveState;
-			this.Status = "保存本地文件成功";
 		} catch (e) {
 			this.Status = e.description;
 			this.Status = "保存本地文档失败";
@@ -1916,7 +1932,7 @@ function WebOffice2015() {
 
 	/* 根据密码解除保护 */
 	this.VBAUnProtectDocument = function (docType, password) {
-	    docType = this.getDocType(this.FileType);
+		docType = this.getDocType(this.FileType);
 		if (docType == this.DocType.WORD) // word 保护模式
 		{
 			this.obj.ActiveDocument.Unprotect(password);
@@ -2153,7 +2169,7 @@ function WebOffice2015() {
 
 	/* 清理本地临时文件 */
 	this.ClearDirectory = function () {
-		var fs = this.obj.FileSystem;
+		let fs = this.obj.FileSystem;
 		/*老版本插件临时目录*/
 		fs.ClearDirectory(this.DownFilePath());
 		fs.ClearDirectory(this.getFilePath());  //此接口无返回值
@@ -2161,7 +2177,7 @@ function WebOffice2015() {
 
 	/* 删除本地文件 */
 	this.WebDelLocalFile = function (FileName) {
-		var fs = this.obj.FileSystem;
+		let fs = this.obj.FileSystem;
 		fs.DeleteFile(FileName);
 	}
 
@@ -2186,8 +2202,8 @@ function WebOffice2015() {
 
 	/* 设置临时目录路径(DOWN) */
 	this.DownFilePath = function () {
-		var fs = this.obj.FileSystem;					// 获取file对象
-		var NewDownFilePath;
+		let fs = this.obj.FileSystem;					// 获取file对象
+		let NewDownFilePath;
 		if (this.HiddenDirectory)						//将文档保存在隐藏目录
 		{
 			NewDownFilePath = fs.GetSpecialFolderLocation(0x20) + this.DOWN
@@ -2201,8 +2217,8 @@ function WebOffice2015() {
 
 	/* 设置临时目录路径(UP) */
 	this.getFilePath = function () {
-		var fs = this.obj.FileSystem; 					// 获取file对象
-		var filePath;
+		let fs = this.obj.FileSystem; 					// 获取file对象
+		let filePath;
 		if (this.HiddenDirectory)						//将文档保存在隐藏目录
 		{
 			filePath = fs.GetSpecialFolderLocation(0x20) + this.UP
@@ -2220,7 +2236,7 @@ function WebOffice2015() {
 	/* 判断当前文档是否为空文档	*/
 	this.WebSetAllowEmpty = function () {
 		if (this.FileType == ".doc" || this.FileType == ".docx") {
-			var WebText = this.WebObject.ActiveDocument.Content.Text; //获取word文档内容
+			let WebText = this.WebObject.ActiveDocument.Content.Text; //获取word文档内容
 			if (WebText.length != 1) {
 				return true;   	//文档有内容
 			}
@@ -2244,7 +2260,7 @@ function WebOffice2015() {
 
 	/* 设置是否显示整个控件工具栏，包括OFFICE的工具栏 */
 	this.NewShowToolBar = function (mValue) {
-		var style = this.obj.Style;
+		let style = this.obj.Style;
 		switch (mValue) {
 			case false:
 			case 0: style.ShowCustomToolbar = false; style.ShowToolBars = true; break; 		//自定义工具栏隐藏，office工具栏显示
@@ -2257,7 +2273,7 @@ function WebOffice2015() {
 
 	/* 控制OFFICE另存为和保存功能 */
 	this.NewUIControl = function (mValue) {
-		var strCustomUI;
+		let strCustomUI;
 		switch (mValue) {
 			case false: strCustomUI = '<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="OnLoad" loadImage="LoadImage"> \
 			            <commands> \
@@ -2285,7 +2301,7 @@ function WebOffice2015() {
 	//ReviewNewComment新建批注
 	//ReviewDeleteCommentsMenu删除批注
 	this.ModifyReview = function () {
-		var strCustomUI = '<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="OnLoad" loadImage="LoadImage"> \
+		let strCustomUI = '<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="OnLoad" loadImage="LoadImage"> \
 	        <commands> \
 	    	    <command idMso="ReviewReviewingPaneMenu" enabled="false"/> \
 	    		<command idMso="ReviewShowMarkupMenu" enabled="false"/> \
@@ -2309,7 +2325,7 @@ function WebOffice2015() {
 
 	/* 禁用offcie小图标 */
 	this.OfficeFastUI = function () {
-		var strCustomUI = '<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="OnLoad" loadImage="LoadImage"> \
+		let strCustomUI = '<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="OnLoad" loadImage="LoadImage"> \
 	        <commands> \
  				<command idMso="PrintPreviewAndPrint" enabled="false" /> \
 	        	<command idMso="TabReviewWord" enabled="false" /> \
@@ -2327,7 +2343,7 @@ function WebOffice2015() {
 	//  startFromScratch不显示所有选项卡控制 false显示选项卡；true不显示选项卡
 	//TabReviewWord关闭视图工具栏//TabInsert关闭插入工具栏//TabHome关闭开始工具栏
 	this.WebSetRibbonUIXML = function () {
-		var strCustomUI = '<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="OnLoad" loadImage="LoadImage"> \
+		let strCustomUI = '<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui" onLoad="OnLoad" loadImage="LoadImage"> \
     		<ribbon startFromScratch="false"> \
     			<tabs> \
 		    		<tab idMso="TabReviewWord" visible="false" /> \
@@ -2390,7 +2406,7 @@ function WebOffice2015() {
 
 	/* 另存为pdf文件 */
 	this.SaveAsPdf = function (FilePath) {
-		var OfficeVersion = this.obj.ActiveDocument.Application.Version;
+		let OfficeVersion = this.obj.ActiveDocument.Application.Version;
 		if (OfficeVersion != "11.0") {
 			if ((this.FileType == ".doc") || (this.FileType == ".docx")
 				|| (this.FileType == ".wps")) {
@@ -2428,7 +2444,7 @@ function WebOffice2015() {
 		if ((this.FileType == ".doc") || (this.FileType == ".docx")
 			|| (this.FileType == ".wps")) {
 			try {
-				var ret = this.obj.ActiveDocument.SaveAs(FilePath, 8, false,
+				let ret = this.obj.ActiveDocument.SaveAs(FilePath, 8, false,
 					"", false, "", false, false, false, false, false, 0);
 				this.obj.ActiveDocument.Application.ActiveWindow.View.type = 3;//3是页面视图  
 				return true;
@@ -2462,9 +2478,9 @@ function WebOffice2015() {
 
 		// 按json格式输出
 		this.toString = function () {
-			var newArray = new Array(); // 存储json字符串
-			var i = 0;
-			for (var i in this.ObjArr) {
+			let newArray = new Array(); // 存储json字符串
+			let i = 0;
+			for (let i in this.ObjArr) {
 				newArray.push("'" + i + "':'" + this.ObjArr[i] + "'");
 			}
 			return "{" + newArray + "}";
@@ -2477,7 +2493,7 @@ function WebOffice2015() {
 		if (fileType.length == 5) {
 			fileType = fileType.substring(0, 4);
 		}
-		var exts;
+		let exts;
 		exts = "";
 		if (this.isWPS() || !this.getOfficeVersion()) // 如果是office2003是不支持x格式的文档
 		{
@@ -2501,7 +2517,7 @@ function WebOffice2015() {
 	/* 对比文档里面所用到的 下载文档方法 */
 	this.WebDownloadFile_int = function (fn) {
 		this.Status = '';
-		var httpclient = this.obj.Http; 					// 设置http对象
+		let httpclient = this.obj.Http; 					// 设置http对象
 		httpclient.Clear();
 		this.WebSetMsgByName("USERNAME", this.UserName); 	// 加载UserName
 		this.WebSetMsgByName("FILENAME", fn); 				// 加载FileName
@@ -2581,7 +2597,7 @@ function WebOffice2015() {
 				}
 
 				if (this.hiddenSaveLocal(httpclient, this, false, false)) {
-					var mSaveResult = this
+					let mSaveResult = this
 						.WebOpenLocalFile(this.DownloadedFileTempPathName);
 					if (mSaveResult == 0) { // 打开本地磁盘文件
 						this.getOfficeVersion();// 打开文档后，判断当前office版本
@@ -2645,9 +2661,9 @@ function WebOffice2015() {
 			if (isHidden) {
 				httpclient.Hidden = true; 		// 隐藏文件
 			}
-			var tempName = "";
-			var fs = webOffice.obj.FileSystem; 	// WebOffice外面对象名称：
-			var filePath = this.DownFilePath(); // 获取临时文件保存路径
+			let tempName = "";
+			let fs = webOffice.obj.FileSystem; 	// WebOffice外面对象名称：
+			let filePath = this.DownFilePath(); // 获取临时文件保存路径
 			fs.CreateDirectory(filePath);		// 创建生成指定目录
 
 			this.FilePath = filePath; 			// 这个保存的路径方便打开的时候再取。
@@ -2680,8 +2696,7 @@ function WebOffice2015() {
 		if (is2003) {
 			return this.obj.Save(FileName);
 		}
-		var SaveFalg = this.obj.Save(FileName, eval("this.DocTypeValue." + FileType),
-			true);
+		let SaveFalg = this.obj.Save(FileName, eval("this.DocTypeValue." + FileType),true);
 		if (SaveFalg == 80) {
 			return "文件路径无效";
 		} else if (SaveFalg == 81) {
@@ -2708,7 +2723,7 @@ function WebOffice2015() {
 
 	/* 获取office版本信息 */
 	this.getOfficeVersion = function () {
-		var getVersion = 0.0;
+		let getVersion = 0.0;
 		try {
 			if (this.setVersion == -1) {
 				getVersion = parseFloat(this.obj.ActiveDocument.Application.Version);
@@ -2751,7 +2766,7 @@ function WebOffice2015() {
 
 	// 获取打开文档类型名称	
 	this.getOpenSuffixName = function (fileType) {
-		var openSuffixName;
+		let openSuffixName;
 		switch (fileType) {
 			case this.DocType.WORD:
 				openSuffixName = "Word Files";
@@ -2837,15 +2852,15 @@ function WebOffice2015() {
 	this.AddWaterMark = function (WaterMarkNmae) {
 		if (this.FileType == ".doc" || this.FileType == ".docx") {
 			if (this.blnIE()) {
-				var intPageTotal = this.WebObject.ActiveDocument.Application.ActiveDocument.BuiltInDocumentProperties(14);
+				let intPageTotal = this.WebObject.ActiveDocument.Application.ActiveDocument.BuiltInDocumentProperties(14);
 			} else {
-				var intPageTotal = this.WebObject.ActiveDocument.Application.ActiveDocument.BuiltInDocumentProperties.Item(14).Value();
+				let intPageTotal = this.WebObject.ActiveDocument.Application.ActiveDocument.BuiltInDocumentProperties.Item(14).Value();
 			}
 			intPage = parseInt(intPageTotal);
-			var selection = this.WebObject.ActiveDocument.Application.Selection;
+			let selection = this.WebObject.ActiveDocument.Application.Selection;
 			if (this.obj.ActiveDocument.ProtectionType == "-1") {
 				this.DelWaterMark(WaterMarkNmae);
-				for (var i = 1; i <= intPage; i++) {
+				for (let i = 1; i <= intPage; i++) {
 					selection.GoTo(What = 1, Which = 1, Count = i);
 					try {
 						//插入水印前需更改视图样式为页眉视图
@@ -2854,7 +2869,7 @@ function WebOffice2015() {
 						//由于一个文档中只允许添加一个水印，因此在添加水印之前，需检测文档中是否存在水印，如果存在，则先删除
 						//设置插入水印，语法：表达式.AddTextEffect(预设文字效果【0..49】, 文字内容, 字体名, 字体大小, 是否粗体, 是否斜体, 左侧位置, 顶部位置)
 						selection.HeaderFooter.Shapes.AddTextEffect(0, '金格科技', '宋体', 36, false, false, 0, 0).Select();
-						var shapeRange = selection.ShapeRange;
+						let shapeRange = selection.ShapeRange;
 						shapeRange.Name = WaterMarkNmae + i;  				//水印对象名
 						shapeRange.TextEffect.NormalizedHeight = false 		//文字效果
 						shapeRange.Line.Visible = false;					//线条是否可见
@@ -2902,11 +2917,11 @@ function WebOffice2015() {
 		if (this.FileType == ".doc" || this.FileType == ".docx") {
 			if (this.obj.ActiveDocument.ProtectionType == "-1") {
 				this.WebObject.ActiveDocument.ActiveWindow.ActivePane.View.SeekView = 9;
-				var selection = this.WebObject.ActiveDocument.Application.Selection;
+				let selection = this.WebObject.ActiveDocument.Application.Selection;
 				//查找文档中是否存在名称为【WaterMarkObjectName】的水印对象，如果存在，则删除
-				var WaterCount = selection.HeaderFooter.Shapes.Count;
+				let WaterCount = selection.HeaderFooter.Shapes.Count;
 				if (WaterCount > 0) {
-					for (var i = WaterCount; i >= 1; i--) {
+					for (let i = WaterCount; i >= 1; i--) {
 						if (selection.HeaderFooter.Shapes.Item(i).Name = WaterMarkNmae + i) {
 							selection.HeaderFooter.Shapes.Item(i).Delete();
 						}
@@ -2927,27 +2942,27 @@ function WebOffice2015() {
 	this.AddGraphicWaterMark = function (WaterMarkNmae) {
 		if (this.FileType == ".doc" || this.FileType == ".docx") {
 			if (this.blnIE()) {
-				var intPageTotal = this.WebObject.ActiveDocument.Application.ActiveDocument.BuiltInDocumentProperties(14);
+				let intPageTotal = this.WebObject.ActiveDocument.Application.ActiveDocument.BuiltInDocumentProperties(14);
 			} else {
-				var intPageTotal = this.WebObject.ActiveDocument.Application.ActiveDocument.BuiltInDocumentProperties.Item(14).Value();
+				let intPageTotal = this.WebObject.ActiveDocument.Application.ActiveDocument.BuiltInDocumentProperties.Item(14).Value();
 			}
 			intPage = parseInt(intPageTotal);
-			var selection = this.WebObject.ActiveDocument.Application.Selection;
+			let selection = this.WebObject.ActiveDocument.Application.Selection;
 			if (this.obj.ActiveDocument.ProtectionType == "-1") {
 				this.DelWaterMark(WaterMarkNmae);
-				for (var i = 1; i <= intPage; i++) {
+				for (let i = 1; i <= intPage; i++) {
 					selection.GoTo(What = 1, Which = 1, Count = i);
 					try {
 						this.WebObject.ActiveDocument.ActiveWindow.ActivePane.View.SeekView = 9; //wdSeekCurrentPageHeader
 						this.WebObject.ActiveDocument.Application.Selection.ClearFormatting(); //去页面横线
 						/////获取服务器上的图片///////
-						var ImagePath = this.DownFilePath();  //项目路径下Document的"WaterMark.jpg"
-						var ImageName = "WaterMark.jpg";
+						let ImagePath = this.DownFilePath();  //项目路径下Document的"WaterMark.jpg"
+						let ImageName = "WaterMark.jpg";
 						this.DownloadToFile(ImageName, ImagePath);
 						/////获取服务器上的图片///////
 						selection.HeaderFooter.Shapes.AddPicture(ImagePath + ImageName, false, true).Select(); //水印位置
 
-						var shapeRange = selection.ShapeRange;
+						let shapeRange = selection.ShapeRange;
 
 						shapeRange.Name = WaterMarkNmae + i;  		//水印对象名
 						shapeRange.PictureFormat.Brightness = 0.85;
@@ -2983,7 +2998,7 @@ function WebOffice2015() {
 
 	//设置段落
 	this.ParagraphSettings = function () {
-		var paragraphFormat = this.WebObject.ActiveDocument.Application.Selection.ParagraphFormat;
+		let paragraphFormat = this.WebObject.ActiveDocument.Application.Selection.ParagraphFormat;
 		paragraphFormat.Alignment = 3; //常规：对齐方式,0：左对齐，1：居中，2：右对齐，以此类推
 		paragraphFormat.OutlineLevel = 10; //常规：大纲级别,值为1-10，10为正文文本，
 
@@ -3028,12 +3043,12 @@ function WebOffice2015() {
 	this.CleanBackground = function () {
 		this.WebObject.ActiveDocument.Application.Selection.WholeStory(); //选中全文
 		//清理文字
-		var sfShading = this.WebObject.ActiveDocument.Application.Selection.Font.Shading;
+		let sfShading = this.WebObject.ActiveDocument.Application.Selection.Font.Shading;
 		sfShading.Texture = 0;
 		sfShading.ForegroundPatternColor = -16777216;
 		sfShading.BackgroundPatternColor = -16777216;
 		//清理段落
-		var pfShading = this.WebObject.ActiveDocument.Application.Selection.ParagraphFormat.Shading;
+		let pfShading = this.WebObject.ActiveDocument.Application.Selection.ParagraphFormat.Shading;
 		pfShading.Texture = 0;
 		pfShading.ForegroundPatternColor = -16777216;
 		pfShading.BackgroundPatternColor = -16777216;
@@ -3043,7 +3058,7 @@ function WebOffice2015() {
 	//Word字体设置
 	this.WordFontSet = function () {
 		if (this.FileType == ".doc" || this.FileType == ".docx") {
-			var sFont = this.WebObject.ActiveDocument.Application.Selection.Font;
+			let sFont = this.WebObject.ActiveDocument.Application.Selection.Font;
 			sFont.Name = "微软雅黑"; //设置字体
 			sFont.Size = 10.5; //字号 
 			sFont.Bold = false; //加粗
@@ -3077,10 +3092,10 @@ function WebOffice2015() {
 	//删除文档链接
 	this.HyperDelete = function () {
 		if (this.FileType == ".doc" || this.FileType == ".docx") {
-			var selection = this.WebObject.ActiveDocument.Application.Selection;
+			let selection = this.WebObject.ActiveDocument.Application.Selection;
 			selection.WholeStory();//选中全文
-			var HyperCount = this.WebObject.ActiveDocument.Hyperlinks.Count; //获取连接数量
-			for (var i = 1; i <= HyperCount; i++) {
+			let HyperCount = this.WebObject.ActiveDocument.Hyperlinks.Count; //获取连接数量
+			for (let i = 1; i <= HyperCount; i++) {
 				this.WebObject.ActiveDocument.Hyperlinks.Item(1).Delete(); //删除连接
 			}
 			selection.MoveLeft(Unit = 1, Count = 1); //返回定位最前端 
@@ -3129,28 +3144,28 @@ function WebOffice2015() {
 	/* 增加自定义工具栏按钮 */
 	this.AppendTools = function (Index, Caption, Icon) {
 		parseInt(Index);
-		var customtoolbar = this.obj.CustomToolbar;
+		let customtoolbar = this.obj.CustomToolbar;
 		customtoolbar.AddToolButton(Index, Caption, Icon, Caption, 0); //Icon为图片路径
 	}
 
 	/* 按钮是否有效 */
 	this.DisableTools = function (Caption, Flag) {
-		var customtoolbar = this.obj.CustomToolbar;
+		let customtoolbar = this.obj.CustomToolbar;
 		customtoolbar.DisableToolsButton(Caption, Flag);
 		this.obj.Style.Invalidate();
 	}
 
 	/* 自定义工具栏按钮是否显示 */
 	this.VisibleTools = function (Caption, Flag) {
-		var customtoolbar = this.obj.CustomToolbar;
+		let customtoolbar = this.obj.CustomToolbar;
 		customtoolbar.VisibleToolsButton(Caption, Flag);
 		this.obj.Style.Invalidate();
 	}
 
 	/* 增加菜单 */
-	var MenuFile;
+	let MenuFile;
 	this.AppendMenu = function (Index, Caption) {
-		var custommenu = this.obj.CustomMenu;
+		let custommenu = this.obj.CustomMenu;
 		if (MenuFile == undefined || MenuFile == null) {
 			custommenu.Clear();
 			MenuFile = custommenu.CreatePopupMenu();
@@ -3161,14 +3176,14 @@ function WebOffice2015() {
 	}
 
 	this.AddCustomMenu = function () {
-		var custommenu = this.obj.CustomMenu;
+		let custommenu = this.obj.CustomMenu;
 		//创建文件菜单的条目
-		var menufile = custommenu.CreatePopupMenu();
-		var menufilelv2 = custommenu.CreatePopupMenu();
+		let menufile = custommenu.CreatePopupMenu();
+		let menufilelv2 = custommenu.CreatePopupMenu();
 		custommenu.AppendMenu(menufilelv2, 6, false, "自定义二级菜单一");
 		custommenu.AppendMenu(menufilelv2, 7, false, "自定义二级菜单二");
 		custommenu.AppendMenu(menufilelv2, 0, false, "-");
-		var menufilelv3 = custommenu.CreatePopupMenu();
+		let menufilelv3 = custommenu.CreatePopupMenu();
 		custommenu.AppendMenu(menufilelv3, 8, false, "自定义三级菜单一");
 		custommenu.AppendMenu(menufilelv3, 0, false, "-");
 		custommenu.AppendMenu(menufilelv3, 9, false, "自定义三级菜单二");
@@ -3186,7 +3201,7 @@ function WebOffice2015() {
 		custommenu.Add(menufile, "编辑(&E)");
 
 		//创建语言
-		/*  var menuLang = custommenu.CreatePopupMenu();
+		/*  let menuLang = custommenu.CreatePopupMenu();
 		  custommenu.AppendMenu(menuLang, 22, false, "简体中文");
 		  custommenu.AppendMenu(menuLang, 23, false, "繁体中文(TW)");
 		  custommenu.AppendMenu(menuLang, 24, false, "繁体中文(HK)")
@@ -3200,8 +3215,8 @@ function WebOffice2015() {
 	/* 获取当前文档打开类型，以后缀名来区别 */
 	this.WebGetDocSuffix = function () {
 		try {
-			var docType = this.getDocType(this.FileType); 	// 判断是文档还是表格
-			var FileTypeValue = 0; 							// 判断打开文档的值 0：doc，12：docx，51：xls，56：xlsx
+			let docType = this.getDocType(this.FileType); 	// 判断是文档还是表格
+			let FileTypeValue = 0; 							// 判断打开文档的值 0：doc，12：docx，51：xls，56：xlsx
 			if (docType == this.DocType.WORD) 				// word 获取vba值的方法
 			{
 				this.Activate(true);
@@ -3230,10 +3245,10 @@ function WebOffice2015() {
 		if (this.obj.ActiveDocument.BookMarks.Exists(this.BookMark)) {
 			this.obj.ActiveDocument.Bookmarks.Item(this.BookMark).Select();
 		}
-		var SelectionImage = this.obj.ActiveDocument.Application.Selection.InlineShapes.AddPicture(this.DownloadedFileTempPathName);
+		let SelectionImage = this.obj.ActiveDocument.Application.Selection.InlineShapes.AddPicture(this.DownloadedFileTempPathName);
 		SelectionImage.Select();
 		SelectionImage.PictureFormat.TransparentBackground = Transparent; //是否透明处理
-		var ShapeImage = SelectionImage.ConvertToShape(); 	// 转为浮动型
+		let ShapeImage = SelectionImage.ConvertToShape(); 	// 转为浮动型
 		ShapeImage.WrapFormat.Type = 3;
 		ShapeImage.ZOrder(ZOrder); 							// 5：衬于文字下方 4：浮于文字上方
 		return true;
@@ -3241,8 +3256,8 @@ function WebOffice2015() {
 
 	/* 下载文档	*/
 	this.DownloadToFile = function (DownFileName, SavePathName) {
-		var httpclient = this.obj.Http;
-		var URL = this.WebUrl.substring(0, this.WebUrl.lastIndexOf("/"));
+		let httpclient = this.obj.Http;
+		let URL = this.WebUrl.substring(0, this.WebUrl.lastIndexOf("/"));
 		httpclient.ShowProgressUI = this.ShowWindow;// 隐藏进度条
 		if (httpclient.Open(this.HttpMethod.Get, URL + "/Document/"
 			+ DownFileName, false)) {			// 指定下载模板的名称
@@ -3260,8 +3275,8 @@ function WebOffice2015() {
 
 	/* 手写签批	*/
 	this.HandWriting = function (penColor, penWidth) {
-		var handwritting = this.obj.Handwritting;
-		var handsetting = handwritting.DrawingSetting;
+		let handwritting = this.obj.Handwritting;
+		let handsetting = handwritting.DrawingSetting;
 		handsetting.PenThicker = penWidth;
 		handsetting.PenColor = penColor;
 		handwritting.AnnotateDraw();
@@ -3271,7 +3286,7 @@ function WebOffice2015() {
 
 	/* 停止手写签批	*/
 	this.StopHandWriting = function () {
-		var handwritting = this.obj.Handwritting;
+		let handwritting = this.obj.Handwritting;
 		handwritting.StopAnnotate();
 		this.ShowMenuBar(true);		// 停止签批时显示菜单栏
 		this.ShowToolBars(true);	// 停止签批时显示工具栏
@@ -3279,8 +3294,8 @@ function WebOffice2015() {
 
 	/* 文字签名	*/
 	this.TextWriting = function () {
-		var handwritting = this.obj.Handwritting;
-		var textsetting = handwritting.TextSetting;
+		let handwritting = this.obj.Handwritting;
+		let textsetting = handwritting.TextSetting;
 		textsetting.TextSize = 32;
 		textsetting.TextColor = 0xbb00ff;
 		textsetting.FontName = "宋体";
@@ -3291,8 +3306,8 @@ function WebOffice2015() {
 
 	/* 图形签批	*/
 	this.ShapeWriting = function () {
-		var handwritting = this.obj.Handwritting;
-		var shapesetting = handwritting.ShapeSetting;
+		let handwritting = this.obj.Handwritting;
+		let shapesetting = handwritting.ShapeSetting;
 		shapesetting.ShapeType = 0;
 		shapesetting.BackgroundColor = 0xffffff;
 		shapesetting.BorderColor = 0xff0000;
@@ -3304,24 +3319,24 @@ function WebOffice2015() {
 
 	/* 取消上一次签批 */
 	this.RemoveLastWriting = function () {
-		var handwritting = this.obj.Handwritting;
+		let handwritting = this.obj.Handwritting;
 		handwritting.RemoveLast();
 	}
 
 	/* 显示某用户的签批 */
 	this.ShowWritingUser = function (bVal, username) {
-		var strxml = this.obj.GetAnnotations();
-		var json = eval('(' + strxml + ')');
+		let strxml = this.obj.GetAnnotations();
+		let json = eval('(' + strxml + ')');
 		if (username != "" && username != null && username != undefined) {
-			for (var i = 0; i < json.Annotations.length; i++) {
+			for (let i = 0; i < json.Annotations.length; i++) {
 				if (json.Annotations[i].Annotation.User != username) {
-					var id = json.Annotations[i].Annotation.ID;
+					let id = json.Annotations[i].Annotation.ID;
 					this.obj.GetAnnotationByID(id).Visible = bVal;
 				}
 			}
 		} else {
-			for (var i = 0; i < json.Annotations.length; i++) {
-				var id = json.Annotations[i].Annotation.ID;
+			for (let i = 0; i < json.Annotations.length; i++) {
+				let id = json.Annotations[i].Annotation.ID;
 				this.obj.GetAnnotationByID(id).Visible = bVal;
 			}
 		}
@@ -3329,11 +3344,11 @@ function WebOffice2015() {
 
 	/* 得到服务器setMsgByName的值并发送到前台 */
 	this.GetDataToSend = function () {
-		var httpclient = this.obj.Http; 						// 设置http对象
+		let httpclient = this.obj.Http; 						// 设置http对象
 		httpclient.Clear();
-		var ReturnValue = httpclient.GetResponseHeader("RName");// 获取返回值
-		var jsonObj = eval('(' + ReturnValue + ')');
-		for (var i in jsonObj) {
+		let ReturnValue = httpclient.GetResponseHeader("RName");// 获取返回值
+		let jsonObj = eval('(' + ReturnValue + ')');
+		for (let i in jsonObj) {
 			this.WebSetMsgByName(i, jsonObj[i]);
 		}
 	}
@@ -3353,7 +3368,7 @@ function WebOffice2015() {
 			return false;
 		}
 		//创建手写签批控件
-		var ret = this.obj.CreateNew("iWebRevision.iWebRevisionCtrl.1");
+		let ret = this.obj.CreateNew("iWebRevision.iWebRevisionCtrl.1");
 		if (ret != 0) {
 			this.Status = "创建手写组件对象失败";
 			return false;
@@ -3375,7 +3390,7 @@ function WebOffice2015() {
 			this.obj.ShowDialog(0);	//新建文档
 		}
 		else if (OLEFlag == 2) {
-			var exts;
+			let exts;
 			exts = "Word Files(*.doc;*.docx;*.docm;*.dot;*.dotx;*.dotm;*.rtf)|*.doc;*.docx;*.docm;*.dot;*.dotx;*.dotm;*.rtf";
 			exts += "|Excel Files(*.xls;*.xlsx;*.xlsm;*.xlt;*.xltx;*.xltm)|*.xls;*.xlsx;*.xlsm;*.xlt;*.xltx;*.xltm";
 			exts += "|PowerPoint Files(*.ppt;*.pptx;*.pptm;*.pot;*.potx;*.potm)|*.ppt;*.pptx;*.pptm;*.pot;*.potx;*.potm";
@@ -3423,16 +3438,16 @@ function WebOffice2015() {
 //////////////////////////////////////////////////////////////////////////////KGBrowser
 function basePath() {
 	//获取当前网址，如： http://localhost:8080/ems/Pages/Basic/Person.jsp
-	var curWwwPath = window.document.location.href;
+	let curWwwPath = window.document.location.href;
 	//获取主机地址之后的目录，如： /ems/Pages/Basic/Person.jsp
-	var pathName = window.document.location.pathname;
-	var pos = curWwwPath.indexOf(pathName);
+	let pathName = window.document.location.pathname;
+	let pos = curWwwPath.indexOf(pathName);
 	//获取主机地址，如： http://localhost:8080
-	var localhostPath = curWwwPath.substring(0, pos);
+	let localhostPath = curWwwPath.substring(0, pos);
 	//获取带"/"的项目名，如：/ems
-	var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+	let projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
 	//获取项目的basePath   http://localhost:8080/ems/
-	var basePath = localhostPath + projectName + "/";
+	let basePath = localhostPath + projectName + "/";
 	return basePath;
 };
 
@@ -3442,7 +3457,7 @@ function basePath() {
 * onlyONE: true:如果有已经打开的弹出窗口就返回提示信息，并终止本次弹窗; false: 
 */
 function KGBrowser() {
-	var kgbrowser = this;
+	let kgbrowser = this;
 	this.uuid = "";
 
 	this.getUUID = function () {
@@ -3456,10 +3471,10 @@ function KGBrowser() {
 		if (onlyONE == undefined)
 			onlyONE = true;
 
-		//var strParam = '$parent_uuid=' + kgbrowser.kg_uuid;
+		//let strParam = '$parent_uuid=' + kgbrowser.kg_uuid;
 		//strParam += param;
 
-		var link = "KGBrowser://$link:" + basePath() + url + param;
+		let link = "KGBrowser://$link:" + basePath() + url + param;
 		//	alert("link: " + link);
 		location.href = link;
 		this.LongConnect();
@@ -3470,7 +3485,7 @@ function KGBrowser() {
 		if (onlyONE == undefined)
 			onlyONE = true;
 
-		//var strParam = '$parent_uuid=' + kgbrowser.kg_uuid;
+		//let strParam = '$parent_uuid=' + kgbrowser.kg_uuid;
 		//strParam += param;
 
 		// 检测KGBrowser是否安装
@@ -3481,9 +3496,9 @@ function KGBrowser() {
 			jsonp: "hookback",
 			dataType: "jsonp",
 			success: function (data) {
-				var jsonobj = eval(data);
+				let jsonobj = eval(data);
 				if (jsonobj.ret == "none" || onlyONE == false) {
-					var link = "KGBrowser://$link:" + basePath() + url + param;
+					let link = "KGBrowser://$link:" + basePath() + url + param;
 					//	alert("link: " + link);
 					location.href = link;
 					kgbrowser.LongConnect();
@@ -3493,30 +3508,30 @@ function KGBrowser() {
 				}
 			},
 			error: function () {
-				var answer = confirm("未安装支持多浏览器应用程序是否点击安装\n提示：安装的时候360全部点击允许程序所有操作");
+				let answer = confirm("未安装支持多浏览器应用程序是否点击安装\n提示：安装的时候360全部点击允许程序所有操作");
 				if (answer) {//判断是否点击确定
-					var curPath = window.document.location.href;
-					var pathName = window.document.location.pathname;
-					var pos = curPath.indexOf(pathName);
-					var localhostPath = curPath.substring(0, pos);
-					var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
-					var webPath = localhostPath + projectName;
+					let curPath = window.document.location.href;
+					let pathName = window.document.location.pathname;
+					let pos = curPath.indexOf(pathName);
+					let localhostPath = curPath.substring(0, pos);
+					let projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+					let webPath = localhostPath + projectName;
 					window.location.href = webPath + "/KGBrowserSetup.exe"; //安装KGBrower
 				}
 			}
 		});
 		// ie 8+, chrome and some other browsers
-		var head = document.head || $('head')[0] || document.documentElement;// code from jquery
-		var script = $(head).find('script')[0];
+		let head = document.head || $('head')[0] || document.documentElement;// code from jquery
+		let script = $(head).find('script')[0];
 		script.onerror = function (evt) {
-			var answer = confirm("未安装支持多浏览器应用程序是否点击安装\n提示：安装的时候360全部点击允许程序所有操作");
+			let answer = confirm("未安装支持多浏览器应用程序是否点击安装\n提示：安装的时候360全部点击允许程序所有操作");
 			if (answer) {//判断是否点击确定
-				var curPath = window.document.location.href;
-				var pathName = window.document.location.pathname;
-				var pos = curPath.indexOf(pathName);
-				var localhostPath = curPath.substring(0, pos);
-				var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
-				var webPath = localhostPath + projectName;
+				let curPath = window.document.location.href;
+				let pathName = window.document.location.pathname;
+				let pos = curPath.indexOf(pathName);
+				let localhostPath = curPath.substring(0, pos);
+				let projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+				let webPath = localhostPath + projectName;
 				window.location.href = webPath + "/KGBrowserSetup.exe"; //安装KGBrower
 			}
 			// do some clean  
@@ -3525,14 +3540,14 @@ function KGBrowser() {
 				script.parentNode.removeChild(script);
 			}
 			// delete jsonCallback global function
-			var src = script.src || '';
-			var idx = src.indexOf('hookback=');
+			let src = script.src || '';
+			let idx = src.indexOf('hookback=');
 			if (idx != -1) {
-				var idx2 = src.indexOf('&');
+				let idx2 = src.indexOf('&');
 				if (idx2 == -1) {
 					idx2 = src.length;
 				}
-				var hookback = src.substring(idx + 13, idx2);
+				let hookback = src.substring(idx + 13, idx2);
 				delete window[hookback];
 			}
 		};
@@ -3540,7 +3555,7 @@ function KGBrowser() {
 
 
 	this.LongConnect = function () {
-		var strUrl = "http://127.0.0.1:9588/LongListen?id=" + kgbrowser.uuid;
+		let strUrl = "http://127.0.0.1:9588/LongListen?id=" + kgbrowser.uuid;
 		$.ajax({
 			type: "get",
 			async: false,
@@ -3548,7 +3563,7 @@ function KGBrowser() {
 			jsonp: "hookback",
 			dataType: "jsonp",
 			success: function (data) {
-				var jsonobj = eval(data);
+				let jsonobj = eval(data);
 				console.log(jsonobj.ret);
 				if (jsonobj.ret == "save") { //此判断处理Edit页面Msg传过来的值，判断之后下面做响应处理即可
 					//alert("save");
@@ -3564,8 +3579,8 @@ function KGBrowser() {
 				else {
 					//console.log(data);
 					console.log(jsonobj.ret);
-					//var jsonobj2 = eval('(' + jsonobj.ret + ')');
-					var jsonobj2 = eval(jsonobj.ret);
+					//let jsonobj2 = eval('(' + jsonobj.ret + ')');
+					let jsonobj2 = eval(jsonobj.ret);
 					console.log(jsonobj2.action);
 					console.log(jsonobj2.func);
 					if (jsonobj2.action == "save") {
@@ -3590,8 +3605,8 @@ function KGBrowser() {
 	}
 
 	this.kg_uuid = function (len, radix) {
-		var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-		var uuid = [], i;
+		let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+		let uuid = [], i;
 		radix = radix || chars.length;
 
 		if (len) {
@@ -3599,7 +3614,7 @@ function KGBrowser() {
 			for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix];
 		} else {
 			// rfc4122, version 4 form
-			var r;
+			let r;
 
 			// rfc4122 requires these characters
 			uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
